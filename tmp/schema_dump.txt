@@ -1,0 +1,67 @@
+--- TABLE: surat_masuk ---
+id_surat_masuk (bigint)
+nomor_agenda (varchar(30))
+nomor_surat (varchar(50))
+tanggal_surat (date)
+tanggal_terima (date)
+pengirim (varchar(150))
+perihal (varchar(255))
+sifat_surat (enum('biasa','penting','segera','rahasia'))
+lampiran (int)
+file_path (varchar(255))
+input_by (varchar(20))
+status (enum('tercatat','didispokan','diteruskan','selesai','diarsipkan'))
+id_bidang (int)
+id_seksi (int)
+keterangan (text)
+created_at (timestamp)
+
+--- TABLE: surat_keluar ---
+id_surat_keluar (bigint)
+nomor_surat_keluar (varchar(50))
+tanggal_surat (date)
+perihal (varchar(255))
+id_surat_masuk (bigint)
+tujuan (varchar(150))
+file_path (varchar(255))
+uploaded_by (varchar(20))
+status (enum('draft','pending_approval','disetujui','diarsipkan'))
+keterangan (text)
+created_at (timestamp)
+
+--- TABLE: disposisi ---
+id_disposisi (bigint)
+id_surat_masuk (bigint)
+nip_pemberi (varchar(20))
+tanggal_disposisi (datetime)
+id_bidang (int)
+id_seksi (int)
+nip_penerima (varchar(20))
+nip_tujuan (varchar(20))
+isi_disposisi (text)
+sifat_disposisi (enum('biasa','penting','segera','rahasia'))
+status_disposisi (enum('baru','diterima','ditindaklanjuti'))
+created_at (timestamp)
+
+--- TABLE: users ---
+nip (varchar(20))
+nama (varchar(255))
+no_hp (varchar(20))
+email (varchar(255))
+password (varchar(255))
+jabatan (varchar(255))
+id_bidang (int)
+id_seksi (int)
+role (enum('sekretariat','kepala_dinas','admin_bidang','bagian_perencanaan','bagian_keuangan','staff'))
+foto (varchar(255))
+status (enum('aktif','nonaktif'))
+
+--- TABLE: seksi ---
+id_seksi (int)
+nama_seksi (varchar(255))
+id_bidang (int)
+
+--- TABLE: bidang ---
+id_bidang (int)
+nama_bidang (varchar(255))
+

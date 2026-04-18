@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #059669;
+    --navy: #0f172a;
+    --bg-body: #f8fafc;
+    --border: #e2e8f0;
+    --text-muted: #64748b;
+}
+
+.icon { width: 18px; height: 18px; stroke-width: 2; }
+
+/* --- REPORT FILTER --- */
+.report-controls {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-group { display: flex; gap: 1rem; align-items: center; }
+.filter-group select { padding: 0.65rem 1rem; border-radius: 0.75rem; border: 1.5px solid var(--border); font-weight: 600; font-size: 0.85rem; }
+
+.btn-print {
+    background: var(--navy);
+    color: var(--primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 800;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-print:hover { background: var(--primary); color: white; }
+
+/* --- PERFORMANCE GRID --- */
+.perf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.perf-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.perf-card h4 { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+
+.perf-item { margin-bottom: 1.5rem; }
+.perf-info { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 700; color: var(--navy); }
+.perf-bar-bg { height: 8px; background: var(--bg-body); border-radius: 4px; overflow: hidden; }
+.perf-bar-fill { height: 100%; background: var(--primary); border-radius: 4px; }

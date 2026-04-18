@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #0d9488;
+    --navy: #1e293b;
+    --border: #e2e8f0;
+    --bg-light: #f8fafc;
+    --text-muted: #64748b;
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.icon { width: 20px; height: 20px; stroke-width: 2; }
+
+/* --- TWO COLUMN GRID --- */
+.fulfillment-grid {
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    gap: 2.5rem;
+    align-items: flex-start;
+}
+
+/* --- LEFT: TRACEABILITY CARD --- */
+.card-trace {
+    background: #fff;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.trace-header { border-bottom: 2px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+.trace-header h2 { font-size: 1.45rem; font-weight: 800; color: var(--navy); }
+
+/* Timeline UI */
+.trace-timeline { position: relative; padding-left: 2rem; margin-top: 2rem; }
+.trace-timeline::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+
+.timeline-item { position: relative; margin-bottom: 2.5rem; }
+.timeline-dot { position: absolute; left: -2rem; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 3px solid var(--border); z-index: 2; }
+.timeline-item.active .timeline-dot { border-color: var(--primary); background: var(--primary); }
+
+.timeline-content { background: var(--bg-light); padding: 1.25rem 1.5rem; border-radius: 1rem; border: 1px solid var(--border); }
+.timeline-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; display: block; }
+.timeline-body { font-size: 0.9375rem; font-weight: 600; color: var(--navy); line-height: 1.5; }
+
+/* --- RIGHT: FORM CARD --- */
+.card-fulfillment {
+    background: #fff;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 30px;
+}
+
+.form-title { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; }
+.form-title h3 { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.65rem; text-transform: uppercase; }
+
+input, select, textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 0.75rem;
+    background: #fdfdfd;
+    font-size: 0.9375rem;
+    font-weight: 500;
+}
+
+textarea { height: 120px; resize: none; }
+
+.btn-finish {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-finish:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.4); }
+
+@media (max-width: 1100px) {
+    .fulfillment-grid { grid-template-columns: 1fr; }
+    .card-fulfillment { position: static; }
+}

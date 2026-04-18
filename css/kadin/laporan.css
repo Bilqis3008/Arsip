@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #0f172a;
+    --accent: #f59e0b;
+    --bg-body: #f1f5f9;
+    --border: #e2e8f0;
+    --text-muted: #64748b;
+}
+
+.report-header {
+    background: #fff;
+    padding: 2.5rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-title h2 { font-size: 1.75rem; font-weight: 800; color: var(--primary); }
+.report-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; }
+
+.btn-print {
+    background: var(--primary);
+    color: var(--accent);
+    padding: 1rem 2rem;
+    border-radius: 1rem;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.btn-print:hover { transform: translateY(-3px); box-shadow: 0 10px 15px -3px rgba(15,23,42,0.3); }
+
+/* --- PERFORMANCE GRID --- */
+.performance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+}
+
+.perf-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 1.75rem;
+    border: 1px solid var(--border);
+    text-align: center;
+}
+
+.perf-card .val { font-size: 3rem; font-weight: 800; color: var(--primary); display: block; margin-bottom: 0.5rem; }
+.perf-card .label { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+
+/* --- TABLE CARD --- */
+.report-card {
+    background: #fff;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    padding: 2rem;
+}
+
+.report-table { width: 100%; border-collapse: collapse; }
+.report-table th { text-align: left; padding: 1.25rem 1rem; border-bottom: 2px solid var(--border); font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+.report-table td { padding: 1.25rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+
+@media print {
+    .sidebar, .btn-print, .content-header { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+    .report-card, .performance-grid { border: none !important; box-shadow: none !important; }
+}
