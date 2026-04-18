@@ -96,6 +96,10 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
     <link rel="stylesheet" href="../css/admin_perbidang/home.css">
     <link rel="stylesheet" href="../css/sekretariat/monitoring_laporan.css">
     <style>
+        /* Override monitoring_laporan.css to match admin_perbidang layout */
+        .content-header { background: transparent !important; border-bottom: none !important; padding: 0 !important; height: auto !important; position: static !important; margin-bottom: 2.5rem !important; }
+        .content-body { padding: 0 !important; }
+        
         .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
         .summary-card { background: #fff; padding: 2rem; border-radius: 1rem; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .summary-icon { width: 64px; height: 64px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
@@ -107,7 +111,7 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
         .section-title { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem; }
 
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
-        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 1rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+        .modal-content { background: #fff; width: 100%; max-width: 540px; border-radius: 1rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
         .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; color: #64748b; cursor: pointer; }
         .timeline { position: relative; margin-top: 1rem; padding-left: 20px; border-left: 2px solid #e2e8f0; }
         .timeline-item { position: relative; padding-bottom: 1.5rem; }
@@ -362,6 +366,8 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             <h3 style="margin-bottom: 0.5rem; color: #0f172a; font-size: 1.25rem;">Live Tracking Alur Surat</h3>
             <p id="tracker-subtitle" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
             
+            <div id="tracker-mail-info" style="background: #f8fafc; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; display: none;"></div>
+
             <div id="tracker-details">
                 <div class="timeline" id="timeline-box"></div>
             </div>
@@ -378,6 +384,26 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             const mail = suratMasukData.find(m => m.id_surat_masuk == id);
             
             document.getElementById('tracker-subtitle').textContent = `Surat Masuk #${mail.nomor_surat}`;
+
+            const infoBox = document.getElementById('tracker-mail-info');
+            infoBox.style.display = 'block';
+            const tgl = new Date(mail.tanggal_terima).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+            infoBox.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+                    <div style="grid-column: span 2;">
+                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
+                        <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Pengirim</span>
+                        <strong style="color: #0f172a;">${mail.pengirim}</strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Terima</span>
+                        <strong style="color: #0f172a;">${tgl}</strong>
+                    </div>
+                </div>
+            `;
 
             const timeline = document.getElementById('timeline-box');
             timeline.innerHTML = '';
@@ -402,6 +428,26 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             const mail = suratKeluarData.find(m => m.id_surat_keluar == id);
             
             document.getElementById('tracker-subtitle').textContent = `Surat Keluar #${mail.nomor_surat_keluar}`;
+
+            const infoBox = document.getElementById('tracker-mail-info');
+            infoBox.style.display = 'block';
+            const tgl = new Date(mail.tanggal_surat).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+            infoBox.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+                    <div style="grid-column: span 2;">
+                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
+                        <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tujuan</span>
+                        <strong style="color: #0f172a;">${mail.tujuan}</strong>
+                    </div>
+                    <div>
+                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Surat</span>
+                        <strong style="color: #0f172a;">${tgl}</strong>
+                    </div>
+                </div>
+            `;
 
             const timeline = document.getElementById('timeline-box');
             timeline.innerHTML = '';

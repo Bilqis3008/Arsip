@@ -85,7 +85,7 @@ usort($mails, function($a, $b) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Seksi - Bidang Ops</title>
+    <title>Monitoring Surat - Bidang Ops</title>
     <link rel="stylesheet" href="../css/admin_perbidang/home.css">
     <link rel="stylesheet" href="../css/sekretariat/monitoring_surat.css">
     <style>
@@ -119,7 +119,7 @@ usort($mails, function($a, $b) {
             <div class="menu-label">Pengelolaan Surat</div>
             <a href="surat_masuk.php" class="menu-item"><svg class="icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Surat Masuk</a>
             <a href="disposisi_surat.php" class="menu-item"><svg class="icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Disposisi Internal</a>
-            <a href="monitoring_tindakLanjut.php" class="menu-item active"><svg class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Monitoring Seksi</a>
+            <a href="monitoring_tindakLanjut.php" class="menu-item active"><svg class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Monitoring Surat</a>
             <a href="surat_keluar.php" class="menu-item"><svg class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Surat Keluar</a>
 
             <div class="menu-label">Reporting & Account</div>
@@ -221,6 +221,8 @@ usort($mails, function($a, $b) {
             <h3 style="margin-bottom: 0.5rem; color: #0f172a; font-size: 1.25rem;">Live Tracking Alur Surat</h3>
             <p id="tracker-subtitle" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
             
+            <div id="tracker-mail-info" style="background: #f8fafc; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; display: none;"></div>
+
             <div id="tracker-details">
                 <div class="timeline" id="timeline-box"></div>
             </div>
@@ -236,10 +238,31 @@ usort($mails, function($a, $b) {
         function showTracker(tipe, id) {
             const timeline = document.getElementById('timeline-box');
             timeline.innerHTML = '';
+            
+            const infoBox = document.getElementById('tracker-mail-info');
+            infoBox.style.display = 'block';
 
             if (tipe === 'masuk') {
                 const mail = suratMasukData.find(m => m.id_surat_masuk == id);
                 document.getElementById('tracker-subtitle').textContent = `Surat Masuk #${mail.nomor_surat}`;
+
+                const tgl = new Date(mail.tanggal_terima).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                infoBox.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+                        <div style="grid-column: span 2;">
+                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
+                            <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Pengirim</span>
+                            <strong style="color: #0f172a;">${mail.pengirim}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Terima</span>
+                            <strong style="color: #0f172a;">${tgl}</strong>
+                        </div>
+                    </div>
+                `;
 
                 const sekreName = mail.nama_sekretariat || 'Staf Sekretariat';
                 addTimelineItem(`${sekreName} (Sekretariat)`, 'Resepsionis/Sekretariat mencatat agenda baru.', mail.created_at, 'done');
@@ -267,6 +290,24 @@ usort($mails, function($a, $b) {
             } else { // 'keluar'
                 const mail = suratKeluarData.find(m => m.id_surat_keluar == id);
                 document.getElementById('tracker-subtitle').textContent = `Surat Keluar #${mail.nomor_surat_keluar}`;
+
+                const tgl = new Date(mail.tanggal_surat).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
+                infoBox.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
+                        <div style="grid-column: span 2;">
+                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
+                            <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tujuan</span>
+                            <strong style="color: #0f172a;">${mail.tujuan}</strong>
+                        </div>
+                        <div>
+                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Surat</span>
+                            <strong style="color: #0f172a;">${tgl}</strong>
+                        </div>
+                    </div>
+                `;
 
                 const senderAdmin = mail.pengirim_user || 'Staf Penulis';
                 const senderUnit = mail.nama_seksi || mail.nama_bidang || '';
