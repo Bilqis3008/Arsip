@@ -32,7 +32,8 @@ $report_keluar = [];
 
 // For staff: surat_masuk where id_seksi = ? AND status = 'selesai'
 if ($jenis_laporan === 'surat_masuk' || $jenis_laporan === 'total_surat') {
-    $stmt_m = $pdo->prepare("SELECT sm.*, d.tanggal_disposisi, d.status_disposisi, b.nama_bidang, s.nama_seksi, u_in.nama as nama_sekretariat, u_tujuan.nama as nama_admin_bidang 
+    $stmt_m = $pdo->prepare("SELECT sm.*, d.tanggal_disposisi, d.status_disposisi, b.nama_bidang, s.nama_seksi, u_in.nama as nama_sekretariat, u_tujuan.nama as nama_admin_bidang,
+                            sk.status as reply_status, sk.nomor_surat_keluar as reply_no, sk.id_surat_keluar, sk.file_path as reply_file, u_reply.nama as nama_staf_reply
           FROM surat_masuk sm
           LEFT JOIN users u_in ON sm.input_by = u_in.nip 
           LEFT JOIN (
@@ -46,9 +47,18 @@ if ($jenis_laporan === 'surat_masuk' || $jenis_laporan === 'total_surat') {
           LEFT JOIN bidang b ON sm.id_bidang = b.id_bidang
           LEFT JOIN seksi s ON sm.id_seksi = s.id_seksi
           LEFT JOIN users u_tujuan ON d.nip_tujuan = u_tujuan.nip 
+          LEFT JOIN (
+              SELECT sk1.* FROM surat_keluar sk1
+              INNER JOIN (
+                  SELECT id_surat_masuk, MAX(id_surat_keluar) as max_id_sk
+                  FROM surat_keluar WHERE id_surat_masuk IS NOT NULL
+                  GROUP BY id_surat_masuk
+              ) sk2 ON sk1.id_surat_keluar = sk2.max_id_sk
+          ) sk ON sm.id_surat_masuk = sk.id_surat_masuk
+          LEFT JOIN users u_reply ON sk.uploaded_by = u_reply.nip
           WHERE DATE(sm.tanggal_terima) BETWEEN ? AND ? 
           AND sm.id_seksi = ? 
-          AND sm.status = 'selesai' 
+          AND sm.status IN ('selesai', 'diarsipkan') 
           ORDER BY sm.created_at DESC");
     $stmt_m->execute([$date_start, $date_end, $id_seksi]);
     $report_masuk = $stmt_m->fetchAll();
@@ -220,19 +230,32 @@ while ($row = $stmt_admin->fetch()) {
                                     <td style="padding: 1rem;"><strong><?= htmlspecialchars($p['nomor_surat']) ?></strong><br><small style="color: #64748b;"><?= htmlspecialchars($p['nomor_agenda']) ?></small></td>
                                     <td style="padding: 1rem;"><?= htmlspecialchars($p['pengirim']) ?></td>
                                     <td style="padding: 1rem;"><?= date('d M Y', strtotime($p['tanggal_terima'])) ?></td>
-                                    <td style="padding: 1rem; color: #0f172a; font-weight: 500;"><?= htmlspecialchars($p['perihal']) ?></td>
+                                    <td style="padding: 1rem; color: #0f172a; font-weight: 500;">
+                                        <?= htmlspecialchars($p['perihal']) ?>
+                                        <?php if (!empty($p['reply_no'])): ?>
+                                            <div style="margin-top: 4px; font-size: 0.8rem; color: #10b981; font-weight: 600;">
+                                                <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 3; vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                                Balasan: <?= htmlspecialchars($p['reply_no']) ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td class="action-cell" style="padding: 1rem;">
                                         <button class="action-btn action-btn-info" onclick="showTrackerMasuk(<?= $p['id_surat_masuk'] ?>)" title="Tracking & Detail">
                                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                         </button>
                                         <?php if (!empty($p['file_path'])): ?>
-                                            <a href="../<?= htmlspecialchars($p['file_path']) ?>" target="_blank" class="action-btn action-btn-download" title="Lihat/Download Dokumen">
+                                            <a href="../<?= htmlspecialchars($p['file_path']) ?>" target="_blank" class="action-btn action-btn-download" title="Lihat/Download Surat Masuk">
                                                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                             </a>
                                         <?php else: ?>
                                             <button class="action-btn action-btn-disabled" title="Dokumen Tidak Tersedia" disabled>
                                                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                             </button>
+                                        <?php endif; ?>
+                                        <?php if (!empty($p['reply_file'])): ?>
+                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn" style="background:var(--accent);" title="Lihat Balasan (Out)">
+                                                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                            </a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -412,8 +435,16 @@ while ($row = $stmt_admin->fetch()) {
             const deskripsiBidang = mail.nama_bidang ? `(Admin ${mail.nama_bidang})` : '';
             addTimelineItem(`${adminBidangName} ${deskripsiBidang}`.trim(), `Telah ditindaklanjuti dan diselesaikan pada seksi/bidang.`, null, 'done');
 
-            const divisiTarget = mail.nama_seksi ? (mail.nama_seksi + ' - ' + mail.nama_bidang) : (mail.nama_bidang || 'Seksi / Bidang Terkait');
-            addTimelineItem('Arsip Digital', `Surat telah disimpan dalam database arsip pada ${divisiTarget}.`, null, 'done');
+            if (mail.reply_status) {
+                const staffName = mail.nama_staf_reply || 'Staf Sub-Seksi';
+                const seksiTitle = mail.nama_seksi ? `(Staf ${mail.nama_seksi})` : '(Staf Seksi)';
+                addTimelineItem(`${staffName} ${seksiTitle}`, `Telah membuat tindak lanjut balasan (${mail.reply_no}).`, null, 'done');
+                addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Telah memverifikasi dan menyetujui balasan.`, null, 'done');
+                addTimelineItem('Finalisasi', 'Surat masuk tuntas dan balasan telah diterbitkan/diarsipkan.', null, 'done');
+            } else {
+                const divisiTarget = mail.nama_seksi ? (mail.nama_seksi + ' - ' + mail.nama_bidang) : (mail.nama_bidang || 'Seksi / Bidang Terkait');
+                addTimelineItem('Arsip Digital', `Surat telah disimpan dalam database arsip pada ${divisiTarget}.`, null, 'done');
+            }
 
             document.getElementById('tracker-modal').style.display = 'flex';
         }
