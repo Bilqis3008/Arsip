@@ -152,6 +152,7 @@ body {
 label { font-size: 0.875rem; font-weight: 600; color: var(--text-main); }
 
 input, select, textarea {
+    width: 100%;
     padding: 0.875rem 1rem;
     border: 1.5px solid var(--border);
     border-radius: 0.75rem;
@@ -247,4 +248,86 @@ textarea { resize: vertical; min-height: 100px; }
 
 @media (max-width: 1024px) {
     .form-grid { grid-template-columns: 1fr; }
+}
+
+/* --- MODAL SYSTEM --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card {
+    background: white;
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 650px;
+    box-shadow: var(--shadow-lg);
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.modal-card.w-800 {
+    max-width: 800px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.modal-title { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
+
+.btn-close {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.btn-close:hover { color: var(--danger); }
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .detail-grid { grid-template-columns: 1fr; }
+}
+
+.detail-item {
+    margin-bottom: 1rem;
+}
+
+.detail-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.detail-value {
+    font-weight: 600;
+    color: var(--text-main);
+    word-break: break-word;
 }

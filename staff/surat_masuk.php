@@ -36,7 +36,7 @@ $query = "SELECT sm.*,
           LEFT JOIN users p ON d.nip_penerima = p.nip
           LEFT JOIN surat_keluar sk ON sm.id_surat_masuk = sk.id_surat_masuk
           WHERE sm.id_seksi = ? AND sm.perlu_balasan = 1 
-          AND " . ($tab === 'pending' ? "(sm.status NOT IN ('selesai', 'diarsipkan') AND sk.id_surat_keluar IS NULL)" : "(sm.status IN ('selesai', 'diarsipkan') OR sk.id_surat_keluar IS NOT NULL)") . "
+          AND " . ($tab === 'pending' ? "(sk.id_surat_keluar IS NULL)" : "(sk.id_surat_keluar IS NOT NULL OR (sm.status IN ('selesai', 'diarsipkan') AND sm.perlu_balasan = 0))") . "
           AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ?)
           ORDER BY sm.tanggal_terima DESC LIMIT 50";
 

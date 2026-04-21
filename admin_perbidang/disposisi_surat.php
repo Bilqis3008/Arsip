@@ -66,12 +66,12 @@ $error = '';
         $stmt->execute([$id_surat, $nip_admin, $id_bidang, $id_seksi, $nip_penerima, $isi_disposisi, $sifat_disposisi, $tanggal_disposisi]);
 
         // 2. Update Surat Masuk Status and current Section
-        $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'diteruskan', id_seksi = ?, perlu_balasan = 1 WHERE id_surat_masuk = ?");
+        $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'selesai', id_seksi = ?, perlu_balasan = 1 WHERE id_surat_masuk = ?");
         $stmt->execute([$id_seksi, $id_surat]);
 
         $pdo->commit();
         $message = "Instruksi internal berhasil diteruskan ke Seksi terkait.";
-        $mail['status'] = 'diteruskan';
+        $mail['status'] = 'selesai';
     } catch (PDOException $e) {
         $pdo->rollBack();
         $error = "Gagal memproses disposisi: " . $e->getMessage();

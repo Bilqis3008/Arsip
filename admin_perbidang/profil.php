@@ -18,15 +18,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_password'])) {
     $confirm_pass = $_POST['confirm_password'];
 
     if ($new_pass === $confirm_pass) {
-        $hashed = password_hash($new_pass, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE nip = ?");
-        if ($stmt->execute([$hashed, $nip])) {
-            $success = "Password berhasil diperbarui!";
+        if (strlen($new_pass) >= 8) {
+            $hashed = password_hash($new_pass, PASSWORD_DEFAULT);
+            $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE nip = ?");
+            if ($stmt->execute([$hashed, $nip])) {
+                $success = "Password berhasil diperbarui!";
+            } else {
+                $error = "Gagal memperbarui password.";
+            }
         } else {
-            $error = "Gagal memperbarui password.";
+            $error = "Password minimal 8 karakter.";
         }
     } else {
         $error = "Konfirmasi password tidak cocok.";
+    }
+}
+
+// --- HANDLE PROFILE UPDATE ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
+    $nama_baru = $_POST['nama'];
+    $email_baru = $_POST['email'];
+    $no_hp_baru = $_POST['no_hp'];
+
+    $stmt = $pdo->prepare("UPDATE users SET nama = ?, email = ?, no_hp = ? WHERE nip = ?");
+    if ($stmt->execute([$nama_baru, $email_baru, $no_hp_baru, $nip])) {
+        $success = "Profil berhasil diperbarui!";
+    } else {
+        $error = "Gagal memperbarui profil.";
     }
 }
 
@@ -88,13 +106,31 @@ $admin = $stmt->fetch();
                 <!-- Main Details -->
                 <div class="card-main">
                     <div class="section-title"><svg class="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Informasi Personal</div>
-                    <div class="detail-row"><span class="detail-label">NIP PEGAWAI</span><span class="detail-val"><?= htmlspecialchars($admin['nip']) ?></span></div>
-                    <div class="detail-row"><span class="detail-label">EMAIL INSTITUSI</span><span class="detail-val"><?= htmlspecialchars($admin['email']) ?></span></div>
-                    <div class="detail-row"><span class="detail-label">JABATAN</span><span class="detail-val"><?= htmlspecialchars($admin['jabatan'] ?: 'Administrator Bidang') ?></span></div>
-                    <div class="detail-row" style="border: none;"><span class="detail-label">UNIT KERJA</span><span class="detail-val"><?= htmlspecialchars($admin['nama_bidang']) ?></span></div>
+                    
+                    <form action="" method="POST" style="margin-bottom: 2rem;">
+                        <input type="hidden" name="update_profile" value="1">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" name="nama" value="<?= htmlspecialchars($admin['nama']) ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Institusi</label>
+                            <input type="email" name="email" value="<?= htmlspecialchars($admin['email']) ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nomor HP / WhatsApp</label>
+                            <input type="text" name="no_hp" value="<?= htmlspecialchars($admin['no_hp']) ?>" placeholder="08xxxxxxxx">
+                        </div>
+                        <div class="detail-row"><span class="detail-label">NIP PEGAWAI</span><span class="detail-val"><?= htmlspecialchars($admin['nip']) ?></span></div>
+                        <div class="detail-row"><span class="detail-label">JABATAN</span><span class="detail-val"><?= htmlspecialchars($admin['jabatan'] ?: 'Administrator Bidang') ?></span></div>
+                        <div class="detail-row" style="border: none;"><span class="detail-label">UNIT KERJA</span><span class="detail-val"><?= htmlspecialchars($admin['nama_bidang']) ?></span></div>
+                        
+                        <button type="submit" class="btn-save" style="margin-top: 1rem; background: #2563eb;">Perbarui Data Personal</button>
+                    </form>
 
-                    <div class="section-title" style="margin-top: 3rem;"><svg class="icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Keamanan Akun</div>
+                    <div class="section-title" style="margin-top: 3rem; border-top: 1px solid #e2e8f0; padding-top: 2rem;"><svg class="icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Keamanan Akun</div>
                     <form action="" method="POST">
+                        <input type="hidden" name="update_password" value="1">
                         <div class="form-group">
                             <label>Password Baru</label>
                             <input type="password" name="new_password" placeholder="Minimal 8 karakter..." required>
@@ -103,7 +139,7 @@ $admin = $stmt->fetch();
                             <label>Konfirmasi Password</label>
                             <input type="password" name="confirm_password" placeholder="Ulangi password baru..." required>
                         </div>
-                        <button type="submit" name="update_password" class="btn-save">Simpan Perubahan Password</button>
+                        <button type="submit" class="btn-save">Simpan Perubahan Password</button>
                     </form>
                 </div>
             </div>

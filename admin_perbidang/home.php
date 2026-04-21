@@ -28,8 +28,13 @@ $stmt = $pdo->prepare("SELECT COUNT(*) FROM surat_masuk WHERE id_bidang = ? AND 
 $stmt->execute([$id_bidang]);
 $pending = $stmt->fetchColumn();
 
-// 3. Sedang Diproses Seksi (Status = diteruskan)
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM surat_masuk WHERE id_bidang = ? AND status = 'diteruskan'");
+// 3. Sedang Diproses Seksi (Status = diteruskan OR selesai but needs reply)
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM surat_masuk sm 
+                       LEFT JOIN (
+                           SELECT id_surat_masuk, status FROM surat_keluar 
+                           WHERE id_surat_masuk IS NOT NULL
+                       ) sk ON sm.id_surat_masuk = sk.id_surat_masuk
+                       WHERE sm.id_bidang = ? AND (sm.status = 'diteruskan' OR (sm.status = 'selesai' AND sm.perlu_balasan = 1 AND (sk.status IS NULL OR sk.status != 'diarsipkan')))");
 $stmt->execute([$id_bidang]);
 $processing = $stmt->fetchColumn();
 
@@ -40,8 +45,13 @@ $stmt = $pdo->prepare("SELECT COUNT(*) FROM surat_keluar sk
 $stmt->execute([$id_bidang]);
 $waiting_approval = $stmt->fetchColumn();
 
-// 5. Selesai (Status = selesai)
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM surat_masuk WHERE id_bidang = ? AND status = 'selesai'");
+// 5. Selesai (Status = selesai & no reply needed OR reply archived)
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM surat_masuk sm 
+                       LEFT JOIN (
+                           SELECT id_surat_masuk, status FROM surat_keluar 
+                           WHERE id_surat_masuk IS NOT NULL
+                       ) sk ON sm.id_surat_masuk = sk.id_surat_masuk
+                       WHERE sm.id_bidang = ? AND (sm.status = 'diarsipkan' OR (sm.status = 'selesai' AND (sm.perlu_balasan = 0 OR sk.status = 'diarsipkan')))");
 $stmt->execute([$id_bidang]);
 $completed = $stmt->fetchColumn();
 

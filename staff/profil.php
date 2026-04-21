@@ -34,6 +34,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_password'])) {
     }
 }
 
+// --- HANDLE PROFILE UPDATE ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
+    $nama_baru = $_POST['nama'];
+    $email_baru = $_POST['email'];
+    $no_hp_baru = $_POST['no_hp'];
+
+    $stmt = $pdo->prepare("UPDATE users SET nama = ?, email = ?, no_hp = ? WHERE nip = ?");
+    if ($stmt->execute([$nama_baru, $email_baru, $no_hp_baru, $nip])) {
+        $success_msg = "Profil berhasil diperbarui!";
+    } else {
+        $error_msg = "Gagal memperbarui profil.";
+    }
+}
+
 // Fetch Staff Data
 $stmt = $pdo->prepare("SELECT u.*, b.nama_bidang, s.nama_seksi 
                        FROM users u 
@@ -94,13 +108,32 @@ $user_data = $stmt->fetch();
                 <?php if ($error_msg): ?><div style="padding: 1rem; background: #fff1f2; color: #e11d48; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $error_msg ?></div><?php endif; ?>
 
                 <div class="p-section-title"><svg class="icon" style="color: var(--primary);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> INFORMASI PERSONAL</div>
-                <div class="detail-p-row"><span class="detail-p-label">NAMA LENGKAP</span><span class="detail-p-val"><?= htmlspecialchars($user_data['nama']) ?></span></div>
-                <div class="detail-p-row"><span class="detail-p-label">EMAIL DINAS</span><span class="detail-p-val"><?= htmlspecialchars($user_data['email']) ?></span></div>
-                <div class="detail-p-row"><span class="detail-p-label">JABATAN / SEKSI</span><span class="detail-p-val"><?= htmlspecialchars($user_data['nama_seksi']) ?></span></div>
-                <div class="detail-p-row" style="border: none;"><span class="detail-p-label">UNIT KERJA (BIDANG)</span><span class="detail-p-val"><?= htmlspecialchars($user_data['nama_bidang']) ?></span></div>
+                
+                <form action="" method="POST" style="margin-bottom: 2rem;">
+                    <input type="hidden" name="update_profile" value="1">
+                    <div class="p-form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" name="nama" class="p-input" value="<?= htmlspecialchars($user_data['nama']) ?>" required>
+                    </div>
+                    <div class="p-form-group">
+                        <label>Email Dinas</label>
+                        <input type="email" name="email" class="p-input" value="<?= htmlspecialchars($user_data['email']) ?>" required>
+                    </div>
+                    <div class="p-form-group">
+                        <label>Nomor HP / WhatsApp</label>
+                        <input type="text" name="no_hp" class="p-input" value="<?= htmlspecialchars($user_data['no_hp']) ?>" placeholder="08xxxxxxxx">
+                    </div>
+                    
+                    <div class="detail-p-row"><span class="detail-p-label">NIP PEGAWAI</span><span class="detail-p-val"><?= htmlspecialchars($user_data['nip']) ?></span></div>
+                    <div class="detail-p-row"><span class="detail-p-label">JABATAN / SEKSI</span><span class="detail-p-val"><?= htmlspecialchars($user_data['nama_seksi']) ?></span></div>
+                    <div class="detail-p-row" style="border: none;"><span class="detail-p-label">UNIT KERJA (BIDANG)</span><span class="detail-p-val"><?= htmlspecialchars($user_data['nama_bidang']) ?></span></div>
+                    
+                    <button type="submit" class="btn-update-profil" style="margin-top: 1rem; background: var(--primary);">Perbarui Data Personal</button>
+                </form>
 
-                <div class="p-section-title" style="margin-top: 3.5rem;"><svg class="icon" style="color: var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> PENGATURAN KEAMANAN</div>
+                <div class="p-section-title" style="margin-top: 3.5rem; border-top: 1px solid #e1eaf3; padding-top: 2rem;"><svg class="icon" style="color: var(--accent);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> PENGATURAN KEAMANAN</div>
                 <form action="" method="POST">
+                    <input type="hidden" name="update_password" value="1">
                     <div class="p-form-group">
                         <label>Password Baru</label>
                         <input type="password" name="new_password" class="p-input" placeholder="Masukkan password minimal 8 karakter..." required>
@@ -109,7 +142,7 @@ $user_data = $stmt->fetch();
                         <label>Konfirmasi Password Baru</label>
                         <input type="password" name="confirm_password" class="p-input" placeholder="Ulangi password baru Anda..." required>
                     </div>
-                    <button type="submit" name="update_password" class="btn-update-profil">Perbarui Kode Keamanan</button>
+                    <button type="submit" class="btn-update-profil">Perbarui Kode Keamanan</button>
                 </form>
             </div>
         </section>

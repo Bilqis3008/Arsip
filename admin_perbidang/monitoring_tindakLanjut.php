@@ -28,7 +28,8 @@ while ($row = $stmt_admin->fetch()) {
 $search = $_GET['search'] ?? '';
 
 // --- MAIL MASUK (Unfinished) ---
-$query_m = "SELECT sm.*, d.tanggal_disposisi, d.status_disposisi, b.nama_bidang, s.nama_seksi, u_in.nama as nama_sekretariat, u_tujuan.nama as nama_admin_bidang 
+$query_m = "SELECT sm.*, d.tanggal_disposisi, d.status_disposisi, b.nama_bidang, s.nama_seksi, u_in.nama as nama_sekretariat, u_tujuan.nama as nama_admin_bidang,
+            sk.status as reply_status, sk.nomor_surat_keluar as reply_no, sk.id_surat_keluar
       FROM surat_masuk sm
       LEFT JOIN users u_in ON sm.input_by = u_in.nip 
       LEFT JOIN (
@@ -42,7 +43,19 @@ $query_m = "SELECT sm.*, d.tanggal_disposisi, d.status_disposisi, b.nama_bidang,
       LEFT JOIN bidang b ON d.id_bidang = b.id_bidang
       LEFT JOIN seksi s ON d.id_seksi = s.id_seksi
       LEFT JOIN users u_tujuan ON d.nip_tujuan = u_tujuan.nip 
-      WHERE sm.status NOT IN ('selesai', 'diarsipkan') AND sm.id_bidang = ?";
+      LEFT JOIN (
+          SELECT sk1.* FROM surat_keluar sk1
+          INNER JOIN (
+              SELECT id_surat_masuk, MAX(id_surat_keluar) as max_id_sk
+              FROM surat_keluar WHERE id_surat_masuk IS NOT NULL
+              GROUP BY id_surat_masuk
+          ) sk2 ON sk1.id_surat_keluar = sk2.max_id_sk
+      ) sk ON sm.id_surat_masuk = sk.id_surat_masuk
+      WHERE sm.id_bidang = ? 
+      AND (
+          sm.status NOT IN ('selesai', 'diarsipkan') 
+          OR (sm.status = 'selesai' AND sm.perlu_balasan = 1 AND (sk.status IS NULL OR sk.status != 'diarsipkan'))
+      )";
 
 $params_m = [$id_bidang];
 if ($search) {
@@ -55,13 +68,13 @@ $mails_m = $stmt_m->fetchAll();
 foreach ($mails_m as &$m) { $m['tipe'] = 'masuk'; }
 unset($m);
 
-// --- MAIL KELUAR (Unfinished) ---
+// --- MAIL KELUAR (Unfinished & Independent) ---
 $query_k = "SELECT sk.*, u.nama as pengirim_user, u.id_bidang, s.nama_seksi, b.nama_bidang 
       FROM surat_keluar sk 
       LEFT JOIN users u ON sk.uploaded_by = u.nip 
       LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
       LEFT JOIN bidang b ON u.id_bidang = b.id_bidang 
-      WHERE sk.status != 'diarsipkan' AND u.id_bidang = ?";
+      WHERE sk.id_surat_masuk IS NULL AND sk.status != 'diarsipkan' AND u.id_bidang = ?";
 
 $params_k = [$id_bidang];
 if ($search) {
@@ -183,9 +196,16 @@ usort($mails, function($a, $b) {
                                             <?php elseif ($m['status'] === 'didispokan'): ?>
                                                 <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Surat Masuk / Belum Ditindaklanjuti</div>
                                                 <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Target: <?= htmlspecialchars($m['nama_bidang'] ?: 'Bidang Anda') ?></div>
-                                            <?php elseif ($m['status'] === 'diteruskan'): ?>
-                                                <div style="font-weight: 700; color: #2563eb;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Proses Internal Seksi</div>
-                                                <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Disahkan ke: <?= htmlspecialchars($m['nama_seksi'] ?: 'Staf Seksi') ?></div>
+                                            <?php elseif ($m['status'] === 'selesai' || $m['status'] === 'diteruskan'): ?>
+                                                <?php if (!$m['reply_status']): ?>
+                                                    <div style="font-weight: 700; color: #2563eb;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Proses Internal Seksi</div>
+                                                    <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Disahkan ke: <?= htmlspecialchars($m['nama_seksi'] ?: 'Staf Seksi') ?></div>
+                                                <?php elseif ($m['reply_status'] === 'pending_approval'): ?>
+                                                    <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Menunggu Verifikasi Balasan (Meja Anda)</div>
+                                                    <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Draft No: <?= htmlspecialchars($m['reply_no']) ?></div>
+                                                <?php elseif ($m['reply_status'] === 'disetujui'): ?>
+                                                    <div style="font-weight: 700; color: #059669;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Balasan Disetujui (Tunggu Arsip/Distribusi)</div>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         <?php else: ?>
                                             <?php if ($m['status'] === 'draft'): ?>
@@ -278,13 +298,24 @@ usort($mails, function($a, $b) {
                     const adminBidangName = mail.nama_admin_bidang || 'Admin Bidang';
                     const deskripsiBidang = mail.nama_bidang ? `(Admin ${mail.nama_bidang})` : '';
                     addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Perlu respon dan tindak lanjut/disposisi internal.`, null, 'active');
-                } else if (mail.status === 'diteruskan') {
+                } else if (mail.status === 'diteruskan' || mail.status === 'selesai') {
                     const adminBidangName = mail.nama_admin_bidang || 'Admin Bidang';
                     const deskripsiBidang = mail.nama_bidang ? `(Admin ${mail.nama_bidang})` : '';
                     addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Telah dikonfirmasi/Tindak Lanjut Admin Bidang.`, null, 'done');
 
                     const seksiTargetName = mail.nama_seksi || 'Staf Sub-Seksi';
-                    addTimelineItem(`${seksiTargetName}`, `Sedang ditindaklanjuti secara internal dalam seksi.`, null, 'active');
+                    if (!mail.reply_status) {
+                        addTimelineItem(`${seksiTargetName}`, `Sedang ditindaklanjuti secara internal dalam seksi/staf.`, null, 'active');
+                    } else {
+                        addTimelineItem(`${seksiTargetName}`, `Telah membuat draft surat balasan (${mail.reply_no}).`, null, 'done');
+                        
+                        if (mail.reply_status === 'pending_approval') {
+                            addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Sedang meninjau & memverifikasi draft balasan.`, null, 'active');
+                        } else {
+                            addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Telah menyetujui balasan.`, null, 'done');
+                            addTimelineItem('Finalisasi', 'Surat masuk tuntas dan balasan telah diterbitkan.', null, 'done');
+                        }
+                    }
                 }
 
             } else { // 'keluar'

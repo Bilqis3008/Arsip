@@ -147,6 +147,7 @@ body {
 label { font-size: 0.875rem; font-weight: 600; color: var(--text-main); }
 
 input, select, textarea {
+    width: 100%;
     padding: 0.875rem 1rem;
     border: 1.5px solid var(--border);
     border-radius: 0.75rem;
@@ -387,6 +388,12 @@ input:focus, select:focus {
     .form-grid { grid-template-columns: 1fr; }
 }
 
+@media (max-width: 768px) {
+    .detail-info-grid { grid-template-columns: 1fr; }
+    .detail-col:first-child { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 1.5rem; }
+    .detail-col { padding: 0 !important; }
+}
+
 /* --- REPLACED INLINE STYLES --- */
 .sidebar-header .icon {
     width: 24px;
@@ -504,12 +511,14 @@ input[readonly] {
 .modal-card.w-650 {
     width: 650px;
     max-height: 90vh;
+    overflow-x: hidden;
     overflow-y: auto;
 }
 
 .modal-card.w-750 {
     width: 750px;
     max-height: 90vh;
+    overflow-x: hidden;
     overflow-y: auto;
 }
 

@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         try {
             $stmt = $pdo->prepare("INSERT INTO users (nip, nama, email, password, no_hp, jabatan, role, id_bidang, id_seksi, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'aktif')");
             $stmt->execute([$nip, $nama, $email, $password, $no_hp, $jabatan, $role, $id_bidang, $id_seksi]);
-            $success_msg = "Pengguna baru berhasil ditambahkan!";
+            header("Location: manajemen_pengguna.php?status=created");
+            exit;
         } catch (PDOException $e) {
             $error_msg = "Gagal menambah pengguna: " . $e->getMessage();
         }
@@ -46,7 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute($params);
-            $success_msg = "Data pengguna berhasil diperbarui!";
+            header("Location: manajemen_pengguna.php?status=updated");
+            exit;
         } catch (PDOException $e) {
             $error_msg = "Gagal memperbarui pengguna: " . $e->getMessage();
         }
@@ -62,7 +64,8 @@ if (isset($_GET['toggle_status']) && isset($_GET['nip'])) {
     try {
         $stmt = $pdo->prepare("UPDATE users SET status = ? WHERE nip = ?");
         $stmt->execute([$new_status, $nip]);
-        $success_msg = "Status akun pengguna berhasil diubah menjadi " . $new_status . "!";
+        header("Location: manajemen_pengguna.php?status=toggled&new_status=" . $new_status);
+        exit;
     } catch (PDOException $e) {
         $error_msg = "Gagal mengubah status: " . $e->getMessage();
     }
@@ -74,9 +77,21 @@ if (isset($_GET['delete_nip'])) {
     try {
         $stmt = $pdo->prepare("DELETE FROM users WHERE nip = ?");
         $stmt->execute([$nip_to_delete]);
-        $success_msg = "Akun pengguna berhasil dihapus!";
+        header("Location: manajemen_pengguna.php?status=deleted");
+        exit;
     } catch (PDOException $e) {
         $error_msg = "Gagal menghapus pengguna: " . $e->getMessage();
+    }
+}
+
+// --- HANDLE MESSAGES FROM REDIRECTS ---
+if (isset($_GET['status'])) {
+    if ($_GET['status'] === 'deleted') $success_msg = "Akun pengguna berhasil dihapus!";
+    if ($_GET['status'] === 'created') $success_msg = "Pengguna baru berhasil ditambahkan!";
+    if ($_GET['status'] === 'updated') $success_msg = "Data pengguna berhasil diperbarui!";
+    if ($_GET['status'] === 'toggled') {
+        $ns = $_GET['new_status'] ?? 'aktif';
+        $success_msg = "Status akun pengguna berhasil diubah menjadi " . $ns . "!";
     }
 }
 

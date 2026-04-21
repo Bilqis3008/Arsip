@@ -45,7 +45,7 @@ $stmt->execute([$id_surat]);
 $reply_data = $stmt->fetch();
 $has_reply = (bool)$reply_data;
 $is_reply_verified = $has_reply && in_array($reply_data['status'], ['disetujui', 'diarsipkan']);
-$is_fully_done = $is_reply_verified || in_array($mail['status'], ['selesai', 'diarsipkan']);
+$is_fully_done = $is_reply_verified || (in_array($mail['status'], ['selesai', 'diarsipkan']) && $mail['perlu_balasan'] == 0);
 
 // --- HANDLE FULFILLMENT (UPLOAD REPLY) ---
 $error = '';
