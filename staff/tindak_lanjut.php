@@ -75,6 +75,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                                        VALUES (?, ?, ?, ?, ?, ?, ?, 'pending_approval')");
                 $stmt->execute([$nomor_surat_keluar, $tanggal_surat, $perihal, $id_surat, $tujuan, $file_name, $nip_staff]);
                 
+                // Notification Logic
+                require_once '../shared/notification_helper.php';
+                notifyAdminBidang($pdo, $mail['id_bidang'], "Staff mengunggah balasan baru untuk verifikasi: " . $mail['perihal'], "../admin_perbidang/surat_keluar.php");
+
                 $success = "Draft balasan berhasil diunggah! Menunggu verifikasi dari Admin Bidang.";
                 $has_reply = true;
             } catch (PDOException $e) {
@@ -96,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
     <title>Penyelesaian Tugas - Staff Operational</title>
     <link rel="stylesheet" href="../css/staff/home.css">
     <link rel="stylesheet" href="../css/staff/tindak_lanjut.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -205,5 +210,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

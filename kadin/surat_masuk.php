@@ -39,6 +39,7 @@ $mails = $stmt->fetchAll();
     <title>Surat Masuk - Kadin Panel</title>
     <link rel="stylesheet" href="../css/kadin/home.css">
     <link rel="stylesheet" href="../css/kadin/surat_masuk.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar (Same as Dashboard) -->
@@ -137,5 +138,6 @@ $mails = $stmt->fetchAll();
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

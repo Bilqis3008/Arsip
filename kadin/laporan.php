@@ -130,6 +130,7 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
         .action-btn-download:hover { background: #059669; }
         .action-btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
     </style>
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 
 <body>
@@ -516,6 +517,7 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             document.getElementById('tracker-modal').style.display = 'none';
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 
 </html>

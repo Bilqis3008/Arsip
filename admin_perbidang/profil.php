@@ -61,6 +61,7 @@ $admin = $stmt->fetch();
     <title>Profil Saya - Admin Ops</title>
     <link rel="stylesheet" href="../css/admin_perbidang/home.css">
     <link rel="stylesheet" href="../css/admin_perbidang/profil.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -145,5 +146,6 @@ $admin = $stmt->fetch();
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

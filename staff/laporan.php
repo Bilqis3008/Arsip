@@ -136,6 +136,7 @@ while ($row = $stmt_admin->fetch()) {
         .action-btn-download:hover { background: #059669; }
         .action-btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
     </style>
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -512,5 +513,6 @@ while ($row = $stmt_admin->fetch()) {
             document.getElementById('tracker-modal').style.display = 'none';
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

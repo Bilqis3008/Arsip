@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Profil Pimpinan - Kadis Panel</title>
     <link rel="stylesheet" href="../css/kadin/home.css">
     <link rel="stylesheet" href="../css/kadin/profil.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -146,5 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

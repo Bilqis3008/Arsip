@@ -24,6 +24,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_id'])) {
     $id_approve = $_POST['approve_id'];
     $stmt = $pdo->prepare("UPDATE surat_keluar SET status = 'diarsipkan' WHERE id_surat_keluar = ? AND uploaded_by IN (SELECT nip FROM users WHERE id_bidang = ?)");
     if ($stmt->execute([$id_approve, $id_bidang])) {
+        // Fetch details for notification
+        $stmt_info = $pdo->prepare("SELECT sk.*, u.nip FROM surat_keluar sk JOIN users u ON sk.uploaded_by = u.nip WHERE sk.id_surat_keluar = ?");
+        $stmt_info->execute([$id_approve]);
+        $sk_info = $stmt_info->fetch();
+
+        // Notification Logic
+        require_once '../shared/notification_helper.php';
+        if ($sk_info) {
+            // Notify Staff
+            addNotification($pdo, $sk_info['nip'], "Surat Balasan Anda telah disetujui & diarsipkan: " . $sk_info['perihal'], "../staff/laporan.php");
+            // Notify Sekretariat
+            notifySekretariat($pdo, "Arsip Baru Tersedia (Approved by Admin Bidang): " . $sk_info['perihal'], "../sekretariat/monitoring_laporan.php");
+        }
+
         header("Location: surat_keluar.php?tab=verified");
         exit;
     }
@@ -111,6 +125,7 @@ $mails = $stmt->fetchAll();
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -266,5 +281,6 @@ $mails = $stmt->fetchAll();
             if (e.key === 'Escape') closeConfirmModal();
         });
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

@@ -62,6 +62,7 @@ $recent_dispo = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Arsip Kadin</title>
     <link rel="stylesheet" href="../css/staff/home.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -164,5 +165,6 @@ $recent_dispo = $stmt->fetchAll();
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

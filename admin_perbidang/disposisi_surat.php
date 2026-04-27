@@ -70,6 +70,15 @@ $error = '';
         $stmt->execute([$id_seksi, $id_surat]);
 
         $pdo->commit();
+        // Notification Logic
+        require_once '../shared/notification_helper.php';
+        $notif_msg = "Instruksi Baru dari Admin Bidang: " . $mail['perihal'];
+        if ($nip_penerima) {
+            addNotification($pdo, $nip_penerima, $notif_msg, "../staff/surat_masuk.php");
+        } else {
+            notifyStaffSeksi($pdo, $id_seksi, $notif_msg, "../staff/surat_masuk.php");
+        }
+
         $message = "Instruksi internal berhasil diteruskan ke Seksi terkait.";
         $mail['status'] = 'selesai';
     } catch (PDOException $e) {
@@ -86,6 +95,7 @@ $error = '';
     <title>Disposisi Internal - Admin Bidang</title>
     <link rel="stylesheet" href="../css/admin_perbidang/home.css">
     <link rel="stylesheet" href="../css/admin_perbidang/disposisi_surat.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -214,5 +224,6 @@ $error = '';
             }
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

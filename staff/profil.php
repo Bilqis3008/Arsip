@@ -65,6 +65,7 @@ $user_data = $stmt->fetch();
     <title>Profil Staff - Panel Operasional</title>
     <link rel="stylesheet" href="../css/staff/home.css">
     <link rel="stylesheet" href="../css/staff/profil.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -147,5 +148,6 @@ $user_data = $stmt->fetch();
             </div>
         </section>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

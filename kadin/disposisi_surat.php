@@ -54,6 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_disposisi'])) 
         $stmt->execute([$id_bidang, $id_seksi, $id_surat]);
 
         $pdo->commit();
+        
+        // Notification Logic
+        require_once '../shared/notification_helper.php';
+        notifyAdminBidang($pdo, $id_bidang, "Disposisi Baru dari Kadin: " . $mail['perihal'], "../admin_perbidang/surat_masuk.php");
+
         $message = "Disposisi berhasil disimpan dan diteruskan ke Bidang terkait.";
         // Refresh mail data to show updated status
         $mail['status'] = 'didispokan';
@@ -71,6 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_disposisi'])) 
     <title>Disposisi Surat - Kadis Panel</title>
     <link rel="stylesheet" href="../css/kadin/home.css">
     <link rel="stylesheet" href="../css/kadin/disposisi_surat.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar (Same as Dashboard) -->
@@ -157,5 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_disposisi'])) 
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

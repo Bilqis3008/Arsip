@@ -93,6 +93,7 @@ usort($mails, function($a, $b) {
         .type-masuk { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
         .type-keluar { background: rgba(16, 185, 129, 0.1); color: #10b981; }
     </style>
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -295,5 +296,6 @@ usort($mails, function($a, $b) {
             document.getElementById('tracker-modal').style.display = 'none';
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

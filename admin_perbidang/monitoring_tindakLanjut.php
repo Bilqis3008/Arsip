@@ -119,6 +119,7 @@ usort($mails, function($a, $b) {
         .timeline-content p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; }
         .timeline-time { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
     </style>
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -379,5 +380,6 @@ usort($mails, function($a, $b) {
             document.getElementById('tracker-modal').style.display = 'none';
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

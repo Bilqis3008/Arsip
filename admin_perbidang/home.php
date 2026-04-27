@@ -75,6 +75,7 @@ $recent_mail = $stmt->fetchAll();
         .bar-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
         .bar-val { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; font-weight: 800; color: var(--navy); }
     </style>
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -181,5 +182,6 @@ $recent_mail = $stmt->fetchAll();
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

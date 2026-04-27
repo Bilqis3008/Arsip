@@ -42,6 +42,7 @@ $recent_mail = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Kepala Dinas - Arsip Digital</title>
     <link rel="stylesheet" href="../css/kadin/home.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -138,5 +139,6 @@ $recent_mail = $stmt->fetchAll();
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

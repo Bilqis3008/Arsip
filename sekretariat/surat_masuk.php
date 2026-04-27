@@ -70,6 +70,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             $stmt = $pdo->prepare("INSERT INTO surat_masuk (nomor_agenda, nomor_surat, tanggal_surat, tanggal_terima, pengirim, perihal, sifat_surat, lampiran, file_path, input_by, status, keterangan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'tercatat', ?)");
             $stmt->execute([$nomor_agenda, $nomor_surat, $tanggal_surat, $tanggal_terima, $pengirim, $perihal, $sifat_surat, $lampiran, $file_path, $nip, $keterangan]);
             $_SESSION['success_msg'] = "Surat masuk berhasil disimpan!";
+            
+            // Notification Logic
+            require_once '../shared/notification_helper.php';
+            notifyKadin($pdo, "Surat Masuk Baru: $perihal ($nomor_surat)", "surat_masuk.php");
             header("Location: surat_masuk.php");
             exit;
         } catch (PDOException $e) {
@@ -205,6 +209,7 @@ $admin = $stmt->fetch();
     <title>Manajemen Surat Masuk - Arsip Digital</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css">
     <link rel="stylesheet" href="../css/sekretariat/surat_masuk.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 
 <body>
@@ -835,6 +840,7 @@ $admin = $stmt->fetch();
             switchTab('daftar');
         <?php endif; ?>
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 
 </html>

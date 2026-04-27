@@ -75,6 +75,7 @@ $mails = $stmt->fetchAll();
     <title>Surat Masuk Bidang - Admin Ops</title>
     <link rel="stylesheet" href="../css/admin_perbidang/home.css">
     <link rel="stylesheet" href="../css/admin_perbidang/surat_masuk.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -222,5 +223,6 @@ $mails = $stmt->fetchAll();
             document.getElementById('archiveModal').style.display = 'none';
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

@@ -148,6 +148,7 @@ $admin = $stmt->fetch();
     <title>Manajemen Pengguna - Arsip Digital</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css?v=<?= time() ?>">
     <link rel="stylesheet" href="../css/sekretariat/manajemen_pengguna.css?v=<?= time() ?>">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 
 <body>
@@ -729,6 +730,7 @@ $admin = $stmt->fetch();
         // Initialize visibility on page load for Add Tab
         toggleFieldsVisibility(document.getElementById('add-role').value, 'add');
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 
 </html>

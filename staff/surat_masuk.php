@@ -52,6 +52,7 @@ $tasks = $stmt->fetchAll();
     <title>Daftar Surat Tugas - Staff Operational</title>
     <link rel="stylesheet" href="../css/staff/home.css">
     <link rel="stylesheet" href="../css/staff/surat_masuk.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -167,5 +168,6 @@ $tasks = $stmt->fetchAll();
             <?php endif; ?>
         </section>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

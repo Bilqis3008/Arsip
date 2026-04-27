@@ -31,6 +31,7 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Sekretariat - Arsip Digital</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -182,5 +183,6 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
             </div>
         </div>
     </main>
+    <script src="../js/notifications.js"></script>
 </body>
 </html>

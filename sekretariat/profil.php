@@ -98,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Profil Saya - Arsip Digital</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css">
     <link rel="stylesheet" href="../css/sekretariat/profil.css">
+    <link rel="stylesheet" href="../css/notifications.css">
 </head>
 
 <body>
@@ -294,6 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             document.getElementById('photoForm').submit();
         }
     </script>
+    <script src="../js/notifications.js"></script>
 </body>
 
 </html>
