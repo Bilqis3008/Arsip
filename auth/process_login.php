@@ -3,15 +3,30 @@ session_start();
 require_once '../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nip = $_POST['nip'];
+    $identifier = $_POST['identifier'];
     $password = $_POST['password'];
 
     try {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE nip = ?");
-        $stmt->execute([$nip]);
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE nip = ? OR email = ?");
+        $stmt->execute([$identifier, $identifier]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
+            // Check status
+            if ($user['status'] === 'pending') {
+                echo "<script>
+                        alert('Akun Anda masih dalam proses verifikasi oleh Admin.');
+                        window.history.back();
+                      </script>";
+                exit;
+            } elseif ($user['status'] === 'nonaktif') {
+                echo "<script>
+                        alert('Akun Anda dinonaktifkan. Silakan hubungi Admin.');
+                        window.history.back();
+                      </script>";
+                exit;
+            }
+
             // Login Success
             $_SESSION['user_nip'] = $user['nip'];
             $_SESSION['user_nama'] = $user['nama'];
@@ -31,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 case 'staff':
                     header('Location: ../staff/home.php');
                     break;
+                case 'user':
+                    header('Location: ../user/home.php');
+                    break;
                 default:
                     header('Location: ../auth/login.php');
                     break;
@@ -39,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Login Failed
             echo "<script>
-                    alert('NIP atau Password salah.');
+                    alert('NIP/Email atau Password salah.');
                     window.history.back();
                   </script>";
         }

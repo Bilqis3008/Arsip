@@ -19,11 +19,7 @@ $bidang_list = $stmt->fetchAll();
             <h1>Registrasi Staf</h1>
             <p>Silakan lengkapi data diri Anda untuk mendaftar</p>
         </div>
-        <form action="process_registrasi.php" method="POST">
-            <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" id="nip" name="nip" class="form-control" placeholder="Masukkan NIP" required>
-            </div>
+        <form action="process_registrasi.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="nama">Nama Lengkap</label>
                 <input type="text" id="nama" name="nama" class="form-control" placeholder="Masukkan Nama Lengkap" required>
@@ -37,10 +33,29 @@ $bidang_list = $stmt->fetchAll();
                 <input type="text" id="no_hp" name="no_hp" class="form-control" placeholder="Masukkan No. HP" required>
             </div>
             <div class="form-group">
+                <label for="role">Daftar Sebagai</label>
+                <select id="role" name="role" class="form-control" required onchange="handleRoleChange(this.value)">
+                    <option value="staff">Staf Internal</option>
+                    <option value="user">User Umum (Eksternal)</option>
+                </select>
+            </div>
+            <div id="instansi-container" class="form-group hidden">
+                <label for="asal_instansi">Asal Instansi</label>
+                <input type="text" id="asal_instansi" name="asal_instansi" class="form-control" placeholder="Masukkan Asal Instansi">
+            </div>
+            <div id="nip-container" class="form-group">
+                <label for="nip_input">NIP</label>
+                <input type="text" id="nip_input" name="nip" class="form-control" placeholder="Masukkan NIP" required>
+            </div>
+            <div id="nametag-container" class="form-group">
+                <label for="name_tag">Upload Name Tag (Wajib untuk Staf)</label>
+                <input type="file" id="name_tag" name="name_tag" class="form-control" accept="image/*" required>
+            </div>
+            <div id="jabatan-container" class="form-group">
                 <label for="jabatan">Jabatan</label>
                 <input type="text" id="jabatan" name="jabatan" class="form-control" placeholder="Masukkan Jabatan" required>
             </div>
-            <div class="form-group">
+            <div id="bidang-container" class="form-group">
                 <label for="id_bidang">Bidang</label>
                 <select id="id_bidang" name="id_bidang" class="form-control" required onchange="fetchSeksi(this.value)">
                     <option value="">Pilih Bidang</option>
@@ -67,11 +82,59 @@ $bidang_list = $stmt->fetchAll();
     </div>
 
     <script>
+        function handleRoleChange(role) {
+            const nipContainer = document.getElementById('nip-container');
+            const jabatanContainer = document.getElementById('jabatan-container');
+            const bidangContainer = document.getElementById('bidang-container');
+            const seksiContainer = document.getElementById('seksi-container');
+            const instansiContainer = document.getElementById('instansi-container');
+            const nametagContainer = document.getElementById('nametag-container');
+            
+            const nipInput = document.getElementById('nip_input');
+            const jabatanInput = document.getElementById('jabatan');
+            const bidangSelect = document.getElementById('id_bidang');
+            const instansiInput = document.getElementById('asal_instansi');
+            const nametagInput = document.getElementById('name_tag');
+
+            if (role === 'user') {
+                nipContainer.classList.add('hidden');
+                jabatanContainer.classList.add('hidden');
+                bidangContainer.classList.add('hidden');
+                seksiContainer.classList.add('hidden');
+                instansiContainer.classList.remove('hidden');
+                nametagContainer.classList.add('hidden');
+                
+                nipInput.required = false;
+                jabatanInput.required = false;
+                bidangSelect.required = false;
+                instansiInput.required = true;
+                nametagInput.required = false;
+            } else {
+                nipContainer.classList.remove('hidden');
+                jabatanContainer.classList.remove('hidden');
+                bidangContainer.classList.remove('hidden');
+                instansiContainer.classList.add('hidden');
+                nametagContainer.classList.remove('hidden');
+                
+                nipInput.required = true;
+                jabatanInput.required = true;
+                bidangSelect.required = true;
+                instansiInput.required = false;
+                nametagInput.required = true;
+                
+                // Re-check seksi if bidang is selected
+                if (bidangSelect.value) {
+                    fetchSeksi(bidangSelect.value);
+                }
+            }
+        }
+
         function fetchSeksi(idBidang) {
             const seksiContainer = document.getElementById('seksi-container');
             const seksiSelect = document.getElementById('id_seksi');
+            const role = document.getElementById('role').value;
             
-            if (!idBidang) {
+            if (!idBidang || role === 'user') {
                 seksiContainer.classList.add('hidden');
                 seksiSelect.innerHTML = '<option value="">Pilih Seksi</option>';
                 seksiSelect.required = false;

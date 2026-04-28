@@ -14,8 +14,8 @@
         </div>
         <form action="process_login.php" method="POST">
             <div class="form-group">
-                <label for="nip">NIP</label>
-                <input type="text" id="nip" name="nip" class="form-control" placeholder="Masukkan NIP" required>
+                <label for="identifier">NIP / Email</label>
+                <input type="text" id="identifier" name="identifier" class="form-control" placeholder="Masukkan NIP atau Email" required>
             </div>
             <div class="form-group">
                 <label for="password">Password</label>

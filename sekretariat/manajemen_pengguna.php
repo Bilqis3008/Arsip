@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $nama = $_POST['nama'];
     $email = $_POST['email'];
     $no_hp = $_POST['no_hp'];
+    $asal_instansi = $_POST['asal_instansi'] ?? null;
     $jabatan = $_POST['jabatan'];
     $role = $_POST['role'];
     $id_bidang = !empty($_POST['id_bidang']) ? $_POST['id_bidang'] : null;
@@ -27,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($action === 'save_user') {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
         try {
-            $stmt = $pdo->prepare("INSERT INTO users (nip, nama, email, password, no_hp, jabatan, role, id_bidang, id_seksi, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'aktif')");
-            $stmt->execute([$nip, $nama, $email, $password, $no_hp, $jabatan, $role, $id_bidang, $id_seksi]);
+            $stmt = $pdo->prepare("INSERT INTO users (nip, nama, email, password, no_hp, asal_instansi, jabatan, role, id_bidang, id_seksi, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'aktif')");
+            $stmt->execute([$nip, $nama, $email, $password, $no_hp, $asal_instansi, $jabatan, $role, $id_bidang, $id_seksi]);
             header("Location: manajemen_pengguna.php?status=created");
             exit;
         } catch (PDOException $e) {
@@ -36,13 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     } elseif ($action === 'update_user') {
         try {
-            $sql = "UPDATE users SET nama = ?, email = ?, no_hp = ?, jabatan = ?, role = ?, id_bidang = ?, id_seksi = ? WHERE nip = ?";
-            $params = [$nama, $email, $no_hp, $jabatan, $role, $id_bidang, $id_seksi, $nip];
+            $sql = "UPDATE users SET nama = ?, email = ?, no_hp = ?, asal_instansi = ?, jabatan = ?, role = ?, id_bidang = ?, id_seksi = ? WHERE nip = ?";
+            $params = [$nama, $email, $no_hp, $asal_instansi, $jabatan, $role, $id_bidang, $id_seksi, $nip];
 
             // Update password if provided
             if (!empty($_POST['password'])) {
-                $sql = "UPDATE users SET nama = ?, email = ?, no_hp = ?, jabatan = ?, role = ?, id_bidang = ?, id_seksi = ?, password = ? WHERE nip = ?";
-                $params = [$nama, $email, $no_hp, $jabatan, $role, $id_bidang, $id_seksi, password_hash($_POST['password'], PASSWORD_DEFAULT), $nip];
+                $sql = "UPDATE users SET nama = ?, email = ?, no_hp = ?, asal_instansi = ?, jabatan = ?, role = ?, id_bidang = ?, id_seksi = ?, password = ? WHERE nip = ?";
+                $params = [$nama, $email, $no_hp, $asal_instansi, $jabatan, $role, $id_bidang, $id_seksi, password_hash($_POST['password'], PASSWORD_DEFAULT), $nip];
             }
 
             $stmt = $pdo->prepare($sql);
@@ -135,9 +136,6 @@ $seksi_list = $pdo->query("SELECT * FROM seksi ORDER BY nama_seksi ASC")->fetchA
 $stmt = $pdo->prepare("SELECT * FROM users WHERE nip = ?");
 $stmt->execute([$nip_admin]);
 $admin = $stmt->fetch();
-
-// --- PRE-FILL EDIT FORM ---
-// DiHapus: form edit sekarang menggunakan pop up modal dengan javascript
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -198,6 +196,13 @@ $admin = $stmt->fetch();
                     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                 </svg>
                 Manajemen Pengguna
+            </a>
+            <a href="verifikasi_staff.php" class="menu-item">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                Verifikasi Staff
             </a>
             <a href="monitoring_surat.php" class="menu-item">
                 <svg class="icon" viewBox="0 0 24 24">
@@ -305,6 +310,7 @@ $admin = $stmt->fetch();
                                 <option value="kepala_dinas" <?= $role_filter === 'kepala_dinas' ? 'selected' : '' ?>>Kepala Dinas</option>
                                 <option value="admin_bidang" <?= $role_filter === 'admin_bidang' ? 'selected' : '' ?>>Admin Bidang</option>
                                 <option value="staff" <?= $role_filter === 'staff' ? 'selected' : '' ?>>Staff</option>
+                                <option value="user" <?= $role_filter === 'user' ? 'selected' : '' ?>>User Umum</option>
                             </select>
                         </form>
                     </div>
@@ -318,8 +324,9 @@ $admin = $stmt->fetch();
                         <?php foreach ($usersByRole as $roleKey => $roleUsers): ?>
                             <?php 
                                 $roleName = ucwords(str_replace('_', ' ', $roleKey)); 
-                                $showBidang = !in_array($roleKey, ['sekretariat', 'kepala_dinas']);
-                                $showSeksi = !in_array($roleKey, ['sekretariat', 'kepala_dinas', 'admin_bidang']);
+                                $showBidang = !in_array($roleKey, ['sekretariat', 'kepala_dinas', 'user']);
+                                $showSeksi = !in_array($roleKey, ['sekretariat', 'kepala_dinas', 'admin_bidang', 'user']);
+                                $showInstansi = ($roleKey === 'user');
                             ?>
                             <div class="role-group">
                                 <div class="role-header">
@@ -338,6 +345,7 @@ $admin = $stmt->fetch();
                                                 <th>NIP</th>
                                                 <th>Nama</th>
                                                 <th>Jabatan</th>
+                                                <?php if ($showInstansi): ?><th>Asal Instansi</th><?php endif; ?>
                                                 <?php if ($showBidang): ?><th>Bidang</th><?php endif; ?>
                                                 <?php if ($showSeksi): ?><th>Seksi Bidang</th><?php endif; ?>
                                                 <th>Role</th>
@@ -357,6 +365,9 @@ $admin = $stmt->fetch();
                                                     <td>
                                                         <div class="jabatan-text"><?= htmlspecialchars($u['jabatan'] ?? '-') ?></div>
                                                     </td>
+                                                    <?php if ($showInstansi): ?>
+                                                        <td><div class="instansi-text"><?= htmlspecialchars($u['asal_instansi'] ?? '-') ?></div></td>
+                                                    <?php endif; ?>
                                                     <?php if ($showBidang): ?>
                                                         <td><div class="bidang-text"><?= htmlspecialchars($u['nama_bidang'] ?? '-') ?></div></td>
                                                     <?php endif; ?>
@@ -419,11 +430,16 @@ $admin = $stmt->fetch();
                                     <option value="kepala_dinas">Kepala Dinas</option>
                                     <option value="admin_bidang">Admin Bidang</option>
                                     <option value="staff">Staff Pelaksana</option>
+                                    <option value="user">User Umum</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label>Jabatan</label>
                                 <input type="text" name="jabatan" placeholder="Contoh: Analis Kebijakan Ahli Muda">
+                            </div>
+                            <div class="form-group d-none" id="add-container-instansi">
+                                <label>Asal Instansi</label>
+                                <input type="text" name="asal_instansi" placeholder="Contoh: PT. Maju Bersama">
                             </div>
                             <div class="form-group d-none" id="add-container-bidang">
                                 <label>Bidang / Bagian</label>
@@ -504,11 +520,16 @@ $admin = $stmt->fetch();
                             <option value="bagian_perencanaan">Perencanaan</option>
                             <option value="bagian_keuangan">Keuangan</option>
                             <option value="staff">Staff Pelaksana</option>
+                            <option value="user">User Umum</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Jabatan</label>
                         <input type="text" name="jabatan" id="edit_jabatan">
+                    </div>
+                    <div class="form-group" id="edit_container_instansi">
+                        <label>Asal Instansi</label>
+                        <input type="text" name="asal_instansi" id="edit_asal_instansi">
                     </div>
                     <div class="form-group" id="edit_container_bidang">
                         <label>Bidang / Bagian</label>
@@ -570,7 +591,7 @@ $admin = $stmt->fetch();
             if (filtered.length > 0) {
                 // If the role allows seksi logic, show it
                 const roleValue = document.getElementById(mode === 'edit' ? 'edit_role' : 'add-role').value;
-                if (roleValue !== 'admin_bidang' && roleValue !== 'sekretariat' && roleValue !== 'kepala_dinas') {
+                if (roleValue !== 'admin_bidang' && roleValue !== 'sekretariat' && roleValue !== 'kepala_dinas' && roleValue !== 'user') {
                     seksiContainer.classList.remove('d-none');
                 }
                 
@@ -589,23 +610,34 @@ $admin = $stmt->fetch();
         function toggleFieldsVisibility(role, mode = 'add') {
             const bidangContainer = document.getElementById(mode === 'edit' ? 'edit_container_bidang' : 'add-container-bidang');
             const seksiContainer = document.getElementById(mode === 'edit' ? 'edit_container_seksi' : 'add-container-seksi');
+            const instansiContainer = document.getElementById(mode === 'edit' ? 'edit_container_instansi' : 'add-container-instansi');
+            
             const bidangSelect = document.getElementById(mode === 'edit' ? 'edit_id_bidang' : 'add-select-bidang');
             const seksiSelect = document.getElementById(mode === 'edit' ? 'edit_id_seksi' : 'add-select-seksi');
 
             if (role === 'sekretariat' || role === 'kepala_dinas') {
                 bidangContainer.classList.add('d-none');
                 seksiContainer.classList.add('d-none');
+                instansiContainer.classList.add('d-none');
                 bidangSelect.value = '';
                 seksiSelect.value = '';
                 seksiSelect.innerHTML = '<option value="">-- Pilih Seksi --</option>';
             } else if (role === 'admin_bidang') {
                 bidangContainer.classList.remove('d-none');
                 seksiContainer.classList.add('d-none');
+                instansiContainer.classList.add('d-none');
                 seksiSelect.value = '';
                 seksiSelect.innerHTML = '<option value="">-- Pilih Seksi --</option>';
+            } else if (role === 'user') {
+                bidangContainer.classList.add('d-none');
+                seksiContainer.classList.add('d-none');
+                instansiContainer.classList.remove('d-none');
+                bidangSelect.value = '';
+                seksiSelect.value = '';
             } else {
                 bidangContainer.classList.remove('d-none');
                 seksiContainer.classList.add('d-none');
+                instansiContainer.classList.add('d-none');
                 if (bidangSelect.value) {
                     updateSeksiOptions(bidangSelect.value, mode, seksiSelect.value);
                 }
@@ -652,6 +684,10 @@ $admin = $stmt->fetch();
                             <div class="detail-value">${user.no_hp || '-'}</div>
                         </div>
                         <div class="detail-item">
+                            <div class="detail-label">Asal Instansi</div>
+                            <div class="detail-value">${user.asal_instansi || '-'}</div>
+                        </div>
+                        <div class="detail-item">
                             <div class="detail-label">Role</div>
                             <div><span class="badge badge-role">${roleName}</span></div>
                         </div>
@@ -688,6 +724,7 @@ $admin = $stmt->fetch();
             document.getElementById('edit_nama').value = user.nama;
             document.getElementById('edit_email').value = user.email || '';
             document.getElementById('edit_no_hp').value = user.no_hp || '';
+            document.getElementById('edit_asal_instansi').value = user.asal_instansi || '';
             document.getElementById('edit_role').value = user.role;
             document.getElementById('edit_jabatan').value = user.jabatan || '';
             document.getElementById('edit_id_bidang').value = user.id_bidang || '';
