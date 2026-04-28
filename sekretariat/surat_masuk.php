@@ -176,17 +176,43 @@ $query .= " ORDER BY created_at DESC";
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $all_mails = $stmt->fetchAll();
-
 $mails = [];
 $riwayat_mails = [];
 foreach ($all_mails as $m) {
-    if ($m['status'] === 'selesai') {
+    if (in_array($m['status'], ['selesai', 'diteruskan', 'diarsipkan'])) {
         $riwayat_mails[] = $m;
     } else {
         $mails[] = $m;
     }
 }
 
+// --- FETCH SURAT TUGAS (DISPOSISI KADIN TO SEKRETARIAT UMUM) ---
+$id_bidang_sekretariat = 8;
+$query_tugas = "SELECT sm.*, d.isi_disposisi as instruksi_kadin, d.tanggal_disposisi as tgl_dispo_kadin, d.id_disposisi
+              FROM surat_masuk sm 
+              JOIN disposisi d ON sm.id_surat_masuk = d.id_surat_masuk
+              WHERE d.id_bidang = ? 
+              AND d.nip_pemberi IN (SELECT nip FROM users WHERE role = 'kepala_dinas')
+              AND sm.status = 'didispokan'
+              AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ? OR sm.pengirim LIKE ?)
+              ORDER BY sm.created_at DESC";
+$stmt_tugas = $pdo->prepare($query_tugas);
+$stmt_tugas->execute([$id_bidang_sekretariat, "%$search%", "%$search%", "%$search%"]);
+$tugas_mails = $stmt_tugas->fetchAll();
+
+// --- HANDLE ACTION: ARSIP TUGAS ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'archive_tugas') {
+    $id_target = $_POST['id_surat'];
+    try {
+        $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'selesai', id_bidang = ? WHERE id_surat_masuk = ?");
+        $stmt->execute([$id_bidang_sekretariat, $id_target]);
+        $_SESSION['success_msg'] = "Surat berhasil diarsipkan ke Sekretariat Umum.";
+    } catch (PDOException $e) {
+        $_SESSION['error_msg'] = "Gagal mengarsipkan: " . $e->getMessage();
+    }
+    header("Location: surat_masuk.php");
+    exit;
+}
 // Pre-calculate next agenda number for the Add Form display
 $date_prefix = 'ARS-' . date('Ymd') . '-';
 $stmt_last = $pdo->prepare("SELECT nomor_agenda FROM surat_masuk WHERE nomor_agenda LIKE ? ORDER BY nomor_agenda DESC LIMIT 1");
@@ -241,6 +267,13 @@ $admin = $stmt->fetch();
                     <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
                 Surat Masuk
+            </a>
+            <a href="surat_keluar.php" class="menu-item">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Surat Keluar
             </a>
 
             <div class="menu-label">Administrasi Sistem</div>
@@ -340,6 +373,16 @@ $admin = $stmt->fetch();
                         <line x1="3" y1="18" x2="3.01" y2="18"></line>
                     </svg> Daftar Surat
                 </button>
+                <button class="tab-btn" onclick="switchTab('tugas')">
+                    <svg class="icon" style="margin-right: 0.5rem;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg> Surat Tugas
+                </button>
+                
                 <button class="tab-btn" onclick="switchTab('riwayat')">
                     <svg class="icon" style="margin-right: 0.5rem;">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -467,6 +510,148 @@ $admin = $stmt->fetch();
                                                         </svg>
                                                     </a>
                                                 <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Surat Tugas -->
+            <section id="section-tugas" class="module-section">
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h2>Agenda Surat Tugas (Sekretariat Umum)</h2>
+                        <p>Mengelola surat disposisi dari pimpinan yang ditujukan untuk Sekretariat Umum.</p>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px;">Tgl Terima</th>
+                                    <th>Identitas & Instruksi Pimpinan</th>
+                                    <th>Pengirim</th>
+                                    <th style="width: 150px;">Status</th>
+                                    <th style="width: 150px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($tugas_mails)): ?>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                            Tidak ada agenda surat tugas untuk ditampilkan.
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($tugas_mails as $m): ?>
+                                        <tr>
+                                            <td><b><?= date('d/m/Y', strtotime($m['tanggal_terima'])) ?></b></td>
+                                            <td>
+                                                <div style="font-weight: 700; color: var(--navy);"><?= htmlspecialchars($m['perihal']) ?></div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">No: <?= htmlspecialchars($m['nomor_surat']) ?></div>
+                                                <?php if ($m['instruksi_kadin']): ?>
+                                                    <div style="background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border-left: 3px solid var(--primary); font-size: 0.8rem; font-style: italic; color: #475569;">
+                                                        "<?= htmlspecialchars($m['instruksi_kadin']) ?>"
+                                                    </div>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= htmlspecialchars($m['pengirim']) ?></td>
+                                            <td>
+                                                <span class="badge-status status-<?= $m['status'] ?>">
+                                                    <?= ucfirst($m['status'] === 'didispokan' ? 'Perlu Tindakan' : $m['status']) ?>
+                                                </span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                                    <?php if ($m['file_path']): ?>
+                                                        <a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Preview Dokumen">
+                                                            <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                                        </a>
+                                                    <?php endif; ?>
+
+                                                    <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="action-btn btn-edit" title="Teruskan ke Staf" style="background: #e0e7ff; color: #4338ca; border-color: #c7d2fe;">
+                                                        <svg class="icon" style="width: 16px; height: 16px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                                    </a>
+                                                    
+                                                    <button onclick="openArchiveTugasModal(<?= $m['id_surat_masuk'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" class="action-btn" style="background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; cursor: pointer;" title="Arsip Langsung">
+                                                        <svg class="icon" style="width: 16px; height: 16px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Surat Tugas -->
+            <section id="section-tugas" class="module-section">
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 1.5rem;">
+                        <h2>Agenda Surat Tugas (Sekretariat Umum)</h2>
+                        <p>Mengelola surat disposisi dari pimpinan yang ditujukan untuk Sekretariat Umum.</p>
+                    </div>
+
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 150px;">Tgl Terima</th>
+                                    <th>Identitas & Instruksi Pimpinan</th>
+                                    <th>Pengirim</th>
+                                    <th style="width: 150px;">Status</th>
+                                    <th style="width: 150px; text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($tugas_mails)): ?>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                            Tidak ada agenda surat tugas untuk ditampilkan.
+                                        </td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($tugas_mails as $m): ?>
+                                        <tr>
+                                            <td><b><?= date('d/m/Y', strtotime($m['tanggal_terima'])) ?></b></td>
+                                            <td>
+                                                <div style="font-weight: 700; color: var(--navy);"><?= htmlspecialchars($m['perihal']) ?></div>
+                                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">No: <?= htmlspecialchars($m['nomor_surat']) ?></div>
+                                                <?php if ($m['instruksi_kadin']): ?>
+                                                    <div style="background: #f8fafc; padding: 0.5rem 0.75rem; border-radius: 0.5rem; border-left: 3px solid var(--primary); font-size: 0.8rem; font-style: italic; color: #475569;">
+                                                        "<?= htmlspecialchars($m['instruksi_kadin']) ?>"
+                                                    </div>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td><?= htmlspecialchars($m['pengirim']) ?></td>
+                                            <td>
+                                                <span class="badge-status status-<?= $m['status'] ?>">
+                                                    <?= ucfirst($m['status'] === 'didispokan' ? 'Perlu Tindakan' : $m['status']) ?>
+                                                </span>
+                                            </td>
+                                            <td style="text-align: center;">
+                                                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                                    <?php if ($m['file_path']): ?>
+                                                        <a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Preview Dokumen">
+                                                            <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                                        </a>
+                                                    <?php endif; ?>
+
+                                                    <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="action-btn btn-edit" title="Teruskan ke Staf" style="background: #e0e7ff; color: #4338ca; border-color: #c7d2fe;">
+                                                        <svg class="icon" style="width: 16px; height: 16px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                                    </a>
+                                                    
+                                                    <button onclick="openArchiveTugasModal(<?= $m['id_surat_masuk'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" class="action-btn" style="background: #dcfce7; color: #16a34a; border: 1px solid #bbf7d0; cursor: pointer;" title="Arsip Langsung">
+                                                        <svg class="icon" style="width: 16px; height: 16px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

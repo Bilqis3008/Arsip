@@ -9,11 +9,15 @@ if (!isset($_SESSION['user_nip']) || $_SESSION['user_role'] !== 'staff') {
 }
 
 $id_seksi = $_SESSION['user_seksi'] ?? null;
-if (!$id_seksi) {
-    // If not in session, fetch it
-    $stmt = $pdo->prepare("SELECT id_seksi FROM users WHERE nip = ?");
+$id_bidang = $_SESSION['user_bidang'] ?? null;
+
+if (!$id_bidang) {
+    $stmt = $pdo->prepare("SELECT id_bidang, id_seksi FROM users WHERE nip = ?");
     $stmt->execute([$_SESSION['user_nip']]);
-    $id_seksi = $stmt->fetchColumn();
+    $u = $stmt->fetch();
+    $id_bidang = $u['id_bidang'];
+    $id_seksi = $u['id_seksi'];
+    $_SESSION['user_bidang'] = $id_bidang;
     $_SESSION['user_seksi'] = $id_seksi;
 }
 
@@ -30,18 +34,23 @@ $query = "SELECT sm.*,
           sk.status as reply_status_sk
           FROM surat_masuk sm
           LEFT JOIN (
-              SELECT * FROM disposisi WHERE id_disposisi IN (SELECT MAX(id_disposisi) FROM disposisi WHERE id_seksi = ? GROUP BY id_surat_masuk)
+              SELECT * FROM disposisi WHERE id_disposisi IN (
+                  SELECT MAX(id_disposisi) FROM disposisi 
+                  WHERE (id_seksi = ? OR (id_bidang = ? AND id_seksi IS NULL AND ? IS NULL))
+                  GROUP BY id_surat_masuk
+              )
           ) d ON sm.id_surat_masuk = d.id_surat_masuk
           LEFT JOIN users u ON d.nip_pemberi = u.nip
           LEFT JOIN users p ON d.nip_penerima = p.nip
           LEFT JOIN surat_keluar sk ON sm.id_surat_masuk = sk.id_surat_masuk
-          WHERE sm.id_seksi = ? AND sm.perlu_balasan = 1 
+          WHERE (sm.id_seksi = ? OR (sm.id_bidang = ? AND sm.id_seksi IS NULL AND ? IS NULL))
+          AND sm.perlu_balasan = 1 
           AND " . ($tab === 'pending' ? "(sk.id_surat_keluar IS NULL)" : "(sk.id_surat_keluar IS NOT NULL OR (sm.status IN ('selesai', 'diarsipkan') AND sm.perlu_balasan = 0))") . "
           AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ?)
           ORDER BY sm.tanggal_terima DESC LIMIT 50";
 
 $stmt = $pdo->prepare($query);
-$stmt->execute([$id_seksi, $id_seksi, "%$search%", "%$search%"]);
+$stmt->execute([$id_seksi, $id_bidang, $id_seksi, $id_seksi, $id_bidang, $id_seksi, "%$search%", "%$search%"]);
 $tasks = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
