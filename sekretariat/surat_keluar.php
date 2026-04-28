@@ -71,241 +71,102 @@ $mails = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surat Keluar - Sekretariat Umum</title>
+    <title>Verifikasi Surat Keluar - Sekretariat Umum</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css">
     <link rel="stylesheet" href="../css/sekretariat/surat_masuk.css">
-    <style>
-        .badge-status.status-pending_approval { background: #fef3c7; color: #b45309; }
-        .badge-status.status-disetujui { background: #dcfce7; color: #16a34a; }
-        .badge-status.status-diarsipkan { background: #e0e7ff; color: #4338ca; }
-
-        /* Custom Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.2s ease-out;
-        }
-        .modal-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 450px;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            text-align: center;
-            transform: translateY(0);
-            animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-icon {
-            width: 70px;
-            height: 70px;
-            background: #fef3c7;
-            color: #d97706;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
-        .modal-title { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem; }
-        .modal-message { font-size: 0.95rem; color: #64748b; line-height: 1.6; margin-bottom: 2rem; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .btn-modal { padding: 0.85rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
-        .btn-cancel { background: #f1f5f9; color: #64748b; }
-        .btn-cancel:hover { background: #e2e8f0; }
-        .btn-confirm { background: var(--primary); color: white; }
-        .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px var(--primary-glow); }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
     <link rel="stylesheet" href="../css/notifications.css">
+    <style>
+        .badge-status.status-pending_approval { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge-status.status-disetujui { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge-status.status-diarsipkan { background: rgba(99, 102, 241, 0.1); color: var(--primary); }
+    </style>
 </head>
 <body>
     <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <svg class="icon" style="width: 24px; height: 24px;">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
             <h2>ARSIP DIGITAL</h2>
         </div>
-
         <nav class="sidebar-menu">
             <div class="menu-label">Menu Utama</div>
-            <a href="home.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="3" width="7" height="7"></rect>
-                    <rect x="14" y="14" width="7" height="7"></rect>
-                    <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-                Dashboard
-            </a>
-
+            <a href="home.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
             <div class="menu-label">Buku Agenda</div>
-            <a href="surat_masuk.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                Surat Masuk
-            </a>
-            <a href="surat_keluar.php" class="menu-item active">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-                Surat Keluar
-            </a>
-
+            <a href="surat_masuk.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Surat Masuk</a>
+            <a href="surat_keluar.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Surat Keluar</a>
             <div class="menu-label">Administrasi Sistem</div>
-            <a href="manajemen_pengguna.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-                Manajemen Pengguna
-            </a>
-            <a href="verifikasi_staff.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                Verifikasi Staff
-            </a>
-            <a href="monitoring_surat.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <path d="M16 13a2 2 0 1 1-4 0v-2a2 2 0 1 0-4 0"></path>
-                    <line x1="12" y1="14" x2="12" y2="19"></line>
-                </svg>
-                Monitoring Surat
-            </a>
-
+            <a href="manajemen_pengguna.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Manajemen Pengguna</a>
+            <a href="verifikasi_staff.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Verifikasi Staff</a>
+            <a href="monitoring_surat.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13a2 2 0 1 1-4 0v-2a2 2 0 1 0-4 0"></path><line x1="12" y1="14" x2="12" y2="19"></line></svg> Monitoring Surat</a>
             <div class="menu-label">Monitoring</div>
-            <a href="monitoring_laporan.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <line x1="18" y1="20" x2="18" y2="10"></line>
-                    <line x1="12" y1="20" x2="12" y2="4"></line>
-                    <line x1="6" y1="20" x2="6" y2="14"></line>
-                </svg>
-                Laporan
-            </a>
-
+            <a href="monitoring_laporan.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Laporan</a>
             <div class="menu-label">Akun</div>
-            <a href="profil.php" class="menu-item">
-                <svg class="icon" viewBox="0 0 24 24">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg> 
-                Profil Saya
-            </a>
+            <a href="profil.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profil Saya</a>
         </nav>
-
-        <div class="sidebar-footer">
-            <a href="../auth/logout.php" class="logout-btn">
-                <svg class="icon" viewBox="0 0 24 24" style="stroke: #fda4af;">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                    <polyline points="16 17 21 12 16 7"></polyline>
-                    <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
-                Keluar Sistem
-            </a>
-        </div>
+        <div class="sidebar-footer"><a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Keluar Sistem</a></div>
     </aside>
 
     <main class="main-content">
         <header class="content-header">
-            <div class="header-title">
-                <h1>Verifikasi Surat Keluar (Sekretariat Umum)</h1>
-                <p>Verifikasi draft surat yang diunggah oleh staf di Sekretariat Umum untuk diarsipkan.</p>
-            </div>
+            <div class="header-title"><h1>Verifikasi Surat Keluar</h1><p style="font-size:0.9rem; color:var(--text-muted);">Verifikasi draf surat dari unit Sekretariat Umum untuk pengarsipan.</p></div>
             <div class="user-profile">
                 <div class="user-info">
-                    <span class="user-name"><?= htmlspecialchars($admin['nama']) ?></span>
+                    <span class="user-name"><?= htmlspecialchars($admin['nama'] ?? 'Admin') ?></span>
                     <span class="user-role">Sekretariat</span>
                 </div>
-                <div class="user-avatar"><?= strtoupper(substr($admin['nama'], 0, 1)) ?></div>
+                <div class="user-avatar"><?= strtoupper(substr((string)($admin['nama'] ?? 'A'), 0, 1)) ?></div>
             </div>
         </header>
 
         <div class="content-body">
             <!-- Tabs -->
-            <div class="tabs-container" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
-                <a href="surat_keluar.php?tab=pending" class="tab-btn <?= $tab === 'pending' ? 'active' : '' ?>" style="text-decoration: none; padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: 700; color: <?= $tab === 'pending' ? 'var(--primary)' : 'var(--text-muted)' ?>; background: <?= $tab === 'pending' ? 'rgba(37, 99, 235, 0.1)' : 'transparent' ?>;">
-                    Belum Diverifikasi
-                </a>
-                <a href="surat_keluar.php?tab=verified" class="tab-btn <?= $tab === 'verified' ? 'active' : '' ?>" style="text-decoration: none; padding: 0.75rem 1rem; border-radius: 0.5rem; font-weight: 700; color: <?= $tab === 'verified' ? 'var(--primary)' : 'var(--text-muted)' ?>; background: <?= $tab === 'verified' ? 'rgba(37, 99, 235, 0.1)' : 'transparent' ?>;">
-                    Riwayat Disetujui
-                </a>
+            <div class="module-tabs">
+                <a href="?tab=pending" class="tab-btn <?= $tab === 'pending' ? 'active' : '' ?>"><svg class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Belum Diverifikasi</a>
+                <a href="?tab=verified" class="tab-btn <?= $tab === 'verified' ? 'active' : '' ?>"><svg class="icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Riwayat Disetujui</a>
             </div>
 
-            <!-- Search -->
-            <div class="explorer-bar" style="margin-bottom: 1.5rem;">
-                <form method="GET" class="search-box" style="position: relative; max-width: 400px;">
+            <!-- Search & Control -->
+            <div class="table-controls">
+                <form method="GET" class="search-box">
                     <input type="hidden" name="tab" value="<?= $tab ?>">
-                    <svg class="icon" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                    <input type="text" name="search" placeholder="Cari perihal, nomor surat..." value="<?= htmlspecialchars($search) ?>" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; border-radius: 0.75rem; border: 1.5px solid var(--border);">
+                    <svg class="icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" name="search" placeholder="Cari perihal atau nomor surat..." value="<?= htmlspecialchars((string)$search) ?>">
                 </form>
             </div>
 
-            <!-- List -->
+            <!-- Table Card -->
             <div class="card">
                 <div class="data-table-container">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 150px;">Tanggal Surat</th>
-                                <th>Identitas & Dokumen</th>
+                                <th>Tanggal</th>
+                                <th>Identitas & Tujuan</th>
                                 <th>Penulis Staf</th>
-                                <th style="width: 150px;">Status</th>
-                                <th style="width: 150px; text-align: center;">Aksi</th>
+                                <th>Status</th>
+                                <th style="text-align: center;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($mails)): ?>
-                                <tr><td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada draft surat keluar.</td></tr>
+                                <tr><td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada draf surat keluar ditemukan.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($mails as $m): ?>
                                     <tr>
-                                        <td><b><?= date('d/m/Y', strtotime($m['tanggal_surat'])) ?></b></td>
+                                        <td><b><?= date('d/m/Y', strtotime($m['tanggal_surat'] ?? 'now')) ?></b></td>
                                         <td>
-                                            <div style="font-weight: 700; color: var(--navy);"><?= htmlspecialchars($m['perihal']) ?></div>
-                                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">No. Surat Keluar: <?= htmlspecialchars($m['nomor_surat_keluar']) ?> • Tujuan: <?= htmlspecialchars($m['tujuan']) ?></div>
+                                            <div style="font-weight: 700; color: var(--primary);"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
+                                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">No: <?= htmlspecialchars($m['nomor_surat_keluar'] ?? '') ?> • Tujuan: <?= htmlspecialchars($m['tujuan'] ?? '-') ?></div>
                                         </td>
-                                        <td><?= htmlspecialchars($m['pengirim_staf']) ?></td>
+                                        <td><?= htmlspecialchars($m['pengirim_staf'] ?? '-') ?></td>
+                                        <td><span class="badge-status status-<?= $m['status'] ?>"><?= $m['status'] === 'pending_approval' ? 'Draf Selesai' : 'Diarsipkan' ?></span></td>
                                         <td>
-                                            <?php 
-                                                $badgeText = "Diarsipkan";
-                                                if($m['status'] == 'pending_approval') $badgeText = "Selesai Draft";
-                                            ?>
-                                            <span class="badge-status status-<?= $m['status'] ?>"><?= $badgeText ?></span>
-                                        </td>
-                                        <td style="text-align: center;">
-                                            <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                            <div style="display: flex; gap: 0.75rem; justify-content: center;">
                                                 <?php if ($m['file_path']): ?>
-                                                    <a href="../uploads/surat_keluar/<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Preview PDF">
-                                                        <svg class="icon" viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                                                    </a>
+                                                    <a href="../uploads/surat_keluar/<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Preview Dokumen"><svg class="icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a>
                                                 <?php endif; ?>
-
                                                 <?php if ($tab === 'pending'): ?>
-                                                    <button type="button" 
-                                                            onclick="openConfirmModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" 
-                                                            class="btn btn-primary" 
-                                                            style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.85rem;">
-                                                        Arsipkan
-                                                    </button>
+                                                    <button onclick="openConfirmModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'] ?? '')) ?>')" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">Arsipkan</button>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -319,45 +180,30 @@ $mails = $stmt->fetchAll();
         </div>
     </main>
 
-    <!-- Hidden Form for submission -->
-    <form id="approveForm" method="POST" style="display: none;">
-        <input type="hidden" name="approve_id" id="approve_target_id">
-    </form>
-
-    <!-- Custom Confirmation Modal -->
+    <!-- Modal Konfirmasi -->
     <div id="confirmModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-icon">
+        <div class="modal-card" style="max-width: 450px; text-align: center; padding: 3rem;">
+            <div style="width: 70px; height: 70px; background: rgba(99, 102, 241, 0.1); color: var(--primary); border-radius: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
                 <svg viewBox="0 0 24 24" style="width:32px; height:32px; fill:none; stroke:currentColor; stroke-width:2.5;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             </div>
-            <h3 class="modal-title">Konfirmasi Pengarsipan</h3>
-            <p class="modal-message">Apakah Anda yakin draft surat <strong id="modal-perihal" style="color:#0f172a;"></strong> ini sudah sesuai? Surat akan diarsipkan secara permanen.</p>
-            <div class="modal-actions">
-                <button type="button" onclick="closeConfirmModal()" class="btn-modal btn-cancel">Batal</button>
-                <button type="button" onclick="submitApprove()" class="btn-modal btn-confirm">Ya, Arsipkan</button>
+            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;">Konfirmasi Arsip</h3>
+            <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem;">Apakah Anda yakin draf surat <strong id="modal-perihal" style="color:var(--text-main);"></strong> ini sudah sesuai untuk diarsipkan?</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <button onclick="closeConfirmModal()" class="btn" style="background:#f1f5f9; color:#64748b;">Batal</button>
+                <form method="POST" id="approveForm" style="display:none;"><input type="hidden" name="approve_id" id="approve_target_id"></form>
+                <button onclick="document.getElementById('approveForm').submit()" class="btn btn-primary">Ya, Arsipkan</button>
             </div>
         </div>
     </div>
 
     <script>
-        function openConfirmModal(id, perihal) {
+        function openConfirmModal(id, p) {
             document.getElementById('approve_target_id').value = id;
-            document.getElementById('modal-perihal').innerText = '"' + perihal + '"';
-            document.getElementById('confirmModal').style.display = 'flex';
+            document.getElementById('modal-perihal').innerText = '"' + p + '"';
+            document.getElementById('confirmModal').classList.add('active');
         }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').style.display = 'none';
-        }
-
-        function submitApprove() {
-            document.getElementById('approveForm').submit();
-        }
-
-        // Close on escape
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeConfirmModal();
-        });
+        function closeConfirmModal() { document.getElementById('confirmModal').classList.remove('active'); }
+        window.onclick = e => { if (e.target.classList.contains('modal-overlay')) closeConfirmModal(); };
     </script>
     <script src="../js/notifications.js"></script>
 </body>

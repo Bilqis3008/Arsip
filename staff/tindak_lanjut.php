@@ -16,6 +16,14 @@ if (!$id_surat) {
 
 $nip_staff = $_SESSION['user_nip'];
 
+// Fetch Staff Info for Header
+$stmt = $pdo->prepare("SELECT u.*, b.nama_bidang, s.nama_seksi FROM users u 
+                       LEFT JOIN bidang b ON u.id_bidang = b.id_bidang 
+                       LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
+                       WHERE u.nip = ?");
+$stmt->execute([$nip_staff]);
+$admin = $stmt->fetch();
+
 // --- FETCH TASK & INSTRUCTIONS ---
 $stmt = $pdo->prepare("SELECT sm.*, b.nama_bidang, s.nama_seksi 
                        FROM surat_masuk sm 
@@ -105,30 +113,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <svg class="icon" style="width: 24px; height: 24px; stroke: var(--primary);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <svg class="icon" style="width: 24px; height: 24px; stroke: var(--primary);" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             <h2>STAFF PANEL</h2>
         </div>
         <nav class="sidebar-menu">
             <div class="menu-label">Main Dashboard</div>
-            <a href="home.php" class="menu-item"><svg class="icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
+            <a href="home.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
             <div class="menu-label">Pekerjaan Saya</div>
-            <a href="surat_masuk.php" class="menu-item"><svg class="icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Surat Tugas</a>
-            <a href="tindak_lanjut.php" class="menu-item active"><svg class="icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Kerjakan Balasan</a>
+            <a href="surat_masuk.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Surat Tugas</a>
+            <a href="tindak_lanjut.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Kerjakan Balasan</a>
             <div class="menu-label">Monitoring & Arsip</div>
-            <a href="monitoring.php" class="menu-item"><svg class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Monitoring Alur</a>
-            <a href="laporan.php" class="menu-item"><svg class="icon"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Laporan</a>
+            <a href="monitoring.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Monitoring Alur</a>
+            <a href="laporan.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Laporan</a>
             <div class="menu-label">Account</div>
-            <a href="profil.php" class="menu-item"><svg class="icon"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profil Saya</a>
+            <a href="profil.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profil Saya</a>
         </nav>
         <div class="sidebar-footer">
-            <a href="../auth/logout.php" class="logout-btn"><svg class="icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Keluar Sesi</a>
+            <a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Keluar Sesi</a>
         </div>
     </aside>
 
     <main class="main-content">
-        <div class="content-header">
-            <div class="header-title"><h1>Tindak Lanjut & Balasan Surat</h1></div>
-        </div>
+        <header class="content-header">
+            <div class="header-title">
+                <h1>Tindak Lanjut & Balasan</h1>
+                <p>Proses penyelesaian berkas tugas seksi Anda.</p>
+            </div>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
+                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
+                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
+                    </div>
+                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                </div>
+            </div>
+        </header>
 
         <?php if ($success): ?><div style="padding: 1rem; background: #f0fdf4; color: #16a34a; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $success ?></div><?php endif; ?>
         <?php if ($error): ?><div style="padding: 1rem; background: #fff1f2; color: #e11d48; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $error ?></div><?php endif; ?>
@@ -137,8 +161,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
             <!-- Left: Command Trace -->
             <div class="card-trace">
                 <div class="trace-header">
-                    <h2><?= htmlspecialchars($mail['perihal']) ?></h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">STATUS: <b style="color: var(--primary);"><?= strtoupper($mail['status']) ?></b></p>
+                    <h2><?= htmlspecialchars($mail['perihal'] ?? '') ?></h2>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">STATUS: <b style="color: var(--primary);"><?= strtoupper($mail['status'] ?? '') ?></b></p>
                 </div>
 
                 <div class="trace-timeline">
@@ -146,9 +170,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                     <div class="timeline-item">
                         <div class="timeline-dot"></div>
                         <div class="timeline-content">
-                            <span class="timeline-label">SURAT ASLI (PENGIRIM: <?= htmlspecialchars($mail['pengirim']) ?>)</span>
-                            <div class="timeline-body"><?= htmlspecialchars($mail['nomor_surat']) ?></div>
-                            <div style="margin-top: 0.5rem;"><a href="../<?= $mail['file_path'] ?>" target="_blank" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; text-decoration: none;">Download Surat Masuk &rarr;</a></div>
+                            <span class="timeline-label">SURAT ASLI (PENGIRIM: <?= htmlspecialchars($mail['pengirim'] ?? '') ?>)</span>
+                            <div class="timeline-body"><?= htmlspecialchars($mail['nomor_surat'] ?? '') ?></div>
+                            <div style="margin-top: 0.5rem;"><a href="../<?= htmlspecialchars($mail['file_path'] ?? '') ?>" target="_blank" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; text-decoration: none;">Download Surat Masuk &rarr;</a></div>
                         </div>
                     </div>
 
@@ -157,9 +181,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                         <div class="timeline-item active">
                             <div class="timeline-dot"></div>
                             <div class="timeline-content">
-                                <span class="timeline-label">INSTRUKSI DARI: <?= strtoupper($ins['role']) ?> (<?= htmlspecialchars($ins['nama']) ?>)</span>
-                                <div class="timeline-body"><?= nl2br(htmlspecialchars($ins['isi_disposisi'])) ?></div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 800;"><?= date('d M Y H:i', strtotime($ins['tanggal_disposisi'])) ?></div>
+                                <span class="timeline-label">INSTRUKSI DARI: <?= strtoupper($ins['role'] ?? '') ?> (<?= htmlspecialchars($ins['nama'] ?? '') ?>)</span>
+                                <div class="timeline-body"><?= nl2br(htmlspecialchars($ins['isi_disposisi'] ?? '')) ?></div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 800;"><?= date('d M Y H:i', strtotime($ins['tanggal_disposisi'] ?? 'now')) ?></div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -180,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                         </div>
                         <div class="form-group">
                             <label>Tujuan / Penerima Balasan</label>
-                            <input type="text" name="tujuan" value="<?= htmlspecialchars($mail['pengirim']) ?>" required>
+                            <input type="text" name="tujuan" value="<?= htmlspecialchars($mail['pengirim'] ?? '') ?>" required>
                         </div>
                         <div class="form-group">
                             <label>File Surat Balasan (PDF)</label>

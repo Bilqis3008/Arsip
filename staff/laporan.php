@@ -141,7 +141,7 @@ while ($row = $stmt_admin->fetch()) {
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <svg class="icon" style="width: 24px; height: 24px; stroke: var(--primary);" viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <svg class="icon" style="width: 24px; height: 24px; stroke: var(--primary);" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
             <h2>STAFF PANEL</h2>
         </div>
         <nav class="sidebar-menu">
@@ -164,14 +164,21 @@ while ($row = $stmt_admin->fetch()) {
     <main class="main-content">
         <header class="content-header">
             <div class="header-title">
-                <h1>Laporan Arsip Terselesaikan</h1>
+                <h1>Laporan Arsip</h1>
+                <p>Data surat yang telah diselesaikan dan diarsipkan.</p>
             </div>
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-name"><?= htmlspecialchars($admin['nama']) ?></span>
-                    <span class="user-role">Staf <?= htmlspecialchars($admin['nama_seksi'] ?? 'Seksi') ?></span>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
+                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
                 </div>
-                <div class="user-avatar"><?= strtoupper(substr($admin['nama_seksi'], 0, 1) ?: 'S') ?></div>
+                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
+                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
+                    </div>
+                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                </div>
             </div>
         </header>
 
@@ -228,24 +235,24 @@ while ($row = $stmt_admin->fetch()) {
                         <?php else: ?>
                             <?php foreach ($report_masuk as $p): ?>
                                 <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 1rem;"><strong><?= htmlspecialchars($p['nomor_surat']) ?></strong><br><small style="color: #64748b;"><?= htmlspecialchars($p['nomor_agenda']) ?></small></td>
-                                    <td style="padding: 1rem;"><?= htmlspecialchars($p['pengirim']) ?></td>
-                                    <td style="padding: 1rem;"><?= date('d M Y', strtotime($p['tanggal_terima'])) ?></td>
+                                    <td style="padding: 1rem;"><strong><?= htmlspecialchars($p['nomor_surat'] ?? '') ?></strong><br><small style="color: #64748b;"><?= htmlspecialchars($p['nomor_agenda'] ?? '') ?></small></td>
+                                    <td style="padding: 1rem;"><?= htmlspecialchars($p['pengirim'] ?? '') ?></td>
+                                    <td style="padding: 1rem;"><?= date('d M Y', strtotime($p['tanggal_terima'] ?? 'now')) ?></td>
                                     <td style="padding: 1rem; color: #0f172a; font-weight: 500;">
-                                        <?= htmlspecialchars($p['perihal']) ?>
+                                        <?= htmlspecialchars($p['perihal'] ?? '') ?>
                                         <?php if (!empty($p['reply_no'])): ?>
                                             <div style="margin-top: 4px; font-size: 0.8rem; color: #10b981; font-weight: 600;">
                                                 <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 3; vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                                Balasan: <?= htmlspecialchars($p['reply_no']) ?>
+                                                Balasan: <?= htmlspecialchars($p['reply_no'] ?? '') ?>
                                             </div>
                                         <?php endif; ?>
                                     </td>
                                     <td class="action-cell" style="padding: 1rem;">
-                                        <button class="action-btn action-btn-info" onclick="showTrackerMasuk(<?= $p['id_surat_masuk'] ?>)" title="Tracking & Detail">
+                                        <button class="action-btn action-btn-info" onclick="showTrackerMasuk(<?= (int)($p['id_surat_masuk'] ?? 0) ?>)" title="Tracking & Detail">
                                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                         </button>
                                         <?php if (!empty($p['file_path'])): ?>
-                                            <a href="../<?= htmlspecialchars($p['file_path']) ?>" target="_blank" class="action-btn action-btn-download" title="Lihat/Download Surat Masuk">
+                                            <a href="../<?= htmlspecialchars((string)$p['file_path']) ?>" target="_blank" class="action-btn action-btn-download" title="Lihat/Download Surat Masuk">
                                                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                             </a>
                                         <?php else: ?>
@@ -254,7 +261,7 @@ while ($row = $stmt_admin->fetch()) {
                                             </button>
                                         <?php endif; ?>
                                         <?php if (!empty($p['reply_file'])): ?>
-                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn" style="background:var(--accent);" title="Lihat Balasan (Out)">
+                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars((string)$p['reply_file']) ?>" target="_blank" class="action-btn" style="background:var(--accent);" title="Lihat Balasan (Out)">
                                                 <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                                             </a>
                                         <?php endif; ?>
@@ -285,16 +292,16 @@ while ($row = $stmt_admin->fetch()) {
                         <?php else: ?>
                             <?php foreach ($report_keluar as $k): ?>
                                 <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 1rem;"><strong><?= htmlspecialchars($k['nomor_surat_keluar']) ?></strong></td>
-                                    <td style="padding: 1rem;"><?= htmlspecialchars($k['tujuan']) ?></td>
-                                    <td style="padding: 1rem;"><?= date('d M Y', strtotime($k['tanggal_surat'])) ?></td>
-                                    <td style="padding: 1rem; color: #0f172a; font-weight: 500;"><?= htmlspecialchars($k['perihal']) ?></td>
+                                    <td style="padding: 1rem;"><strong><?= htmlspecialchars($k['nomor_surat_keluar'] ?? '') ?></strong></td>
+                                    <td style="padding: 1rem;"><?= htmlspecialchars($k['tujuan'] ?? '') ?></td>
+                                    <td style="padding: 1rem;"><?= date('d M Y', strtotime($k['tanggal_surat'] ?? 'now')) ?></td>
+                                    <td style="padding: 1rem; color: #0f172a; font-weight: 500;"><?= htmlspecialchars($k['perihal'] ?? '') ?></td>
                                     <td class="action-cell" style="padding: 1rem;">
-                                        <button class="action-btn action-btn-info" onclick="showTrackerKeluar(<?= $k['id_surat_keluar'] ?>)" title="Tracking & Detail">
+                                        <button class="action-btn action-btn-info" onclick="showTrackerKeluar(<?= (int)($k['id_surat_keluar'] ?? 0) ?>)" title="Tracking & Detail">
                                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                         </button>
                                         <?php if (!empty($k['file_path'])): ?>
-                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($k['file_path']) ?>" target="_blank" class="action-btn action-btn-download" title="Lihat/Download Dokumen">
+                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars((string)$k['file_path']) ?>" target="_blank" class="action-btn action-btn-download" title="Lihat/Download Dokumen">
                                                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                             </a>
                                         <?php else: ?>
@@ -330,7 +337,7 @@ while ($row = $stmt_admin->fetch()) {
                 <div class="summary-cards">
                     <div class="summary-card">
                         <div class="summary-icon icon-masuk">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                         </div>
                         <div class="summary-details">
                             <h4>Surat Masuk Terselesaikan</h4>
@@ -339,7 +346,7 @@ while ($row = $stmt_admin->fetch()) {
                     </div>
                     <div class="summary-card">
                         <div class="summary-icon icon-keluar">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         </div>
                         <div class="summary-details">
                             <h4>Surat Keluar Diarsipkan</h4>
@@ -348,7 +355,7 @@ while ($row = $stmt_admin->fetch()) {
                     </div>
                     <div class="summary-card">
                         <div class="summary-icon icon-total">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+                            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
                         </div>
                         <div class="summary-details">
                             <h4>Total Keseluruhan Arsip</h4>
@@ -434,7 +441,7 @@ while ($row = $stmt_admin->fetch()) {
 
             const adminBidangName = mail.nama_admin_bidang || 'Admin Bidang';
             const deskripsiBidang = mail.nama_bidang ? `(Admin ${mail.nama_bidang})` : '';
-            addTimelineItem(`${adminBidangName} ${deskripsiBidang}`.trim(), `Telah ditindaklanjuti dan diselesaikan pada seksi/bidang.`, null, 'done');
+            addTimelineItem(`${adminBidangName} ${deskripsiBidang}`.trim(), `Telah ditindaklanjuti and diselesaikan pada seksi/bidang.`, null, 'done');
 
             if (mail.reply_status) {
                 const staffName = mail.nama_staf_reply || 'Staf Sub-Seksi';

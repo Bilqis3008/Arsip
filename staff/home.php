@@ -90,43 +90,60 @@ $recent_dispo = $stmt->fetchAll();
     <main class="main-content">
         <header class="content-header">
             <div class="header-title">
-                <h1>Halo, <?= htmlspecialchars($user['nama']) ?></h1>
-                <p>Unit Kerja: <?= htmlspecialchars($user['nama_bidang']) ?> / <?= htmlspecialchars($user['nama_seksi']) ?></p>
+                <h1>Dashboard Operasional</h1>
+                <p>Halo, <?= htmlspecialchars((string)($user['nama'] ?? '')) ?>. Berikut ringkasan hari ini.</p>
             </div>
-            <div style="background: white; padding: 0.75rem 1.5rem; border-radius: 1rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
-                <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-muted);">TANGGAL HARI INI</div>
-                <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
+                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
+                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+                </div>
+                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
+                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($user['nama'] ?? '')) ?></span>
+                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($user['nama_seksi'] ?? 'Seksi')) ?></span>
+                    </div>
+                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($user['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                </div>
             </div>
         </header>
 
         <section class="stats-grid">
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon amber"><svg class="icon"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                    <div class="stat-icon amber">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </div>
                     <span class="badge badge-teal">Tugas</span>
                 </div>
-                <div class="stat-value"><?= $count_pending ?></div>
+                <div class="stat-value"><?= (int)$count_pending ?></div>
                 <div class="stat-label">Sedang Diproses</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon rose"><svg class="icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path></svg></div>
+                    <div class="stat-icon rose">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                    </div>
                 </div>
-                <div class="stat-value"><?= $count_draft ?></div>
+                <div class="stat-value"><?= (int)$count_draft ?></div>
                 <div class="stat-label">Draft Balasan</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon teal"><svg class="icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                    <div class="stat-icon teal">
+                        <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
                 </div>
-                <div class="stat-value"><?= $count_finished ?></div>
+                <div class="stat-value"><?= (int)$count_finished ?></div>
                 <div class="stat-label">Selesai Dikerjakan</div>
             </div>
             <div class="stat-card">
                 <div class="stat-header">
-                    <div class="stat-icon blue"><svg class="icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></div>
+                    <div class="stat-icon blue">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    </div>
                 </div>
-                <div class="stat-value"><?= $count_uploads ?></div>
+                <div class="stat-value"><?= (int)$count_uploads ?></div>
                 <div class="stat-label">Surat Diunggah</div>
             </div>
         </section>
@@ -152,11 +169,11 @@ $recent_dispo = $stmt->fetchAll();
                             <?php foreach ($recent_dispo as $d): ?>
                                 <tr style="border-bottom: 1px solid #f8fafc;">
                                     <td style="padding: 1.25rem 1rem;">
-                                        <div style="font-weight: 700; font-size: 0.9375rem; color: var(--primary-dark);"><?= htmlspecialchars($d['perihal']) ?></div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Dari: <?= htmlspecialchars($d['pemberi_nama']) ?></div>
+                                        <div style="font-weight: 700; font-size: 0.9375rem; color: var(--primary-dark);"><?= htmlspecialchars($d['perihal'] ?? '') ?></div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Dari: <?= htmlspecialchars($d['pemberi_nama'] ?? '') ?></div>
                                     </td>
-                                    <td style="padding: 1.25rem 1rem; font-size: 0.875rem; max-width: 300px; line-height: 1.4;"><?= nl2br(htmlspecialchars($d['isi_disposisi'])) ?></td>
-                                    <td style="padding: 1.25rem 1rem; font-size: 0.8125rem; font-weight: 800; color: var(--text-muted);"><?= date('d M Y', strtotime($d['tanggal_disposisi'])) ?></td>
+                                    <td style="padding: 1.25rem 1rem; font-size: 0.875rem; max-width: 300px; line-height: 1.4;"><?= nl2br(htmlspecialchars($d['isi_disposisi'] ?? '')) ?></td>
+                                    <td style="padding: 1.25rem 1rem; font-size: 0.8125rem; font-weight: 800; color: var(--text-muted);"><?= date('d M Y', strtotime($d['tanggal_disposisi'] ?? 'now')) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
