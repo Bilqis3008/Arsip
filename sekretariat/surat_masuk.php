@@ -233,9 +233,9 @@ $admin = $stmt->fetch();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manajemen Surat Masuk - Arsip Digital</title>
-    <link rel="stylesheet" href="../css/sekretariat/home.css">
-    <link rel="stylesheet" href="../css/sekretariat/surat_masuk.css">
-    <link rel="stylesheet" href="../css/notifications.css">
+    <link rel="stylesheet" href="../css/sekretariat/home.css?v=1.1">
+    <link rel="stylesheet" href="../css/sekretariat/surat_masuk.css?v=1.1">
+    <link rel="stylesheet" href="../css/notifications.css?v=1.1">
 </head>
 <body>
     <!-- Sidebar -->
@@ -246,20 +246,20 @@ $admin = $stmt->fetch();
         </div>
         <nav class="sidebar-menu">
             <div class="menu-label">Menu Utama</div>
-            <a href="home.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
+            <a href="home.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg> Dashboard</a>
             <div class="menu-label">Buku Agenda</div>
-            <a href="surat_masuk.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Surat Masuk</a>
-            <a href="surat_keluar.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Surat Keluar</a>
+            <a href="surat_masuk.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Surat Masuk</a>
+            <a href="surat_keluar.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Surat Keluar</a>
             <div class="menu-label">Administrasi Sistem</div>
-            <a href="manajemen_pengguna.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Manajemen Pengguna</a>
-            <a href="verifikasi_staff.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Verifikasi Staff</a>
-            <a href="monitoring_surat.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13a2 2 0 1 1-4 0v-2a2 2 0 1 0-4 0"></path><line x1="12" y1="14" x2="12" y2="19"></line></svg> Monitoring Surat</a>
+            <a href="manajemen_pengguna.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Manajemen Pengguna</a>
+            <a href="verifikasi_staff.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg> Verifikasi Staff</a>
+            <a href="monitoring_surat.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Monitoring Surat</a>
             <div class="menu-label">Monitoring</div>
-            <a href="monitoring_laporan.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Laporan</a>
+            <a href="monitoring_laporan.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> Laporan</a>
             <div class="menu-label">Akun</div>
-            <a href="profil.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profil Saya</a>
+            <a href="profil.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profil Saya</a>
         </nav>
-        <div class="sidebar-footer"><a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Keluar Sistem</a></div>
+        <div class="sidebar-footer"><a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg> Keluar Sistem</a></div>
     </aside>
 
     <main class="main-content">
@@ -289,9 +289,9 @@ $admin = $stmt->fetch();
 
             <!-- Module Tabs -->
             <div class="module-tabs">
-                <button class="tab-btn active" onclick="switchTab('daftar')"><svg class="icon"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><circle cx="3" cy="6" r="1"></circle><circle cx="3" cy="12" r="1"></circle><circle cx="3" cy="18" r="1"></circle></svg> Daftar Surat</button>
-                <button class="tab-btn" onclick="switchTab('tugas')"><svg class="icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> Surat Tugas</button>
-                <button class="tab-btn" onclick="switchTab('riwayat')"><svg class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Riwayat Selesai</button>
+                <button class="tab-btn active" onclick="switchTab('daftar')"><svg class="icon"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg> Daftar Surat</button>
+                <button class="tab-btn" onclick="switchTab('tugas')"><svg class="icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Surat Tugas</button>
+                <button class="tab-btn" onclick="switchTab('riwayat')"><svg class="icon"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="10"/></svg> Riwayat Selesai</button>
             </div>
 
             <!-- Section: Daftar Surat -->
@@ -300,7 +300,7 @@ $admin = $stmt->fetch();
                     <div class="table-controls">
                         <div style="display: flex; gap: 1rem; flex-wrap: wrap; flex: 1;">
                             <form action="" method="GET" class="search-box">
-                                <svg class="icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                <svg class="icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                                 <input type="text" name="search" placeholder="Cari perihal, nomor surat atau pengirim..." value="<?= htmlspecialchars((string)$search) ?>">
                             </form>
                             <form action="" method="GET" class="filter-group">
@@ -313,11 +313,10 @@ $admin = $stmt->fetch();
                                     <option value="">Semua Sifat</option>
                                     <option value="biasa" <?= $sifat_filter === 'biasa' ? 'selected' : '' ?>>Biasa</option>
                                     <option value="penting" <?= $sifat_filter === 'penting' ? 'selected' : '' ?>>Penting</option>
-                                    <option value="segera" <?= $sifat_filter === 'segera' ? 'selected' : '' ?>>Segera</option>
                                 </select>
                             </form>
                         </div>
-                        <button class="btn btn-primary" onclick="openInputModal()"><svg class="icon"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Tambah Surat</button>
+                        <button type="button" id="btnTambahSurat" class="btn btn-primary"><svg class="icon" style="pointer-events: none;"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Tambah Surat</button>
                     </div>
 
                     <div class="data-table-container">
@@ -347,10 +346,16 @@ $admin = $stmt->fetch();
                                             <td><span class="badge-status status-<?= $mail['sifat_surat'] ?>"><?= ucfirst($mail['sifat_surat'] ?? '') ?></span></td>
                                             <td><span class="badge-status status-<?= $mail['status'] ?>"><?= ucfirst($mail['status'] === 'tercatat' ? 'Tercatat' : 'Proses') ?></span></td>
                                             <td class="action-btns">
-                                                <button class="action-btn btn-view" title="Lihat Detail" onclick='openViewModal(<?= htmlspecialchars(json_encode($mail)) ?>)'><svg class="icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+                                                <button class="action-btn btn-view" title="Lihat Detail" onclick='openViewModal(<?= htmlspecialchars(json_encode($mail)) ?>)'>
+                                                    <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                </button>
                                                 <?php if ($mail['status'] === 'tercatat'): ?>
-                                                    <button class="action-btn btn-edit" title="Edit" onclick='openEditModal(<?= htmlspecialchars(json_encode($mail)) ?>)'><svg class="icon"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>
-                                                    <a href="?delete_id=<?= $mail['id_surat_masuk'] ?>" class="action-btn btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus surat ini?')"><svg class="icon"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a>
+                                                    <button class="action-btn btn-edit" title="Edit" onclick='openEditModal(<?= htmlspecialchars(json_encode($mail)) ?>)'>
+                                                        <svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+                                                    </button>
+                                                    <a href="?delete_id=<?= $mail['id_surat_masuk'] ?>" class="action-btn btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus surat ini?')">
+                                                        <svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                                    </a>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -389,11 +394,15 @@ $admin = $stmt->fetch();
                                             </td>
                                             <td><?= htmlspecialchars($m['pengirim'] ?? '') ?></td>
                                             <td class="action-btns">
-                                                <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="action-btn btn-edit" title="Forward ke Staff"><svg class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></a>
+                                                <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="action-btn btn-edit" title="Forward ke Staff">
+                                                    <svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                                </a>
                                                 <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Arsipkan surat ini ke Sekretariat?')">
                                                     <input type="hidden" name="action" value="archive_tugas">
                                                     <input type="hidden" name="id_surat" value="<?= $m['id_surat_masuk'] ?>">
-                                                    <button type="submit" class="action-btn btn-view" title="Selesaikan & Arsip"><svg class="icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg></button>
+                                                    <button type="submit" class="action-btn btn-view" title="Selesaikan & Arsip">
+                                                        <svg class="icon" viewBox="0 0 24 24"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
@@ -430,7 +439,11 @@ $admin = $stmt->fetch();
                                             <td><div style="font-weight: 600;"><?= htmlspecialchars($mail['perihal'] ?? '') ?></div><div style="font-size: 0.75rem; color: var(--text-muted);">No: <?= htmlspecialchars($mail['nomor_surat'] ?? '') ?></div></td>
                                             <td><?= htmlspecialchars($mail['pengirim'] ?? '') ?></td>
                                             <td><span class="badge-status status-selesai">Selesai</span></td>
-                                            <td class="action-btns"><button class="action-btn btn-view" title="Detail Arsip" onclick='openViewModal(<?= htmlspecialchars(json_encode($mail)) ?>)'><svg class="icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></button></td>
+                                            <td class="action-btns">
+                                                <button class="action-btn btn-view" title="Detail Arsip" onclick='openViewModal(<?= htmlspecialchars(json_encode($mail)) ?>)'>
+                                                    <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                </button>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
@@ -445,7 +458,7 @@ $admin = $stmt->fetch();
     <!-- ====== MODAL: INPUT ====== -->
     <div id="inputModal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-header"><h2>Input Surat Masuk</h2><button class="btn-close" onclick="closeInputModal()">✕</button></div>
+            <div class="modal-header"><h2>Input Surat Masuk</h2><button class="btn-close" onclick="hideAddModal()">✕</button></div>
             <form action="" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="save_mail">
                 <div class="form-grid">
@@ -455,9 +468,9 @@ $admin = $stmt->fetch();
                     <div class="form-group"><label>Tanggal Terima *</label><input type="date" name="tanggal_terima" value="<?= date('Y-m-d') ?>" required></div>
                     <div class="form-group full-width"><label>Pengirim *</label><input type="text" name="pengirim" required placeholder="Nama instansi atau perorangan"></div>
                     <div class="form-group full-width"><label>Perihal *</label><input type="text" name="perihal" required placeholder="Pokok isi surat"></div>
-                    <div class="form-group"><label>Sifat Surat</label><select name="sifat_surat"><option value="biasa">Biasa</option><option value="penting">Penting</option><option value="segera">Segera</option><option value="rahasia">Rahasia</option></select></div>
+                    <div class="form-group"><label>Sifat Surat</label><select name="sifat_surat"><option value="biasa">Biasa</option><option value="penting">Penting</option></select></div>
                     <div class="form-group"><label>Lampiran (Lembar)</label><input type="number" name="lampiran" min="0" value="0"></div>
-                    <div class="form-group full-width"><label>Dokumen Digital (PDF/IMG)</label><div class="file-upload-area" onclick="document.getElementById('file-input').click()"><svg class="icon" style="width:40px;height:40px;margin-bottom:1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg><p id="file-name">Klik untuk memilih file dokumen</p><input type="file" id="file-input" name="file_surat" hidden onchange="validateFile(this)"></div></div>
+                    <div class="form-group full-width"><label>Dokumen Digital (PDF/IMG)</label><div class="file-upload-area" onclick="document.getElementById('file-input').click()"><svg class="icon" style="width:40px;height:40px;margin-bottom:1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg><p id="file-name">Klik untuk memilih file dokumen</p><input type="file" id="file-input" name="file_surat" hidden onchange="validateFile(this)"></div></div>
                     <div class="form-group full-width"><label>Keterangan</label><textarea name="keterangan" placeholder="Catatan tambahan jika ada..."></textarea></div>
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:2.5rem;"><button type="reset" class="btn">Reset</button><button type="submit" class="btn btn-primary">Simpan Agenda</button></div>
@@ -496,7 +509,7 @@ $admin = $stmt->fetch();
                     <div class="form-group"><label>Tgl Terima</label><input type="date" name="tanggal_terima" id="eTglTerima"></div>
                     <div class="form-group full-width"><label>Pengirim</label><input type="text" name="pengirim" id="ePengirim"></div>
                     <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" id="ePerihal"></div>
-                    <div class="form-group"><label>Sifat</label><select name="sifat_surat" id="eSifat"><option value="biasa">Biasa</option><option value="penting">Penting</option><option value="segera">Segera</option><option value="rahasia">Rahasia</option></select></div>
+                    <div class="form-group"><label>Sifat</label><select name="sifat_surat" id="eSifat"><option value="biasa">Biasa</option><option value="penting">Penting</option></select></div>
                     <div class="form-group"><label>Lampiran</label><input type="number" name="lampiran" id="eLampiran"></div>
                     <div class="form-group full-width"><label>Update File (PDF/IMG)</label><input type="file" name="file_surat" class="p-input"></div>
                     <div class="form-group full-width"><label>Keterangan</label><textarea name="keterangan" id="eKet"></textarea></div>
@@ -508,11 +521,34 @@ $admin = $stmt->fetch();
 
     <script>
         function switchTab(id) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.onclick.toString().includes(id)));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                const isActive = b.getAttribute('onclick') && b.getAttribute('onclick').includes(id);
+                b.classList.toggle('active', isActive);
+            });
             document.querySelectorAll('.module-section').forEach(s => s.classList.toggle('active', s.id === 'section-' + id));
         }
-        function openInputModal() { document.getElementById('inputModal').classList.add('active'); }
-        function closeInputModal() { document.getElementById('inputModal').classList.remove('active'); }
+
+        // Modal Functions
+        const showAddModal = () => {
+            const modal = document.getElementById('inputModal');
+            if (modal) modal.classList.add('active');
+        };
+        const hideAddModal = () => {
+            const modal = document.getElementById('inputModal');
+            if (modal) modal.classList.remove('active');
+        };
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnTambah = document.getElementById('btnTambahSurat');
+            if (btnTambah) {
+                btnTambah.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showAddModal();
+                });
+            }
+        });
+
         function openViewModal(m) {
             document.getElementById('vPerihal').innerText = m.perihal;
             document.getElementById('vNo').innerText = `No: ${m.nomor_surat} | Agenda: ${m.nomor_agenda}`;
@@ -541,7 +577,13 @@ $admin = $stmt->fetch();
         }
         function closeEditModal() { document.getElementById('editModal').classList.remove('active'); }
         function validateFile(i) { const f = i.files[0]; if (f && f.size > 10 * 1024 * 1024) { alert('Maksimal 10MB!'); i.value = ''; } else if (f) { document.getElementById('file-name').innerText = f.name; } }
-        window.onclick = e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active'); };
+        
+        window.addEventListener('click', e => { 
+            if (e.target.classList.contains('modal-overlay')) {
+                e.target.classList.remove('active');
+            }
+        });
+
         <?php if ($success_msg || $error_msg): ?> switchTab('daftar'); <?php endif; ?>
     </script>
     <script src="../js/notifications.js"></script>

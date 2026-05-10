@@ -9,6 +9,9 @@ if (!isset($_SESSION['user_nip']) || $_SESSION['user_role'] !== 'sekretariat') {
 }
 
 $nip_admin = $_SESSION['user_nip'];
+$success_msg = $_SESSION['success_msg'] ?? "";
+$error_msg = $_SESSION['error_msg'] ?? "";
+unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 
 // --- FETCH ADMIN DATA ---
 $stmt = $pdo->prepare("SELECT * FROM users WHERE nip = ?");
@@ -16,6 +19,126 @@ $stmt->execute([$nip_admin]);
 $admin = $stmt->fetch();
 
 $kadin = $pdo->query("SELECT nama FROM users WHERE role='kepala_dinas' LIMIT 1")->fetchColumn() ?: 'Kepala Dinas';
+
+// --- HANDLE CRUD ACTIONS ---
+
+// 1. DELETE ACTION
+if (isset($_GET['delete_id']) && isset($_GET['type'])) {
+    $id = (int)$_GET['delete_id'];
+    $type = $_GET['type'];
+    try {
+        if ($type === 'masuk') {
+            $pdo->prepare("DELETE FROM surat_masuk WHERE id_surat_masuk = ?")->execute([$id]);
+        } else {
+            $pdo->prepare("DELETE FROM surat_keluar WHERE id_surat_keluar = ?")->execute([$id]);
+        }
+        $_SESSION['success_msg'] = "Data berhasil dihapus.";
+    } catch (PDOException $e) {
+        $_SESSION['error_msg'] = "Gagal menghapus data: " . $e->getMessage();
+    }
+    header("Location: monitoring_laporan.php");
+    exit;
+}
+
+// 2. UPDATE ACTION
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
+    $action = $_POST['action'];
+    
+    if ($action === 'update_masuk') {
+        $id = (int)$_POST['id_surat_masuk'];
+        $nomor_surat = $_POST['nomor_surat'];
+        $pengirim = $_POST['pengirim'];
+        $perihal = $_POST['perihal'];
+        $tanggal_terima = $_POST['tanggal_terima'];
+        $existing_file = $_POST['existing_file_path'] ?? null;
+        
+        // Handle File Upload
+        $file_path = $existing_file;
+        if (isset($_FILES['file_surat']) && $_FILES['file_surat']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = '../uploads/surat_masuk/';
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            $ext = pathinfo($_FILES['file_surat']['name'], PATHINFO_EXTENSION);
+            $new_name = time() . '_EDIT_' . preg_replace("/[^a-zA-Z0-9]/", "_", (string)$perihal) . '.' . $ext;
+            if (move_uploaded_file($_FILES['file_surat']['tmp_name'], $upload_dir . $new_name)) {
+                // Delete old file if exists
+                if ($existing_file && file_exists('../' . $existing_file)) unlink('../' . $existing_file);
+                $file_path = 'uploads/surat_masuk/' . $new_name;
+            }
+        }
+        
+        try {
+            $stmt = $pdo->prepare("UPDATE surat_masuk SET nomor_surat = ?, pengirim = ?, perihal = ?, tanggal_terima = ?, file_path = ? WHERE id_surat_masuk = ?");
+            $stmt->execute([$nomor_surat, $pengirim, $perihal, $tanggal_terima, $file_path, $id]);
+            $_SESSION['success_msg'] = "Data surat masuk berhasil diperbarui.";
+        } catch (PDOException $e) {
+            $_SESSION['error_msg'] = "Gagal memperbarui data: " . $e->getMessage();
+        }
+    } 
+    elseif ($action === 'update_keluar') {
+        $id = (int)$_POST['id_surat_keluar'];
+        $nomor_surat = $_POST['nomor_surat_keluar'];
+        $tujuan = $_POST['tujuan'];
+        $perihal = $_POST['perihal'];
+        $tanggal_surat = $_POST['tanggal_surat'];
+        $existing_file = $_POST['existing_file_path'] ?? null;
+
+        // Handle File Upload
+        $file_path = $existing_file;
+        if (isset($_FILES['file_surat']) && $_FILES['file_surat']['error'] === UPLOAD_ERR_OK) {
+            $upload_dir = '../uploads/surat_keluar/';
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            $ext = pathinfo($_FILES['file_surat']['name'], PATHINFO_EXTENSION);
+            $new_name = time() . '_EDIT_' . preg_replace("/[^a-zA-Z0-9]/", "_", (string)$perihal) . '.' . $ext;
+            if (move_uploaded_file($_FILES['file_surat']['tmp_name'], $upload_dir . $new_name)) {
+                // Delete old file if exists
+                if ($existing_file && file_exists('../uploads/surat_keluar/' . $existing_file)) {
+                    unlink('../uploads/surat_keluar/' . $existing_file);
+                }
+                $file_path = $new_name;
+            }
+        }
+        
+        try {
+            $stmt = $pdo->prepare("UPDATE surat_keluar SET nomor_surat_keluar = ?, tujuan = ?, perihal = ?, tanggal_surat = ?, file_path = ? WHERE id_surat_keluar = ?");
+            $stmt->execute([$nomor_surat, $tujuan, $perihal, $tanggal_surat, $file_path, $id]);
+            $_SESSION['success_msg'] = "Data surat keluar berhasil diperbarui.";
+        } catch (PDOException $e) {
+            $_SESSION['error_msg'] = "Gagal memperbarui data: " . $e->getMessage();
+        }
+    }
+    elseif ($action === 'create_masuk') {
+        $nomor_surat = $_POST['nomor_surat'];
+        $pengirim = $_POST['pengirim'];
+        $perihal = $_POST['perihal'];
+        $tanggal_terima = $_POST['tanggal_terima'];
+        $nomor_agenda = 'ARS-' . date('Ymd') . '-' . rand(1000, 9999);
+        
+        try {
+            $stmt = $pdo->prepare("INSERT INTO surat_masuk (nomor_agenda, nomor_surat, pengirim, perihal, tanggal_terima, tanggal_surat, status, input_by) VALUES (?, ?, ?, ?, ?, ?, 'diarsipkan', ?)");
+            $stmt->execute([$nomor_agenda, $nomor_surat, $pengirim, $perihal, $tanggal_terima, $tanggal_terima, $nip_admin]);
+            $_SESSION['success_msg'] = "Arsip surat masuk baru berhasil ditambahkan.";
+        } catch (PDOException $e) {
+            $_SESSION['error_msg'] = "Gagal menambahkan arsip: " . $e->getMessage();
+        }
+    }
+    elseif ($action === 'create_keluar') {
+        $nomor_surat = $_POST['nomor_surat_keluar'];
+        $tujuan = $_POST['tujuan'];
+        $perihal = $_POST['perihal'];
+        $tanggal_surat = $_POST['tanggal_surat'];
+        
+        try {
+            $stmt = $pdo->prepare("INSERT INTO surat_keluar (nomor_surat_keluar, tujuan, perihal, tanggal_surat, status, uploaded_by) VALUES (?, ?, ?, ?, 'diarsipkan', ?)");
+            $stmt->execute([$nomor_surat, $tujuan, $perihal, $tanggal_surat, $nip_admin]);
+            $_SESSION['success_msg'] = "Arsip surat keluar baru berhasil ditambahkan.";
+        } catch (PDOException $e) {
+            $_SESSION['error_msg'] = "Gagal menambahkan arsip: " . $e->getMessage();
+        }
+    }
+    
+    header("Location: monitoring_laporan.php");
+    exit;
+}
 
 // --- HANDLE FILTERS ---
 $jenis_laporan = $_GET['jenis_laporan'] ?? 'total_surat';
@@ -99,31 +222,44 @@ while ($row = $stmt_admin->fetch()) {
         .s-icon { width: 60px; height: 60px; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
         .s-info h4 { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
         .s-info .s-value { font-size: 2rem; font-weight: 900; color: var(--text-main); line-height: 1.2; }
-        @media print { .sidebar, .content-header, .filter-card, .btn, .action-cell { display: none !important; } .main-content { margin-left: 0 !important; } .summary-premium-card { border: 1px solid #000 !important; } }
+        
+        /* Modal Style for Laporan */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 2rem; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: #fff; border-radius: 2rem; width: 100%; max-width: 650px; padding: 2.5rem; position: relative; animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .modal-header h2 { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
+        .btn-close { background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .btn-close:hover { background: #e2e8f0; color: var(--danger); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .full-width { grid-column: span 2; }
+        
+        @media print { .sidebar, .content-header, .filter-card, .btn, .action-cell, .action-btns { display: none !important; } .main-content { margin-left: 0 !important; } .summary-premium-card { border: 1px solid #000 !important; } }
     </style>
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
             <h2>ARSIP DIGITAL</h2>
         </div>
         <nav class="sidebar-menu">
             <div class="menu-label">Menu Utama</div>
-            <a href="home.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
+            <a href="home.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg> Dashboard</a>
             <div class="menu-label">Buku Agenda</div>
-            <a href="surat_masuk.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg> Surat Masuk</a>
-            <a href="surat_keluar.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Surat Keluar</a>
+            <a href="surat_masuk.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Surat Masuk</a>
+            <a href="surat_keluar.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Surat Keluar</a>
             <div class="menu-label">Administrasi Sistem</div>
-            <a href="manajemen_pengguna.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg> Manajemen Pengguna</a>
-            <a href="verifikasi_staff.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Verifikasi Staff</a>
-            <a href="monitoring_surat.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13a2 2 0 1 1-4 0v-2a2 2 0 1 0-4 0"></path><line x1="12" y1="14" x2="12" y2="19"></line></svg> Monitoring Surat</a>
+            <a href="manajemen_pengguna.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Manajemen Pengguna</a>
+            <a href="verifikasi_staff.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"/><path d="m9 12 2 2 4-4"/></svg> Verifikasi Staff</a>
+            <a href="monitoring_surat.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> Monitoring Surat</a>
             <div class="menu-label">Monitoring</div>
-            <a href="monitoring_laporan.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Laporan</a>
+            <a href="monitoring_laporan.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> Laporan</a>
             <div class="menu-label">Akun</div>
-            <a href="profil.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Profil Saya</a>
+            <a href="profil.php" class="menu-item"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profil Saya</a>
         </nav>
-        <div class="sidebar-footer"><a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Keluar Sistem</a></div>
+        <div class="sidebar-footer"><a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg> Keluar Sistem</a></div>
     </aside>
 
     <main class="main-content">
@@ -139,8 +275,20 @@ while ($row = $stmt_admin->fetch()) {
         </header>
 
         <div class="content-body">
+            <!-- Alert Notifications -->
+            <?php if ($success_msg): ?>
+                <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 1rem; border-radius: 1rem; border: 1px solid var(--success); margin-bottom: 1.5rem; font-weight: 600;">
+                    <svg class="icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 0.5rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $success_msg ?>
+                </div>
+            <?php endif; ?>
+            <?php if ($error_msg): ?>
+                <div style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 1rem; border-radius: 1rem; border: 1px solid var(--danger); margin-bottom: 1.5rem; font-weight: 600;">
+                    <svg class="icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 0.5rem;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <?= $error_msg ?>
+                </div>
+            <?php endif; ?>
+
             <div class="filter-card" style="margin-bottom:2rem;">
-                <form method="GET" id="reportForm" style="display:flex; flex-wrap:wrap; gap:1.5rem; align-items:flex-end;">
+                <form method="GET" id="reportForm" style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
                     <div class="form-group">
                         <label>Jenis Laporan</label>
                         <select name="jenis_laporan" onchange="this.form.submit()">
@@ -151,22 +299,23 @@ while ($row = $stmt_admin->fetch()) {
                     </div>
                     <div class="form-group"><label>Mulai</label><input type="date" name="date_start" value="<?= $date_start ?>"></div>
                     <div class="form-group"><label>Sampai</label><input type="date" name="date_end" value="<?= $date_end ?>"></div>
-                    <button type="submit" class="btn btn-primary" style="height:46px;"><svg class="icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Filter</button>
-                    <button type="button" onclick="window.print()" class="btn btn-success" style="height:46px; margin-left:auto;"><svg class="icon"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Cetak Laporan</button>
+                    <button type="submit" class="btn btn-primary" style="height:46px;"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter</button>
+                    <button type="button" onclick="openAddModal()" class="btn btn-info" style="height:46px; background:var(--info); color:#fff;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg> Tambah Laporan</button>
+                    <button type="button" onclick="window.print()" class="btn btn-success" style="height:46px; margin-left:auto;"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Cetak Laporan</button>
                 </form>
             </div>
 
             <div class="report-summary-grid">
                 <div class="summary-premium-card">
-                    <div class="s-icon" style="background:rgba(59, 130, 246, 0.1); color:var(--primary);"><svg class="icon" style="width:30px; height:30px;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                    <div class="s-icon" style="background:rgba(59, 130, 246, 0.1); color:var(--primary);"><svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
                     <div class="s-info"><h4>Masuk Periode</h4><div class="s-value"><?= $total_masuk_period ?></div></div>
                 </div>
                 <div class="summary-premium-card">
-                    <div class="s-icon" style="background:rgba(16, 185, 129, 0.1); color:var(--success);"><svg class="icon" style="width:30px; height:30px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></div>
+                    <div class="s-icon" style="background:rgba(16, 185, 129, 0.1); color:var(--success);"><svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></div>
                     <div class="s-info"><h4>Keluar Periode</h4><div class="s-value"><?= $total_keluar_period ?></div></div>
                 </div>
                 <div class="summary-premium-card" style="background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none;">
-                    <div class="s-icon" style="background:rgba(255,255,255,0.2); color:#fff;"><svg class="icon" style="width:30px; height:30px;"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+                    <div class="s-icon" style="background:rgba(255,255,255,0.2); color:#fff;"><svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></div>
                     <div class="s-info"><h4 style="color:rgba(255,255,255,0.7);">Total Arsip</h4><div class="s-value" style="color:#fff;"><?= $total_surat_period ?></div></div>
                 </div>
             </div>
@@ -193,9 +342,10 @@ while ($row = $stmt_admin->fetch()) {
                                                 <?php endif; ?>
                                             </td>
                                             <td class="action-cell">
-                                                <div style="display:flex; gap:0.5rem; justify-content:center;">
-                                                    <?php if ($m['file_path']): ?><a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Surat"><svg class="icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><?php endif; ?>
-                                                    <?php if ($m['reply_file']): ?><a href="../uploads/surat_keluar/<?= htmlspecialchars($m['reply_file']) ?>" target="_blank" class="action-btn btn-edit" style="background:rgba(245, 158, 11, 0.1); color:var(--warning);" title="Lihat Balasan"><svg class="icon"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg></a><?php endif; ?>
+                                                <div style="display:flex; gap:0.5rem; justify-content:center;" class="action-btns">
+                                                    <?php if ($m['file_path']): ?><a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Surat"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></a><?php endif; ?>
+                                                    <button class="action-btn btn-edit" title="Edit" onclick='openEditMasuk(<?= json_encode($m) ?>)' style="background:rgba(99, 102, 241, 0.1); color:var(--primary);"><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                                                    <a href="?delete_id=<?= $m['id_surat_masuk'] ?>&type=masuk" class="action-btn btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -224,8 +374,10 @@ while ($row = $stmt_admin->fetch()) {
                                             <td><b><?= date('d/m/Y', strtotime($k['tanggal_surat'] ?? 'now')) ?></b></td>
                                             <td><?= htmlspecialchars($k['perihal'] ?? '') ?></td>
                                             <td class="action-cell">
-                                                <div style="display:flex; justify-content:center;">
-                                                    <?php if ($k['file_path']): ?><a href="../uploads/surat_keluar/<?= htmlspecialchars($k['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Dokumen"><svg class="icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></a><?php endif; ?>
+                                                <div style="display:flex; gap:0.5rem; justify-content:center;" class="action-btns">
+                                                    <?php if ($k['file_path']): ?><a href="../uploads/surat_keluar/<?= htmlspecialchars($k['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Dokumen"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></a><?php endif; ?>
+                                                    <button class="action-btn btn-edit" title="Edit" onclick='openEditKeluar(<?= json_encode($k) ?>)' style="background:rgba(99, 102, 241, 0.1); color:var(--primary);"><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                                                    <a href="?delete_id=<?= $k['id_surat_keluar'] ?>&type=keluar" class="action-btn btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -238,6 +390,119 @@ while ($row = $stmt_admin->fetch()) {
             <?php endif; ?>
         </div>
     </main>
+
+    <!-- ====== MODALS ====== -->
+    
+    <!-- Modal: Add Laporan -->
+    <div id="addModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header"><h2>Tambah Arsip Baru</h2><button class="btn-close" onclick="closeAddModal()">✕</button></div>
+            <div style="display:flex; gap:1rem; margin-bottom:2rem; background:#f1f5f9; padding:0.5rem; border-radius:1rem;">
+                <button class="btn" id="btnTabMasuk" onclick="switchAddTab('masuk')" style="flex:1; justify-content:center;">Surat Masuk</button>
+                <button class="btn" id="btnTabKeluar" onclick="switchAddTab('keluar')" style="flex:1; justify-content:center;">Surat Keluar</button>
+            </div>
+            
+            <form id="formMasuk" method="POST" class="add-tab-content">
+                <input type="hidden" name="action" value="create_masuk">
+                <div class="form-grid">
+                    <div class="form-group full-width"><label>Nomor Surat</label><input type="text" name="nomor_surat" required></div>
+                    <div class="form-group full-width"><label>Pengirim</label><input type="text" name="pengirim" required></div>
+                    <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" required></div>
+                    <div class="form-group full-width"><label>Tanggal Terima</label><input type="date" name="tanggal_terima" value="<?= date('Y-m-d') ?>" required></div>
+                </div>
+                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Simpan Arsip</button></div>
+            </form>
+
+            <form id="formKeluar" method="POST" class="add-tab-content" style="display:none;">
+                <input type="hidden" name="action" value="create_keluar">
+                <div class="form-grid">
+                    <div class="form-group full-width"><label>Nomor Surat Keluar</label><input type="text" name="nomor_surat_keluar" required></div>
+                    <div class="form-group full-width"><label>Tujuan</label><input type="text" name="tujuan" required></div>
+                    <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" required></div>
+                    <div class="form-group full-width"><label>Tanggal Surat</label><input type="date" name="tanggal_surat" value="<?= date('Y-m-d') ?>" required></div>
+                </div>
+                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Simpan Arsip</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Surat Masuk -->
+    <div id="editMasukModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header"><h2>Edit Arsip Surat Masuk</h2><button class="btn-close" onclick="closeEditMasuk()">✕</button></div>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="update_masuk">
+                <input type="hidden" name="id_surat_masuk" id="edit_id_masuk">
+                <input type="hidden" name="existing_file_path" id="edit_file_masuk">
+                <div class="form-grid">
+                    <div class="form-group full-width"><label>Nomor Surat</label><input type="text" name="nomor_surat" id="edit_no_masuk" required></div>
+                    <div class="form-group full-width"><label>Pengirim</label><input type="text" name="pengirim" id="edit_pengirim_masuk" required></div>
+                    <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" id="edit_perihal_masuk" required></div>
+                    <div class="form-group"><label>Tanggal Terima</label><input type="date" name="tanggal_terima" id="edit_tgl_masuk" required></div>
+                    <div class="form-group"><label>Ganti File (Optional)</label><input type="file" name="file_surat"></div>
+                </div>
+                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Update Data</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Surat Keluar -->
+    <div id="editKeluarModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header"><h2>Edit Arsip Surat Keluar</h2><button class="btn-close" onclick="closeEditKeluar()">✕</button></div>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="update_keluar">
+                <input type="hidden" name="id_surat_keluar" id="edit_id_keluar">
+                <input type="hidden" name="existing_file_path" id="edit_file_keluar">
+                <div class="form-grid">
+                    <div class="form-group full-width"><label>Nomor Surat</label><input type="text" name="nomor_surat_keluar" id="edit_no_keluar" required></div>
+                    <div class="form-group full-width"><label>Tujuan</label><input type="text" name="tujuan" id="edit_tujuan_keluar" required></div>
+                    <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" id="edit_perihal_keluar" required></div>
+                    <div class="form-group"><label>Tanggal Surat</label><input type="date" name="tanggal_surat" id="edit_tgl_keluar" required></div>
+                    <div class="form-group"><label>Ganti File (Optional)</label><input type="file" name="file_surat"></div>
+                </div>
+                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Update Data</button></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Modal Handlers
+        function openAddModal() { document.getElementById('addModal').classList.add('active'); switchAddTab('masuk'); }
+        function closeAddModal() { document.getElementById('addModal').classList.remove('active'); }
+        
+        function switchAddTab(tab) {
+            const isMasuk = tab === 'masuk';
+            document.getElementById('formMasuk').style.display = isMasuk ? 'block' : 'none';
+            document.getElementById('formKeluar').style.display = isMasuk ? 'none' : 'block';
+            document.getElementById('btnTabMasuk').className = isMasuk ? 'btn btn-primary' : 'btn';
+            document.getElementById('btnTabKeluar').className = isMasuk ? 'btn' : 'btn btn-primary';
+        }
+
+        function openEditMasuk(data) {
+            document.getElementById('edit_id_masuk').value = data.id_surat_masuk;
+            document.getElementById('edit_no_masuk').value = data.nomor_surat;
+            document.getElementById('edit_pengirim_masuk').value = data.pengirim;
+            document.getElementById('edit_perihal_masuk').value = data.perihal;
+            document.getElementById('edit_tgl_masuk').value = data.tanggal_terima;
+            document.getElementById('edit_file_masuk').value = data.file_path || '';
+            document.getElementById('editMasukModal').classList.add('active');
+        }
+        function closeEditMasuk() { document.getElementById('editMasukModal').classList.remove('active'); }
+
+        function openEditKeluar(data) {
+            document.getElementById('edit_id_keluar').value = data.id_surat_keluar;
+            document.getElementById('edit_no_keluar').value = data.nomor_surat_keluar;
+            document.getElementById('edit_tujuan_keluar').value = data.tujuan;
+            document.getElementById('edit_perihal_keluar').value = data.perihal;
+            document.getElementById('edit_tgl_keluar').value = data.tanggal_surat;
+            document.getElementById('edit_file_keluar').value = data.file_path || '';
+            document.getElementById('editKeluarModal').classList.add('active');
+        }
+        function closeEditKeluar() { document.getElementById('editKeluarModal').classList.remove('active'); }
+
+        window.onclick = e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('active'); };
+    </script>
     <script src="../js/notifications.js"></script>
 </body>
 </html>

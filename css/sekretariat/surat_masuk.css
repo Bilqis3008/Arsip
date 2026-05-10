@@ -241,9 +241,29 @@ textarea { resize: vertical; min-height: 120px; }
 .btn-delete:hover { background: #fef2f2; color: var(--danger); border-color: #fecaca; }
 .btn-view:hover { background: #ecfdf5; color: var(--success); border-color: #a7f3d0; }
 
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 1rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--text-main);
+    user-select: none;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
 .btn-primary { 
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: #fff; 
+    color: #fff !important; 
     border: none;
     box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
@@ -251,6 +271,7 @@ textarea { resize: vertical; min-height: 120px; }
 .btn-primary:hover { 
     transform: translateY(-2px); 
     box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4); 
+    color: #fff !important;
 }
 
 /* --- MODAL SYSTEM --- */
@@ -265,6 +286,10 @@ textarea { resize: vertical; min-height: 120px; }
     justify-content: center;
     padding: 2rem;
     animation: fadeIn 0.3s ease-out;
+}
+
+.modal-overlay.active {
+    display: flex;
 }
 
 .modal-card {
