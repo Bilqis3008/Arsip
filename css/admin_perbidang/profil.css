@@ -1,112 +1,189 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('../theme.css');
 
 :root {
-    --primary: #059669;
-    --navy: #0f172a;
-    --border: #e2e8f0;
-    --text-muted: #64748b;
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --card-radius: 2rem;
 }
 
-.icon { width: 18px; height: 18px; stroke-width: 2; }
-
-/* --- PROFIL CARD --- */
+/* --- PROFILE GRID --- */
 .profil-grid {
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 360px 1fr;
     gap: 2.5rem;
-    align-items: flex-start;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
+/* --- AVATAR CARD --- */
 .card-side {
     background: #fff;
-    padding: 2.5rem;
-    border-radius: 2rem;
+    padding: 4rem 2rem;
+    border-radius: var(--card-radius);
     border: 1px solid var(--border);
     text-align: center;
     box-shadow: var(--shadow-md);
+    height: fit-content;
+    position: sticky;
+    top: 105px;
+    transition: var(--transition);
+}
+
+.card-side:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
 }
 
 .avatar-upload {
     position: relative;
-    width: 150px;
-    height: 150px;
-    margin: 0 auto 1.5rem;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 2.5rem;
 }
 
-.avatar-preview {
+.avatar-preview, .avatar-placeholder {
     width: 100%;
     height: 100%;
-    border-radius: 30px;
+    border-radius: 50%;
     object-fit: cover;
-    border: 5px solid #fff;
-    box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);
+    border: 6px solid #fff;
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+    transition: var(--transition);
+}
+
+.avatar-placeholder {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    font-weight: 800;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .avatar-edit {
     position: absolute;
-    bottom: -10px;
-    right: -10px;
-    background: var(--primary);
+    bottom: 5px;
+    right: 5px;
+    background: var(--success);
     color: #fff;
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    border: 3px solid #fff;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-md);
+    border: 4px solid #fff;
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+    transition: var(--transition);
 }
 
-.avatar-edit:hover { background: var(--navy); transform: scale(1.1); }
-#imageUpload { display: none; }
+.avatar-edit:hover {
+    transform: scale(1.15) rotate(5deg);
+    background: #059669;
+}
 
-.card-side h3 { font-size: 1.25rem; font-weight: 800; color: var(--navy); margin-bottom: 0.25rem; }
-.card-side p { font-size: 0.85rem; font-weight: 700; color: var(--primary); text-transform: uppercase; }
+.card-side h3 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
 
+.card-side p {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: var(--primary-faint);
+    color: var(--primary);
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+/* --- PROFILE INFO CARD --- */
 .card-main {
     background: #fff;
-    padding: 2.5rem;
-    border-radius: 2rem;
+    padding: 3.5rem;
+    border-radius: var(--card-radius);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-md);
 }
 
-.section-title { font-size: 1.1rem; font-weight: 800; color: var(--navy); margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
-.section-title .icon { color: var(--primary); }
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-faint);
+}
+
+.section-title svg {
+    width: 26px;
+    height: 26px;
+    color: var(--primary);
+}
 
 .detail-row {
     display: flex;
     justify-content: space-between;
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--border);
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: #f8fafc;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    margin-bottom: 1.25rem;
 }
 
-.detail-label { font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-.detail-val { font-size: 0.9375rem; font-weight: 700; color: var(--navy); }
+.detail-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
 
-/* --- PASSWORD FORM --- */
-.form-group { margin-bottom: 1.5rem; }
-.form-group label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; }
-
-input[type="password"] {
-    width: 100%;
-    padding: 0.875rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 0.75rem;
+.detail-val {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 .btn-save {
-    background: var(--primary);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 0.875rem;
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1.1rem;
+    font-size: 1rem;
     font-weight: 800;
-    font-size: 0.9rem;
-    cursor: pointer;
+    letter-spacing: 0.02em;
+    border-radius: 1.25rem;
+    transition: var(--transition);
 }
-.btn-save:hover { background: var(--navy); transform: translateY(-2px); }
+
+.btn-save:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 1100px) {
+    .profil-grid { grid-template-columns: 1fr; }
+    .card-side { position: static; }
+}
+
+@media (max-width: 768px) {
+    .card-main { padding: 2rem; }
+    .form-grid { grid-template-columns: 1fr; gap: 1rem; }
+}

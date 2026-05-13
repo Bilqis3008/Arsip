@@ -1,198 +1,224 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('../theme.css');
 
 :root {
-    --primary: #0f172a;
-    --accent: #f59e0b;
-    --bg-body: #f1f5f9;
-    --border: #e2e8f0;
-    --text-muted: #64748b;
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-    --success: #10b981;
+    --card-radius: 2rem;
 }
 
+/* --- PROFILE GRID --- */
 .profile-grid {
     display: grid;
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: 360px 1fr;
     gap: 2.5rem;
-    max-width: 1200px;
+    max-width: 1300px;
     margin: 0 auto;
 }
 
 /* --- AVATAR CARD --- */
 .card-avatar {
     background: #fff;
-    padding: 3.5rem 2rem;
-    border-radius: 2.5rem;
+    padding: 4rem 2rem;
+    border-radius: var(--card-radius);
     border: 1px solid var(--border);
     text-align: center;
     box-shadow: var(--shadow-md);
     height: fit-content;
     position: sticky;
     top: 105px;
+    transition: var(--transition);
+}
+
+.card-avatar:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-light);
 }
 
 .avatar-wrapper {
     position: relative;
-    width: 160px;
-    height: 160px;
-    margin: 0 auto 2rem;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 2.5rem;
 }
 
 .avatar-img, .avatar-img-placeholder {
     width: 100%;
     height: 100%;
-    border-radius: 2rem;
+    border-radius: 50%;
     object-fit: cover;
     border: 6px solid #fff;
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.15);
-    transition: transform 0.3s ease;
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+    transition: var(--transition);
 }
 
 .avatar-img-placeholder {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    color: var(--accent);
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
+    font-size: 5rem;
     font-weight: 800;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .avatar-edit {
     position: absolute;
-    bottom: -10px;
-    right: -10px;
+    bottom: 5px;
+    right: 5px;
     background: var(--success);
     color: #fff;
     width: 48px;
     height: 48px;
-    border-radius: 1rem;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     border: 4px solid #fff;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+    transition: var(--transition);
 }
 
 .avatar-edit:hover {
-    transform: scale(1.1) rotate(5deg);
+    transform: scale(1.15) rotate(5deg);
     background: #059669;
 }
 
-.avatar-edit svg {
-    width: 20px;
-    height: 20px;
-    stroke-width: 2.5;
+.card-avatar h2 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
 }
 
-/* --- PROFILE CARD --- */
+.role-badge {
+    display: inline-block;
+    padding: 0.5rem 1.25rem;
+    background: var(--primary-faint);
+    color: var(--primary);
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+/* --- PROFILE INFO CARD --- */
 .profile-card {
     background: #fff;
-    padding: 3rem;
-    border-radius: 2.5rem;
+    padding: 3.5rem;
+    border-radius: var(--card-radius);
     border: 1px solid var(--border);
     box-shadow: var(--shadow-md);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-faint);
 }
 
 .section-title {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    font-size: 1rem;
+    gap: 0.875rem;
+    font-size: 1.1rem;
     font-weight: 800;
-    color: var(--primary);
-    margin-bottom: 2rem;
-    letter-spacing: 0.05em;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
 }
 
 .section-title svg {
-    width: 24px;
-    height: 24px;
-}
-
-.form-group { margin-bottom: 1.75rem; }
-.form-group label { 
-    display: block; 
-    font-size: 0.75rem; 
-    font-weight: 800; 
-    color: var(--text-muted); 
-    text-transform: uppercase; 
-    margin-bottom: 0.75rem;
-    letter-spacing: 0.05em;
-}
-
-input {
-    width: 100%;
-    padding: 1rem 1.25rem;
-    border: 2px solid var(--border);
-    border-radius: 1rem;
-    font-size: 1rem;
-    font-weight: 500;
+    width: 26px;
+    height: 26px;
     color: var(--primary);
-    background: #fcfcfc;
-    transition: all 0.2s;
 }
 
-input:focus {
-    outline: none;
-    border-color: var(--accent);
-    background: #fff;
-    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.1);
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
 }
 
-.detail-info-row {
+.detail-list {
+    margin: 2.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.detail-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 1.25rem 1.5rem;
+    background: #f8fafc;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
 }
 
 .detail-label {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 800;
     color: var(--text-muted);
     text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
-.detail-val {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-.btn-save {
-    margin-top: 2rem;
-    padding: 1.125rem 2.5rem;
-    background: var(--primary);
-    color: var(--accent);
-    border: none;
-    border-radius: 1.25rem;
+.detail-value {
     font-size: 1rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    transition: all 0.3s;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.btn-update {
     width: 100%;
+    margin-top: 1rem;
+    padding: 1.1rem;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
 }
 
-.btn-save:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 20px -5px rgba(15, 23, 42, 0.2);
+.divider {
+    height: 2px;
+    background: var(--primary-faint);
+    margin: 4rem 0;
+    position: relative;
 }
 
-.btn-save svg {
-    width: 20px;
-    height: 20px;
+.divider::after {
+    content: "PENGATURAN KEAMANAN";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 0 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.15em;
+}
+
+/* --- NOTIFICATIONS --- */
+.alert {
+    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 1100px) {
     .profile-grid { grid-template-columns: 1fr; }
     .card-avatar { position: static; }
+}
+
+@media (max-width: 768px) {
+    .profile-card { padding: 2rem; }
+    .form-row { grid-template-columns: 1fr; gap: 1rem; }
 }

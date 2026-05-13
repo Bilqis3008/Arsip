@@ -47,7 +47,9 @@ if (isset($_GET['nomor_surat']) && !empty($_GET['nomor_surat'])) {
             </div>
             <div class="user-info">
                 <span>Selamat Datang, <strong><?= htmlspecialchars($user_nama) ?></strong></span>
-                <a href="../auth/logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i></a>
+                <a href="../auth/logout.php" class="btn-logout" style="display: flex; align-items: center; gap: 0.5rem; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
             </div>
         </nav>
 

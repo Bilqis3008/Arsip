@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --primary: #0f172a;        /* Deep Slate */
-    --primary-dark: #020617;
-    --accent: #f59e0b;         /* Amber/Gold for Authority */
-    --accent-light: #fef3c7;
-    --sidebar-bg: #1e293b;
-    --bg-body: #f1f5f9;
+    --primary: #6366f1;        /* Indigo */
+    --primary-dark: #4f46e5;
+    --primary-light: #818cf8;
+    --primary-faint: #eef2ff;
+    --sidebar-bg: #0f172a;
+    --bg-body: #f8fafc;
     --bg-card: #ffffff;
     --text-main: #0f172a;
     --text-muted: #64748b;

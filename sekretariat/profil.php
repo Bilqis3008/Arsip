@@ -95,14 +95,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya - Arsip Digital Premium</title>
-    <link rel="stylesheet" href="../css/sekretariat/home.css">
-    <link rel="stylesheet" href="../css/sekretariat/profil.css">
-    <link rel="stylesheet" href="../css/notifications.css">
+    <link rel="stylesheet" href="../css/theme.css?v=1.1">
+    <link rel="stylesheet" href="../css/sekretariat/profil.css?v=1.1">
 </head>
 <body>
     <aside class="sidebar">
         <div class="sidebar-header">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
             <h2>ARSIP DIGITAL</h2>
         </div>
         <nav class="sidebar-menu">
@@ -120,22 +119,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="menu-label">Akun</div>
             <a href="profil.php" class="menu-item active"><svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Profil Saya</a>
         </nav>
-        <div class="sidebar-footer"><a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg> Keluar Sistem</a></div>
+        <div class="sidebar-footer">
+            <a href="../auth/logout.php" class="logout-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg> Logout</a>
+        </div>
     </aside>
 
     <main class="main-content">
         <header class="content-header">
-            <div class="header-title"><h1>Pengaturan Profil</h1><p style="font-size:0.9rem; color:var(--text-muted);">Kelola informasi personal dan keamanan akun Anda.</p></div>
+            <div class="header-title">
+                <h1>Pengaturan Profil</h1>
+                <p>Kelola informasi personal dan keamanan akun Anda.</p>
+            </div>
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-name"><?= htmlspecialchars($user['nama'] ?? 'User') ?></span>
                     <span class="user-role">Sekretariat</span>
                 </div>
                 <div class="user-avatar">
-                    <?php if (!empty($user['foto']) && $user['foto'] !== 'default.png' && file_exists("../uploads/profile/" . $user['foto'])): ?>
-                        <img src="../uploads/profile/<?= $user['foto'] ?>" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                    <?php 
+                        $foto_path = "../uploads/profile/" . $user['foto'];
+                        if (!empty($user['foto']) && file_exists($foto_path)): 
+                    ?>
+                        <img src="<?= $foto_path ?>" alt="Avatar">
                     <?php else: ?>
-                        <?= strtoupper(substr((string)($user['nama'] ?? 'U'), 0, 1)) ?>
+                        <?= strtoupper(substr($user['nama'], 0, 1)) ?>
                     <?php endif; ?>
                 </div>
             </div>
@@ -143,59 +150,117 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <div class="content-body">
             <?php if ($message): ?>
-                <div class="alert-message alert-success"><svg class="icon alert-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $message ?></div>
+                <div class="alert alert-success">
+                    <svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                    <?= $message ?>
+                </div>
             <?php endif; ?>
+            
             <?php if ($error): ?>
-                <div class="alert-message alert-danger"><svg class="icon alert-icon"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <?= $error ?></div>
+                <div class="alert alert-error">
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <?= $error ?>
+                </div>
             <?php endif; ?>
 
             <div class="profile-grid">
+                <!-- Sidebar Info Card -->
                 <div class="card-profile-info">
                     <form action="" method="POST" enctype="multipart/form-data" id="photoForm">
                         <div class="avatar-upload">
-                            <img src="../uploads/profile/<?= !empty($user['foto']) ? $user['foto'] : 'default.png' ?>" class="avatar-preview" id="previewImg">
-                            <label for="imageUpload" class="avatar-edit"><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></label>
+                            <?php if (!empty($user['foto']) && file_exists($foto_path)): ?>
+                                <img src="<?= $foto_path ?>" class="avatar-preview" id="previewImg">
+                            <?php else: ?>
+                                <div class="avatar-placeholder">
+                                    <?= strtoupper(substr($user['nama'], 0, 1)) ?>
+                                </div>
+                            <?php endif; ?>
+                            <label for="imageUpload" class="avatar-edit">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </label>
                             <input type='file' id="imageUpload" name="foto" accept=".png, .jpg, .jpeg" onchange="document.getElementById('photoForm').submit()" />
                             <input type="hidden" name="upload_photo" value="1">
                         </div>
                     </form>
                     <div class="profile-info-header">
                         <h2><?= htmlspecialchars($user['nama'] ?? '') ?></h2>
-                        <span class="badge badge-role">Petugas Sekretariat</span>
+                        <p>PETUGAS SEKRETARIAT</p>
                     </div>
                     <div class="info-stats">
-                        <div class="stat-item"><span>NIP</span><span><?= htmlspecialchars($user['nip'] ?? '-') ?></span></div>
-                        <div class="stat-item"><span>Unit Kerja</span><span><?= htmlspecialchars($user['nama_bidang'] ?? 'Sekretariat') ?></span></div>
-                        <div class="stat-item"><span>Jabatan</span><span><?= htmlspecialchars($user['jabatan'] ?? 'Staff') ?></span></div>
+                        <div class="stat-item">
+                            <span>NIP PEGAWAI</span>
+                            <span><?= htmlspecialchars($user['nip'] ?? '-') ?></span>
+                        </div>
+                        <div class="stat-item">
+                            <span>UNIT KERJA</span>
+                            <span><?= htmlspecialchars($user['nama_bidang'] ?? 'Sekretariat') ?></span>
+                        </div>
+                        <div class="stat-item" style="border: none;">
+                            <span>JABATAN</span>
+                            <span><?= htmlspecialchars($user['jabatan'] ?? 'Administrator') ?></span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">
+                        Dinas Kearsipan dan Perpustakaan
                     </div>
                 </div>
 
+                <!-- Main Forms Card -->
                 <div class="card-profile-form">
                     <form action="" method="POST">
-                        <div class="form-section-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> <h3>Data Personal</h3></div>
-                        <div class="form-grid">
-                            <div class="form-group full-width"><label>Nama Lengkap</label><input type="text" name="nama" value="<?= htmlspecialchars($user['nama'] ?? '') ?>" required></div>
-                            <div class="form-group"><label>Alamat Email</label><input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required></div>
-                            <div class="form-group"><label>Nomor WhatsApp</label><input type="text" name="no_hp" value="<?= htmlspecialchars($user['no_hp'] ?? '') ?>"></div>
+                        <div class="form-section-title">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            INFORMASI PERSONAL
                         </div>
-                        <button type="submit" name="update_info" class="btn btn-primary" style="margin-top:1.5rem; height:48px; border-radius:1rem;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg> Update Profil</button>
+                        <input type="hidden" name="update_info" value="1">
+                        <div class="form-group">
+                            <label>Nama Lengkap</label>
+                            <input type="text" name="nama" value="<?= htmlspecialchars($user['nama'] ?? '') ?>" required>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Alamat Email</label>
+                                <input type="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Nomor HP / WhatsApp</label>
+                                <input type="text" name="no_hp" value="<?= htmlspecialchars($user['no_hp'] ?? '') ?>" placeholder="08xxxxxxxx">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-save">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                            Simpan Perubahan Profil
+                        </button>
                     </form>
 
-                    <div style="height:1px; background:var(--border); margin:1rem 0;"></div>
-
-                    <form action="" method="POST">
-                        <div class="form-section-title"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> <h3>Keamanan Akun</h3></div>
-                        <div class="form-grid">
-                            <div class="form-group full-width"><label>Password Saat Ini</label><input type="password" name="old_password" required></div>
-                            <div class="form-group"><label>Password Baru</label><input type="password" name="new_password" required></div>
-                            <div class="form-group"><label>Konfirmasi Password Baru</label><input type="password" name="confirm_password" required></div>
+                    <form action="" method="POST" style="margin-top: 2.5rem;">
+                        <div class="form-section-title" style="border-bottom-color: #fee2e2;">
+                            <svg class="icon" viewBox="0 0 24 24" style="color: var(--danger);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            KEAMANAN AKUN
                         </div>
-                        <button type="submit" name="change_password" class="btn" style="background:var(--accent); color:#fff; margin-top:1.5rem; height:48px; border-radius:1rem; font-weight:800; border:none; cursor:pointer; display:flex; align-items:center; gap:0.5rem; padding:0 2rem;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3"/><path d="m17.5 5.5 3 3"/></svg> Ganti Password</button>
+                        <input type="hidden" name="change_password" value="1">
+                        <div class="form-group">
+                            <label>Password Saat Ini</label>
+                            <input type="password" name="old_password" placeholder="Masukkan password lama..." required>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Password Baru</label>
+                                <input type="password" name="new_password" placeholder="Minimal 8 karakter..." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Konfirmasi Password</label>
+                                <input type="password" name="confirm_password" placeholder="Ulangi password baru..." required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-save" style="background: var(--danger);">
+                            <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            Ganti Password Akun
+                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </main>
-    <script src="../js/notifications.js"></script>
 </body>
 </html>
