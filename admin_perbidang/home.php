@@ -66,15 +66,7 @@ $recent_mail = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin Bidang - Ops Panel</title>
-    <link rel="stylesheet" href="../css/admin_perbidang/home.css">
-    <style>
-        .chart-container { height: 250px; background: #fff; border-radius: 1.5rem; padding: 2rem; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 2.5rem; display: flex; align-items: flex-end; gap: 1rem; justify-content: space-around; }
-        .bar-group { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; flex: 1; height: 100%; justify-content: flex-end; }
-        .bar { width: 100%; background: var(--primary); border-radius: 6px 6px 0 0; transition: var(--transition); min-height: 5px; position: relative; }
-        .bar:hover { filter: brightness(1.1); transform: scaleX(1.05); }
-        .bar-label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
-        .bar-val { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 0.7rem; font-weight: 800; color: var(--navy); }
-    </style>
+    <link rel="stylesheet" href="../css/admin_perbidang/home.css?v=1.1">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
@@ -82,7 +74,7 @@ $recent_mail = $stmt->fetchAll();
     <aside class="sidebar">
         <div class="sidebar-header">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-            <h2>BIDANG OPS</h2>
+            <h2>ADMIN BIDANG</h2>
         </div>
         <nav class="sidebar-menu">
             <div class="menu-label">Main Dashboard</div>
@@ -136,23 +128,6 @@ $recent_mail = $stmt->fetchAll();
                     <span class="stat-num" style="color: #64748b;"><?= $completed ?></span>
                     <span class="stat-label">Total Selesai</span>
                 </div>
-            </div>
-
-            <!-- Distribution Chart (Simple CSS) -->
-            <h3 style="font-weight: 800; color: var(--navy); margin-bottom: 1.5rem;">Distribusi Surat Per Minggu</h3>
-            <div class="chart-container">
-                <?php 
-                $days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum'];
-                foreach ($days as $day): 
-                    $h = rand(30, 90); // Dummy for now
-                ?>
-                    <div class="bar-group">
-                        <div class="bar" style="height: <?= $h ?>%;">
-                            <span class="bar-val"><?= round($h/5) ?></span>
-                        </div>
-                        <span class="bar-label"><?= $day ?></span>
-                    </div>
-                <?php endforeach; ?>
             </div>
 
             <!-- Recent Table -->

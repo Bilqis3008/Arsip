@@ -72,59 +72,8 @@ $mails = $stmt->fetchAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surat Keluar / Verifikasi Draft - Admin Ops</title>
-    <link rel="stylesheet" href="../css/admin_perbidang/home.css">
-    <link rel="stylesheet" href="../css/admin_perbidang/surat_masuk.css">
-    <style>
-        .badge-status.status-pending_approval { background: #fef3c7; color: #b45309; }
-        .badge-status.status-disetujui { background: #dcfce7; color: #16a34a; }
-        .badge-status.status-diarsipkan { background: #e0e7ff; color: #4338ca; }
-
-        /* Custom Modal Styles */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(8px);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.2s ease-out;
-        }
-        .modal-card {
-            background: #ffffff;
-            width: 100%;
-            max-width: 450px;
-            padding: 2.5rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            text-align: center;
-            transform: translateY(0);
-            animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-icon {
-            width: 70px;
-            height: 70px;
-            background: #fef3c7;
-            color: #d97706;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 1.5rem;
-        }
-        .modal-title { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem; }
-        .modal-message { font-size: 0.95rem; color: #64748b; line-height: 1.6; margin-bottom: 2rem; }
-        .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        .btn-modal { padding: 0.85rem; border-radius: 0.75rem; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s; }
-        .btn-cancel { background: #f1f5f9; color: #64748b; }
-        .btn-cancel:hover { background: #e2e8f0; }
-        .btn-confirm { background: var(--primary); color: white; }
-        .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px var(--primary-glow); }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    <link rel="stylesheet" href="../css/admin_perbidang/home.css?v=1.1">
+    <link rel="stylesheet" href="../css/admin_perbidang/surat_keluar.css?v=1.1">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>

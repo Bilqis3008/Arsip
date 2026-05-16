@@ -1,17 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('../theme.css');
 
-:root {
-    --primary: #059669;
-    --navy: #0f172a;
-    --bg-body: #f8fafc;
-    --border: #e2e8f0;
-    --text-muted: #64748b;
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-}
-
-.icon { width: 22px; height: 22px; stroke-width: 2; color: var(--primary); }
-
-/* --- GRID LAYOUT --- */
+/* --- DISPOSISI SPECIFIC --- */
 .dispo-container {
     display: grid;
     grid-template-columns: 1fr 450px;
@@ -19,8 +8,7 @@
     align-items: flex-start;
 }
 
-/* --- LEFT: DOCUMENT VIEW --- */
-.card-doc {
+.card-doc, .card-form {
     background: #fff;
     border-radius: 2rem;
     border: 1px solid var(--border);
@@ -34,8 +22,7 @@
     margin-bottom: 2rem;
 }
 
-.doc-header h2 { font-size: 1.5rem; font-weight: 800; color: var(--navy); margin-bottom: 0.5rem; }
-.doc-header .badge { background: #dcfce7; color: #059669; padding: 0.35rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+.doc-header .badge { background: #eef2ff; color: #4338ca; padding: 0.35rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
 
 .kadin-instruction {
     background: #fffbeb;
@@ -67,47 +54,18 @@
 }
 
 .meta-item label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem; }
-.meta-item span { display: block; font-size: 1rem; font-weight: 600; color: var(--navy); }
+.meta-item span { display: block; font-size: 1rem; font-weight: 600; color: var(--text-main); }
 
-/* --- RIGHT: FORM --- */
 .card-form {
-    background: #fff;
-    border-radius: 2rem;
-    border: 1px solid var(--border);
-    padding: 2.5rem;
-    box-shadow: var(--shadow-md);
     position: sticky;
     top: 105px;
 }
 
-.form-title { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2.5rem; }
-.form-title h3 { font-size: 1.1rem; font-weight: 800; color: var(--navy); }
-
-.form-group { margin-bottom: 1.5rem; }
-.form-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem; text-transform: uppercase; }
-
-select, textarea {
-    width: 100%;
-    padding: 0.875rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 0.75rem;
-    font-size: 0.9375rem;
-    background: #fdfdfd;
-}
-
-select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
-}
-
-textarea { height: 140px; resize: none; }
-
 .btn-submit {
     width: 100%;
     padding: 1rem;
-    background: var(--navy);
-    color: var(--primary);
+    background: var(--primary);
+    color: white;
     border: none;
     border-radius: 1rem;
     font-size: 1rem;
@@ -121,10 +79,9 @@ textarea { height: 140px; resize: none; }
 }
 
 .btn-submit:hover {
-    background: var(--primary);
-    color: white;
+    background: var(--primary-dark);
     transform: translateY(-3px);
-    box-shadow: 0 10px 15px -3px rgba(5, 150, 105, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
 }
 
 @media (max-width: 1100px) {

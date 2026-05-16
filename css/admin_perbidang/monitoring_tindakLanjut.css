@@ -1,0 +1,77 @@
+@import url('../theme.css');
+
+/* --- MONITORING TINDAK LANJUT SPECIFIC --- */
+.type-badge { 
+    padding: 0.25rem 0.5rem; 
+    border-radius: 0.25rem; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    margin-bottom: 0.5rem; 
+    display: inline-block; 
+}
+
+.type-masuk { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.type-keluar { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+
+.modal-overlay { 
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(15, 23, 42, 0.5); 
+    z-index: 1000; 
+    align-items: center; 
+    justify-content: center; 
+    padding: 1rem; 
+    backdrop-filter: blur(4px); 
+}
+
+.modal-content { 
+    background: #fff; 
+    width: 100%; 
+    max-width: 500px; 
+    border-radius: 1rem; 
+    padding: 2rem; 
+    position: relative; 
+    max-height: 90vh; 
+    overflow-y: auto; 
+}
+
+.modal-close { 
+    position: absolute; 
+    top: 1.5rem; 
+    right: 1.5rem; 
+    background: none; 
+    border: none; 
+    font-size: 1.5rem; 
+    color: #64748b; 
+    cursor: pointer; 
+}
+
+.timeline { 
+    position: relative; 
+    margin-top: 1rem; 
+    padding-left: 20px; 
+    border-left: 2px solid #e2e8f0; 
+}
+
+.timeline-item { position: relative; padding-bottom: 1.5rem; }
+
+.timeline-item::before { 
+    content: ''; 
+    position: absolute; 
+    left: -26px; 
+    top: 0; 
+    width: 10px; 
+    height: 10px; 
+    border-radius: 50%; 
+    background: #fff; 
+    border: 2px solid #cbd5e1; 
+}
+
+.timeline-item.done::before { background: #10b981; border-color: #10b981; }
+.timeline-item.active::before { background: #3b82f6; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+
+.timeline-content h4 { margin: 0 0 0.25rem; color: #0f172a; font-size: 0.95rem; }
+.timeline-content p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; }
+.timeline-time { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }

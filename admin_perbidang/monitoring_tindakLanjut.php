@@ -55,9 +55,11 @@ $query_m = "SELECT sm.*, d.tanggal_disposisi, d.status_disposisi, b.nama_bidang,
       AND (
           sm.status NOT IN ('selesai', 'diarsipkan') 
           OR (sm.status = 'selesai' AND sm.perlu_balasan = 1 AND (sk.status IS NULL OR sk.status != 'diarsipkan'))
-      )";
+          OR (? != '')
+      )
+      ";
 
-$params_m = [$id_bidang];
+$params_m = [$id_bidang, $search];
 if ($search) {
     $query_m .= " AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ? OR sm.pengirim LIKE ?)";
     array_push($params_m, "%$search%", "%$search%", "%$search%");
@@ -68,15 +70,16 @@ $mails_m = $stmt_m->fetchAll();
 foreach ($mails_m as &$m) { $m['tipe'] = 'masuk'; }
 unset($m);
 
-// --- MAIL KELUAR (Unfinished & Independent) ---
 $query_k = "SELECT sk.*, u.nama as pengirim_user, u.id_bidang, s.nama_seksi, b.nama_bidang 
       FROM surat_keluar sk 
       LEFT JOIN users u ON sk.uploaded_by = u.nip 
       LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
       LEFT JOIN bidang b ON u.id_bidang = b.id_bidang 
-      WHERE sk.id_surat_masuk IS NULL AND sk.status != 'diarsipkan' AND u.id_bidang = ?";
+      WHERE sk.id_surat_masuk IS NULL 
+      AND (sk.status != 'diarsipkan' OR ? != '') 
+      AND u.id_bidang = ?";
 
-$params_k = [$id_bidang];
+$params_k = [$search, $id_bidang];
 if ($search) {
     $query_k .= " AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ? OR sk.tujuan LIKE ?)";
     array_push($params_k, "%$search%", "%$search%", "%$search%");
@@ -99,26 +102,7 @@ usort($mails, function($a, $b) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Surat - Bidang Ops</title>
-    <link rel="stylesheet" href="../css/admin_perbidang/home.css">
-    <link rel="stylesheet" href="../css/sekretariat/monitoring_surat.css">
-    <style>
-        .type-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
-        .type-masuk { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .type-keluar { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
-        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 1rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; color: #64748b; cursor: pointer; }
-        .timeline { position: relative; margin-top: 1rem; padding-left: 20px; border-left: 2px solid #e2e8f0; }
-        .timeline-item { position: relative; padding-bottom: 1.5rem; }
-        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; }
-        .timeline-item.done::before { background: #10b981; border-color: #10b981; }
-        .timeline-item.active::before { background: #3b82f6; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-        
-        .timeline-content h4 { margin: 0 0 0.25rem; color: #0f172a; font-size: 0.95rem; }
-        .timeline-content p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; }
-        .timeline-time { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
-    </style>
+    <link rel="stylesheet" href="../css/admin_perbidang/monitoring_tindakLanjut.css?v=1.1">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
@@ -299,14 +283,18 @@ usort($mails, function($a, $b) {
                     const adminBidangName = mail.nama_admin_bidang || 'Admin Bidang';
                     const deskripsiBidang = mail.nama_bidang ? `(Admin ${mail.nama_bidang})` : '';
                     addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Perlu respon dan tindak lanjut/disposisi internal.`, null, 'active');
-                } else if (mail.status === 'diteruskan' || mail.status === 'selesai') {
+                } else if (mail.status === 'diteruskan' || mail.status === 'selesai' || mail.status === 'diarsipkan') {
                     const adminBidangName = mail.nama_admin_bidang || 'Admin Bidang';
                     const deskripsiBidang = mail.nama_bidang ? `(Admin ${mail.nama_bidang})` : '';
                     addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Telah dikonfirmasi/Tindak Lanjut Admin Bidang.`, null, 'done');
 
                     const seksiTargetName = mail.nama_seksi || 'Staf Sub-Seksi';
                     if (!mail.reply_status) {
-                        addTimelineItem(`${seksiTargetName}`, `Sedang ditindaklanjuti secara internal dalam seksi/staf.`, null, 'active');
+                        if (mail.status === 'diarsipkan' || (mail.status === 'selesai' && !mail.perlu_balasan)) {
+                             addTimelineItem(`${seksiTargetName}`, `Tindak lanjut selesai. Berkas diarsipkan.`, null, 'done');
+                        } else {
+                             addTimelineItem(`${seksiTargetName}`, `Sedang ditindaklanjuti secara internal dalam seksi/staf.`, null, 'active');
+                        }
                     } else {
                         addTimelineItem(`${seksiTargetName}`, `Telah membuat draft surat balasan (${mail.reply_no}).`, null, 'done');
                         
@@ -314,7 +302,7 @@ usort($mails, function($a, $b) {
                             addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Sedang meninjau & memverifikasi draft balasan.`, null, 'active');
                         } else {
                             addTimelineItem(`${adminBidangName} ${deskripsiBidang}`, `Telah menyetujui balasan.`, null, 'done');
-                            addTimelineItem('Finalisasi', 'Surat masuk tuntas dan balasan telah diterbitkan.', null, 'done');
+                            addTimelineItem('Finalisasi', 'Surat masuk tuntas dan balasan telah diterbitkan/diarsipkan.', null, 'done');
                         }
                     }
                 }
@@ -356,6 +344,9 @@ usort($mails, function($a, $b) {
                 } else if (mail.status === 'disetujui') {
                     addTimelineItem(reviewerFull, 'Telah di tinjau dan disetujui (Verifikasi passed).', null, 'done');
                     addTimelineItem('Sekretariat / Distribusi', 'Menunggu finalisasi arsip dan pemberian stempel/nomor rilis.', null, 'active');
+                } else if (mail.status === 'diarsipkan') {
+                    addTimelineItem(reviewerFull, 'Telah di tinjau dan disetujui.', null, 'done');
+                    addTimelineItem('Sekretariat / Distribusi', 'Surat telah diberikan nomor rilis dan resmi diarsipkan.', null, 'done');
                 }
             }
 

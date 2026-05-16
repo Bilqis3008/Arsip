@@ -93,8 +93,8 @@ $error = '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disposisi Internal - Admin Bidang</title>
-    <link rel="stylesheet" href="../css/admin_perbidang/home.css">
-    <link rel="stylesheet" href="../css/admin_perbidang/disposisi_surat.css">
+    <link rel="stylesheet" href="../css/admin_perbidang/home.css?v=1.1">
+    <link rel="stylesheet" href="../css/admin_perbidang/disposisi_surat.css?v=1.1">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
