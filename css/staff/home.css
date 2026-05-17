@@ -130,3 +130,149 @@ body { background: var(--bg-body); color: var(--primary-dark); display: flex; mi
     .main-content { margin-left: 80px; }
     .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* --- EXTRA PREMIUM STYLES FOR HOME --- */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.date-box-header {
+    background: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.date-box-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.date-box-value {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    padding: 0.5rem 1.25rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+}
+
+.user-info-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.2;
+}
+
+.user-name-header {
+    font-weight: 800;
+    color: var(--primary-dark);
+    font-size: 0.9rem;
+}
+
+.user-role-header {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.user-avatar-header {
+    width: 38px;
+    height: 38px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.9rem;
+}
+
+.link-primary-sm {
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link-primary-sm:hover {
+    color: var(--primary-dark);
+}
+
+.empty-state-text {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+}
+
+.data-table-full {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-header-row {
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+}
+
+.table-header-col {
+    padding: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.table-body-row {
+    border-bottom: 1px solid #f8fafc;
+}
+
+.table-body-col {
+    padding: 1.25rem 1rem;
+}
+
+.perihal-title-text {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--primary-dark);
+}
+
+.pemberi-subtext {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.instruksi-col-text {
+    padding: 1.25rem 1rem;
+    font-size: 0.875rem;
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+.date-col-text {
+    padding: 1.25rem 1rem;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: var(--text-muted);
+}
+

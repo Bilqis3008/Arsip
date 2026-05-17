@@ -127,8 +127,8 @@ $error = '';
         </header>
 
         <div class="content-body">
-            <?php if ($message): ?><div style="padding: 1rem; background: #dcfce7; color: #15803d; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $message ?></div><?php endif; ?>
-            <?php if ($error): ?><div style="padding: 1rem; background: #fee2e2; color: #b91c1c; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $error ?></div><?php endif; ?>
+            <?php if ($message): ?><div class="alert-success"><?= $message ?></div><?php endif; ?>
+            <?php if ($error): ?><div class="alert-danger"><?= $error ?></div><?php endif; ?>
 
             <div class="dispo-container">
                 <!-- Left: Doc & Kadin Inst -->
@@ -140,15 +140,15 @@ $error = '';
 
                     <?php if ($mail['instruksi_kadin']): ?>
                         <div class="kadin-instruction">
-                            <p style="font-weight: 600; color: #92400e; line-height: 1.6;"><?= nl2br(htmlspecialchars($mail['instruksi_kadin'])) ?></p>
-                            <div style="margin-top: 1rem; font-size: 0.7rem; color: #b45309; font-weight: 800;">DITERIMA PADA: <?= date('d M Y H:i', strtotime($mail['tgl_kadin'])) ?></div>
+                            <p class="kadin-instruction-text"><?= nl2br(htmlspecialchars($mail['instruksi_kadin'])) ?></p>
+                            <div class="kadin-instruction-meta">DITERIMA PADA: <?= date('d M Y H:i', strtotime($mail['tgl_kadin'])) ?></div>
                         </div>
                     <?php endif; ?>
 
                     <div class="doc-meta-grid">
                         <div class="meta-item"><label>Nomor Surat</label><span><?= htmlspecialchars($mail['nomor_surat']) ?></span></div>
                         <div class="meta-item"><label>Pengirim</label><span><?= htmlspecialchars($mail['pengirim']) ?></span></div>
-                        <div class="meta-item"><label>Sifat Surat</label><span style="color: var(--primary); text-transform: uppercase;"><?= ucfirst($mail['sifat_surat']) ?></span></div>
+                        <div class="meta-item"><label>Sifat Surat</label><span class="meta-sifat-text"><?= ucfirst($mail['sifat_surat']) ?></span></div>
                     </div>
                 </div>
 
@@ -184,11 +184,11 @@ $error = '';
                         </button>
                     </form>
                     <?php else: ?>
-                        <div style="text-align: center; padding: 2rem; border-radius: 1rem; background: #f8fafc; border: 1px solid var(--border);">
-                            <svg class="icon" viewBox="0 0 24 24" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 1rem;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
-                            <p style="font-weight: 700; color: var(--navy);">Sudah Diteruskan</p>
-                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Surat ini sedang dalam proses tindak lanjut oleh seksi terkait.</p>
-                            <a href="monitoring_tindakLanjut.php?id=<?= $id_surat ?>" class="btn-submit" style="margin-top: 1.5rem; text-decoration: none;">Cek Progress</a>
+                        <div class="processed-alert">
+                            <svg class="icon processed-alert-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
+                            <p class="processed-alert-title">Sudah Diteruskan</p>
+                            <p class="processed-alert-subtitle">Surat ini sedang dalam proses tindak lanjut oleh seksi terkait.</p>
+                            <a href="monitoring_tindakLanjut.php?id=<?= $id_surat ?>" class="btn-submit processed-alert-btn">Cek Progress</a>
                         </div>
                     <?php endif; ?>
                 </div>

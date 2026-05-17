@@ -215,28 +215,6 @@ while ($row = $stmt_admin->fetch()) {
     <link rel="stylesheet" href="../css/sekretariat/surat_masuk.css">
     <link rel="stylesheet" href="../css/sekretariat/monitoring_laporan.css">
     <link rel="stylesheet" href="../css/notifications.css">
-    <style>
-        .report-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
-        .summary-premium-card { background: #fff; padding: 2rem; border-radius: 2rem; border: 1px solid var(--border); display: flex; align-items: center; gap: 1.5rem; transition: var(--transition); }
-        .summary-premium-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-premium); }
-        .s-icon { width: 60px; height: 60px; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
-        .s-info h4 { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.25rem; }
-        .s-info .s-value { font-size: 2rem; font-weight: 900; color: var(--text-main); line-height: 1.2; }
-        
-        /* Modal Style for Laporan */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; padding: 2rem; }
-        .modal-overlay.active { display: flex; }
-        .modal-card { background: #fff; border-radius: 2rem; width: 100%; max-width: 650px; padding: 2.5rem; position: relative; animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-        .modal-header h2 { font-size: 1.5rem; font-weight: 800; color: var(--text-main); }
-        .btn-close { background: #f1f5f9; border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
-        .btn-close:hover { background: #e2e8f0; color: var(--danger); }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-        .full-width { grid-column: span 2; }
-        
-        @media print { .sidebar, .content-header, .filter-card, .btn, .action-cell, .action-btns { display: none !important; } .main-content { margin-left: 0 !important; } .summary-premium-card { border: 1px solid #000 !important; } }
-    </style>
 </head>
 <body>
     <aside class="sidebar">
@@ -264,7 +242,7 @@ while ($row = $stmt_admin->fetch()) {
 
     <main class="main-content">
         <header class="content-header">
-            <div class="header-title"><h1>Laporan Arsip</h1><p style="font-size:0.9rem; color:var(--text-muted);">Rekapitulasi data surat masuk dan keluar yang telah terselesaikan.</p></div>
+            <div class="header-title"><h1>Laporan Arsip</h1><p class="header-desc-text">Rekapitulasi data surat masuk dan keluar yang telah terselesaikan.</p></div>
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-name"><?= htmlspecialchars($admin['nama'] ?? 'Admin') ?></span>
@@ -277,18 +255,18 @@ while ($row = $stmt_admin->fetch()) {
         <div class="content-body">
             <!-- Alert Notifications -->
             <?php if ($success_msg): ?>
-                <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 1rem; border-radius: 1rem; border: 1px solid var(--success); margin-bottom: 1.5rem; font-weight: 600;">
-                    <svg class="icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 0.5rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $success_msg ?>
+                <div class="alert-message-success">
+                    <svg class="icon alert-message-success-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $success_msg ?>
                 </div>
             <?php endif; ?>
             <?php if ($error_msg): ?>
-                <div style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 1rem; border-radius: 1rem; border: 1px solid var(--danger); margin-bottom: 1.5rem; font-weight: 600;">
-                    <svg class="icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 0.5rem;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <?= $error_msg ?>
+                <div class="alert-message-danger">
+                    <svg class="icon alert-message-danger-icon"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <?= $error_msg ?>
                 </div>
             <?php endif; ?>
 
-            <div class="filter-card" style="margin-bottom:2rem;">
-                <form method="GET" id="reportForm" style="display:flex; flex-wrap:wrap; gap:1rem; align-items:flex-end;">
+            <div class="filter-card filter-card-container">
+                <form method="GET" id="reportForm" class="filter-form-wrap">
                     <div class="form-group">
                         <label>Jenis Laporan</label>
                         <select name="jenis_laporan" onchange="this.form.submit()">
@@ -299,53 +277,53 @@ while ($row = $stmt_admin->fetch()) {
                     </div>
                     <div class="form-group"><label>Mulai</label><input type="date" name="date_start" value="<?= $date_start ?>"></div>
                     <div class="form-group"><label>Sampai</label><input type="date" name="date_end" value="<?= $date_end ?>"></div>
-                    <button type="submit" class="btn btn-primary" style="height:46px;"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter</button>
-                    <button type="button" onclick="openAddModal()" class="btn btn-info" style="height:46px; background:var(--info); color:#fff;"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg> Tambah Laporan</button>
-                    <button type="button" onclick="window.print()" class="btn btn-success" style="height:46px; margin-left:auto;"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Cetak Laporan</button>
+                    <button type="submit" class="btn btn-primary filter-btn-submit"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter</button>
+                    <button type="button" onclick="openAddModal()" class="btn btn-info filter-btn-add"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg> Tambah Laporan</button>
+                    <button type="button" onclick="window.print()" class="btn btn-success filter-btn-print"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Cetak Laporan</button>
                 </form>
             </div>
 
             <div class="report-summary-grid">
                 <div class="summary-premium-card">
-                    <div class="s-icon" style="background:rgba(59, 130, 246, 0.1); color:var(--primary);"><svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+                    <div class="s-icon s-icon-masuk"><svg class="icon s-icon-masuk-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
                     <div class="s-info"><h4>Masuk Periode</h4><div class="s-value"><?= $total_masuk_period ?></div></div>
                 </div>
                 <div class="summary-premium-card">
-                    <div class="s-icon" style="background:rgba(16, 185, 129, 0.1); color:var(--success);"><svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></div>
+                    <div class="s-icon s-icon-keluar"><svg class="icon s-icon-keluar-svg" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></div>
                     <div class="s-info"><h4>Keluar Periode</h4><div class="s-value"><?= $total_keluar_period ?></div></div>
                 </div>
-                <div class="summary-premium-card" style="background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none;">
-                    <div class="s-icon" style="background:rgba(255,255,255,0.2); color:#fff;"><svg class="icon" style="width:30px; height:30px;" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></div>
-                    <div class="s-info"><h4 style="color:rgba(255,255,255,0.7);">Total Arsip</h4><div class="s-value" style="color:#fff;"><?= $total_surat_period ?></div></div>
+                <div class="summary-premium-card s-card-total-arsip">
+                    <div class="s-icon s-icon-total"><svg class="icon s-icon-total-svg" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg></div>
+                    <div class="s-info"><h4 class="s-info-total-title">Total Arsip</h4><div class="s-value s-info-total-value"><?= $total_surat_period ?></div></div>
                 </div>
             </div>
 
             <?php if ($jenis_laporan === 'surat_masuk' || $jenis_laporan === 'total_surat'): ?>
-                <div class="report-content" style="margin-bottom:3rem;">
+                <div class="report-content report-content-masuk">
                     <div class="table-header"><h3>Daftar Surat Masuk Terselesaikan</h3><span class="badge badge-success"><?= $total_masuk_period ?> Dokumen</span></div>
                     <div class="table-container">
                         <table class="data-table">
-                            <thead><tr><th>Identitas Surat</th><th>Pengirim</th><th>Tanggal Terima</th><th>Perihal</th><th style="text-align:center;">Aksi</th></tr></thead>
+                            <thead><tr><th>Identitas Surat</th><th>Pengirim</th><th>Tanggal Terima</th><th>Perihal</th><th class="action-th-center">Aksi</th></tr></thead>
                             <tbody>
                                 <?php if (empty($report_masuk)): ?>
-                                    <tr><td colspan="5" style="text-align:center; padding:3rem; color:var(--text-muted);">Tidak ada data surat masuk.</td></tr>
+                                    <tr><td colspan="5" class="empty-table-row">Tidak ada data surat masuk.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($report_masuk as $m): ?>
                                         <tr>
-                                            <td><div style="font-weight:800;"><?= htmlspecialchars($m['nomor_surat'] ?? '') ?></div><div style="font-size:0.75rem; color:var(--text-muted);">Agenda: <?= htmlspecialchars($m['nomor_agenda'] ?? '-') ?></div></td>
+                                            <td><div class="user-no-text"><?= htmlspecialchars($m['nomor_surat'] ?? '') ?></div><div class="agenda-subtext">Agenda: <?= htmlspecialchars($m['nomor_agenda'] ?? '-') ?></div></td>
                                             <td><?= htmlspecialchars($m['pengirim'] ?? '-') ?></td>
-                                            <td><b><?= date('d/m/Y', strtotime($m['tanggal_terima'] ?? 'now')) ?></b></td>
+                                            <td><b class="date-bold-text"><?= date('d/m/Y', strtotime($m['tanggal_terima'] ?? 'now')) ?></b></td>
                                             <td>
-                                                <div style="font-weight:700;"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
+                                                <div class="perihal-main-text"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
                                                 <?php if (!empty($m['reply_no'])): ?>
-                                                    <div style="font-size:0.75rem; color:var(--success); margin-top:4px; font-weight:700;"><svg class="icon" style="width:10px; height:10px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Dibalas: <?= htmlspecialchars($m['reply_no']) ?></div>
+                                                    <div class="reply-info-text"><svg class="icon reply-info-icon"><polyline points="20 6 9 17 4 12"></polyline></svg> Dibalas: <?= htmlspecialchars($m['reply_no']) ?></div>
                                                 <?php endif; ?>
                                             </td>
                                             <td class="action-cell">
-                                                <div style="display:flex; gap:0.5rem; justify-content:center;" class="action-btns">
+                                                <div class="action-btns action-btns-flex">
                                                     <?php if ($m['file_path']): ?><a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Surat"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></a><?php endif; ?>
-                                                    <button class="action-btn btn-edit" title="Edit" onclick='openEditMasuk(<?= json_encode($m) ?>)' style="background:rgba(99, 102, 241, 0.1); color:var(--primary);"><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-                                                    <a href="?delete_id=<?= $m['id_surat_masuk'] ?>&type=masuk" class="action-btn btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
+                                                    <button class="action-btn btn-edit btn-edit-custom" title="Edit" onclick='openEditMasuk(<?= json_encode($m) ?>)'><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                                                    <a href="?delete_id=<?= $m['id_surat_masuk'] ?>&type=masuk" class="action-btn btn-delete btn-delete-custom" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -362,22 +340,22 @@ while ($row = $stmt_admin->fetch()) {
                     <div class="table-header"><h3>Daftar Surat Keluar Diarsipkan</h3><span class="badge badge-info"><?= $total_keluar_period ?> Dokumen</span></div>
                     <div class="table-container">
                         <table class="data-table">
-                            <thead><tr><th>Identitas Surat</th><th>Tujuan</th><th>Tanggal Surat</th><th>Perihal</th><th style="text-align:center;">Aksi</th></tr></thead>
+                            <thead><tr><th>Identitas Surat</th><th>Tujuan</th><th>Tanggal Surat</th><th>Perihal</th><th class="action-th-center">Aksi</th></tr></thead>
                             <tbody>
                                 <?php if (empty($report_keluar)): ?>
-                                    <tr><td colspan="5" style="text-align:center; padding:3rem; color:var(--text-muted);">Tidak ada data surat keluar.</td></tr>
+                                    <tr><td colspan="5" class="empty-table-row">Tidak ada data surat keluar.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($report_keluar as $k): ?>
                                         <tr>
-                                            <td><div style="font-weight:800;"><?= htmlspecialchars($k['nomor_surat_keluar'] ?? '') ?></div></td>
+                                            <td><div class="user-no-text"><?= htmlspecialchars($k['nomor_surat_keluar'] ?? '') ?></div></td>
                                             <td><?= htmlspecialchars($k['tujuan'] ?? '-') ?></td>
-                                            <td><b><?= date('d/m/Y', strtotime($k['tanggal_surat'] ?? 'now')) ?></b></td>
+                                            <td><b class="date-bold-text"><?= date('d/m/Y', strtotime($k['tanggal_surat'] ?? 'now')) ?></b></td>
                                             <td><?= htmlspecialchars($k['perihal'] ?? '') ?></td>
                                             <td class="action-cell">
-                                                <div style="display:flex; gap:0.5rem; justify-content:center;" class="action-btns">
+                                                <div class="action-btns action-btns-flex">
                                                     <?php if ($k['file_path']): ?><a href="../uploads/surat_keluar/<?= htmlspecialchars($k['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Dokumen"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></a><?php endif; ?>
-                                                    <button class="action-btn btn-edit" title="Edit" onclick='openEditKeluar(<?= json_encode($k) ?>)' style="background:rgba(99, 102, 241, 0.1); color:var(--primary);"><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-                                                    <a href="?delete_id=<?= $k['id_surat_keluar'] ?>&type=keluar" class="action-btn btn-delete" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')" style="background:rgba(239, 68, 68, 0.1); color:var(--danger);"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
+                                                    <button class="action-btn btn-edit btn-edit-custom" title="Edit" onclick='openEditKeluar(<?= json_encode($k) ?>)'><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
+                                                    <a href="?delete_id=<?= $k['id_surat_keluar'] ?>&type=keluar" class="action-btn btn-delete btn-delete-custom" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -397,9 +375,9 @@ while ($row = $stmt_admin->fetch()) {
     <div id="addModal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header"><h2>Tambah Arsip Baru</h2><button class="btn-close" onclick="closeAddModal()">✕</button></div>
-            <div style="display:flex; gap:1rem; margin-bottom:2rem; background:#f1f5f9; padding:0.5rem; border-radius:1rem;">
-                <button class="btn" id="btnTabMasuk" onclick="switchAddTab('masuk')" style="flex:1; justify-content:center;">Surat Masuk</button>
-                <button class="btn" id="btnTabKeluar" onclick="switchAddTab('keluar')" style="flex:1; justify-content:center;">Surat Keluar</button>
+            <div class="add-modal-tabs">
+                <button class="btn btn-primary tab-btn-flex" id="btnTabMasuk" onclick="switchAddTab('masuk')">Surat Masuk</button>
+                <button class="btn tab-btn-flex" id="btnTabKeluar" onclick="switchAddTab('keluar')">Surat Keluar</button>
             </div>
             
             <form id="formMasuk" method="POST" class="add-tab-content">
@@ -410,7 +388,7 @@ while ($row = $stmt_admin->fetch()) {
                     <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" required></div>
                     <div class="form-group full-width"><label>Tanggal Terima</label><input type="date" name="tanggal_terima" value="<?= date('Y-m-d') ?>" required></div>
                 </div>
-                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Simpan Arsip</button></div>
+                <div class="modal-footer-align"><button type="submit" class="btn btn-primary">Simpan Arsip</button></div>
             </form>
 
             <form id="formKeluar" method="POST" class="add-tab-content" style="display:none;">
@@ -421,7 +399,7 @@ while ($row = $stmt_admin->fetch()) {
                     <div class="form-group full-width"><label>Perihal</label><input type="text" name="perihal" required></div>
                     <div class="form-group full-width"><label>Tanggal Surat</label><input type="date" name="tanggal_surat" value="<?= date('Y-m-d') ?>" required></div>
                 </div>
-                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Simpan Arsip</button></div>
+                <div class="modal-footer-align"><button type="submit" class="btn btn-primary">Simpan Arsip</button></div>
             </form>
         </div>
     </div>
@@ -441,7 +419,7 @@ while ($row = $stmt_admin->fetch()) {
                     <div class="form-group"><label>Tanggal Terima</label><input type="date" name="tanggal_terima" id="edit_tgl_masuk" required></div>
                     <div class="form-group"><label>Ganti File (Optional)</label><input type="file" name="file_surat"></div>
                 </div>
-                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Update Data</button></div>
+                <div class="modal-footer-align"><button type="submit" class="btn btn-primary">Update Data</button></div>
             </form>
         </div>
     </div>
@@ -461,7 +439,7 @@ while ($row = $stmt_admin->fetch()) {
                     <div class="form-group"><label>Tanggal Surat</label><input type="date" name="tanggal_surat" id="edit_tgl_keluar" required></div>
                     <div class="form-group"><label>Ganti File (Optional)</label><input type="file" name="file_surat"></div>
                 </div>
-                <div style="margin-top:2rem; display:flex; justify-content:flex-end;"><button type="submit" class="btn btn-primary">Update Data</button></div>
+                <div class="modal-footer-align"><button type="submit" class="btn btn-primary">Update Data</button></div>
             </form>
         </div>
     </div>

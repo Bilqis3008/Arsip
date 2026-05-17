@@ -195,12 +195,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span>UNIT KERJA</span>
                             <span><?= htmlspecialchars($user['nama_bidang'] ?? 'Sekretariat') ?></span>
                         </div>
-                        <div class="stat-item" style="border: none;">
+                        <div class="stat-item no-border-bottom">
                             <span>JABATAN</span>
                             <span><?= htmlspecialchars($user['jabatan'] ?? 'Administrator') ?></span>
                         </div>
                     </div>
-                    <div style="margin-top: 1.5rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">
+                    <div class="profile-dept-info">
                         Dinas Kearsipan dan Perpustakaan
                     </div>
                 </div>
@@ -233,9 +233,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </button>
                     </form>
 
-                    <form action="" method="POST" style="margin-top: 2.5rem;">
-                        <div class="form-section-title" style="border-bottom-color: #fee2e2;">
-                            <svg class="icon" viewBox="0 0 24 24" style="color: var(--danger);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <form action="" method="POST" class="form-security-section">
+                        <div class="form-section-title danger-section-header">
+                            <svg class="icon danger-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                             KEAMANAN AKUN
                         </div>
                         <input type="hidden" name="change_password" value="1">
@@ -253,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <input type="password" name="confirm_password" placeholder="Ulangi password baru..." required>
                             </div>
                         </div>
-                        <button type="submit" class="btn-save" style="background: var(--danger);">
+                        <button type="submit" class="btn-save btn-save-danger">
                             <svg class="icon" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             Ganti Password Akun
                         </button>

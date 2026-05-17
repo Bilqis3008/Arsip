@@ -89,52 +89,47 @@ $tasks = $stmt->fetchAll();
                 <h1>Agenda Surat Tugas</h1>
                 <p>Kelola surat yang ditugaskan ke seksi Anda.</p>
             </div>
-            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
+            <div class="header-actions">
                 <div class="explorer-bar-compact">
-                    <form method="GET" class="search-field-premium" style="position: relative; width: 300px;">
+                    <form method="GET" class="search-field-premium">
                         <input type="hidden" name="tab" value="<?= htmlspecialchars((string)$tab) ?>">
-                        <svg class="icon" viewBox="0 0 24 24" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        <input type="text" name="search" placeholder="Cari perihal..." value="<?= htmlspecialchars((string)($search ?? '')) ?>" style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem; border: 1px solid var(--border); border-radius: 1rem; background: #fff; font-size: 0.9rem; transition: var(--transition);">
+                        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" name="search" placeholder="Cari perihal..." value="<?= htmlspecialchars((string)($search ?? '')) ?>">
                     </form>
                 </div>
-                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
-                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+                <div class="date-box-header">
+                    <div class="date-box-label">Tanggal</div>
+                    <div class="date-box-value"><?= date('d F Y') ?></div>
                 </div>
-                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
-                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
-                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
+                <div class="user-profile-header">
+                    <div class="user-info-header">
+                        <span class="user-name-header"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
+                        <span class="user-role-header">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
                     </div>
-                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                    <div class="user-avatar-header"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
                 </div>
             </div>
         </header>
 
         <!-- Tabs Navigation -->
-        <div class="tabs-container" style="margin: 0 2rem 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 1px;">
-            <a href="surat_masuk.php?tab=pending" class="tab-link <?= $tab === 'pending' ? 'active' : '' ?>" style="padding: 0.75rem 1.5rem; text-decoration: none; color: var(--text-muted); font-weight: 700; font-size: 0.9rem; position: relative; transition: all 0.2s; display: flex; align-items: center;">
-                <svg class="icon" viewBox="0 0 24 24" style="width:18px; height:18px; margin-right:8px;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
+        <div class="tabs-container">
+            <a href="surat_masuk.php?tab=pending" class="tab-link <?= $tab === 'pending' ? 'active' : '' ?>">
+                <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
                 Belum Dikerjakan
-                <?php if($tab === 'pending'): ?><div style="position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background: var(--primary); border-radius: 3px;"></div><?php endif; ?>
+                <?php if($tab === 'pending'): ?><div class="tab-link-indicator"></div><?php endif; ?>
             </a>
-            <a href="surat_masuk.php?tab=history" class="tab-link <?= $tab === 'history' ? 'active' : '' ?>" style="padding: 0.75rem 1.5rem; text-decoration: none; color: var(--text-muted); font-weight: 700; font-size: 0.9rem; position: relative; transition: all 0.2s; display: flex; align-items: center;">
-                <svg class="icon" viewBox="0 0 24 24" style="width:18px; height:18px; margin-right:8px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            <a href="surat_masuk.php?tab=history" class="tab-link <?= $tab === 'history' ? 'active' : '' ?>">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 Riwayat Selesai
-                <?php if($tab === 'history'): ?><div style="position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background: var(--primary); border-radius: 3px;"></div><?php endif; ?>
+                <?php if($tab === 'history'): ?><div class="tab-link-indicator"></div><?php endif; ?>
             </a>
         </div>
 
-        <style>
-            .tab-link.active { color: var(--navy) !important; }
-            .tab-link:hover { color: var(--primary) !important; background: #f8fafc; border-radius: 0.5rem 0.5rem 0 0; }
-        </style>
-
         <section class="task-list">
             <?php if (empty($tasks)): ?>
-                <div style="text-align: center; padding: 5rem; background: white; border-radius: 2rem; border: 1px solid var(--border);">
-                    <svg class="icon" viewBox="0 0 24 24" style="width: 48px; height: 48px; color: var(--text-muted); margin-bottom: 1.5rem;"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-                    <p style="font-weight: 700; color: var(--text-muted);">
+                <div class="empty-task-container">
+                    <svg class="icon empty-task-icon" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    <p class="empty-task-text">
                         <?= $tab === 'pending' ? 'Belum ada surat yang ditugaskan ke seksi ini.' : 'Belum ada riwayat tugas yang tuntas.' ?>
                     </p>
                 </div>
@@ -143,38 +138,38 @@ $tasks = $stmt->fetchAll();
                     $is_selesai = ($tab === 'history');
                     $is_mine = ($t['nip_penerima'] === $_SESSION['user_nip']);
                 ?>
-                    <div class="task-item" style="<?= $is_mine ? 'border-left: 5px solid var(--primary);' : '' ?>">
+                    <div class="task-item <?= $is_mine ? 'task-mine' : '' ?>">
                         <div class="date-box">
                             <div class="day"><?= date('d', strtotime($t['tanggal_terima'] ?? 'now')) ?></div>
                             <div class="month"><?= date('M Y', strtotime($t['tanggal_terima'] ?? 'now')) ?></div>
                         </div>
                         <div class="task-info">
-                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+                            <div class="task-status-row">
                                 <?php if ($is_selesai): ?>
                                     <?php if (in_array($t['reply_status_sk'], ['disetujui', 'diarsipkan'])): ?>
-                                        <span style="background: #ecfdf5; color: #059669; padding: 0.1rem 0.6rem; border-radius: 1rem; font-size: 0.7rem; font-weight: 800; border: 1px solid #10b981;">✓ SELESAI</span>
+                                        <span class="badge-selesai">✓ SELESAI</span>
                                     <?php else: ?>
-                                        <span style="background: #fffbeb; color: #d97706; padding: 0.1rem 0.6rem; border-radius: 1rem; font-size: 0.7rem; font-weight: 800; border: 1px solid #f59e0b;">⏳ SEDANG DIVERIFIKASI</span>
+                                        <span class="badge-verifikasi">⏳ SEDANG DIVERIFIKASI</span>
                                     <?php endif; ?>
                                 <?php else: ?>
                                     <span class="task-badge"><?= $is_mine ? 'Tugas Anda' : 'Tugas Seksi' ?></span>
                                 <?php endif; ?>
                             </div>
-                            <h3 class="task-perihal" style="margin: 0;"><?= htmlspecialchars($t['perihal'] ?? '') ?></h3>
-                            <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-muted);">No: <?= htmlspecialchars($t['nomor_surat'] ?? '') ?></p>
+                            <h3 class="task-perihal"><?= htmlspecialchars($t['perihal'] ?? '') ?></h3>
+                            <p class="task-nomor">No: <?= htmlspecialchars($t['nomor_surat'] ?? '') ?></p>
                             <?php if ($t['penerima_nama']): ?>
-                                <div style="margin-top: 0.35rem; font-size: 0.75rem; color: var(--primary); font-weight: 700;">
-                                    <svg class="icon" viewBox="0 0 24 24" style="width: 14px; height: 14px; vertical-align: middle;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                <div class="assigned-staff-info">
+                                    <svg class="icon assigned-staff-icon" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                                     Ditugaskan ke: <?= htmlspecialchars($t['penerima_nama']) ?>
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <div class="sender-box" style="flex: 0 0 200px;">
-                            <svg class="icon" viewBox="0 0 24 24" style="color: var(--primary); margin-right: 0.5rem;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span style="font-size: 0.9rem;"><?= htmlspecialchars($t['pengirim'] ?? '') ?></span>
+                        <div class="sender-box">
+                            <svg class="icon sender-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span class="sender-name-text"><?= htmlspecialchars($t['pengirim'] ?? '') ?></span>
                         </div>
-                        <div class="task-actions" style="margin-left: auto;">
-                            <a href="tindak_lanjut.php?id=<?= (int)$t['id_surat_masuk'] ?>" class="btn-work" style="<?= $is_selesai ? 'background: var(--navy); color: var(--primary); border: none; padding: 0.75rem 1.5rem;' : '' ?>">
+                        <div class="task-actions">
+                            <a href="tindak_lanjut.php?id=<?= (int)$t['id_surat_masuk'] ?>" class="btn-work <?= $is_selesai ? 'btn-work-history' : '' ?>">
                                 <?php if ($is_selesai): ?>
                                     <svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg> Lihat Arsip
                                 <?php else: ?>

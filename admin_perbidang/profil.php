@@ -179,7 +179,7 @@ $admin = $stmt->fetch();
                     </form>
                     <h3><?= htmlspecialchars($admin['nama']) ?></h3>
                     <p><?= htmlspecialchars($admin['nama_bidang']) ?></p>
-                    <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">
+                    <div class="panel-subtitle">
                         Dinas Kearsipan dan Perpustakaan
                     </div>
                 </div>
@@ -217,7 +217,7 @@ $admin = $stmt->fetch();
                             <span class="detail-label">JABATAN</span>
                             <span class="detail-val"><?= htmlspecialchars($admin['jabatan'] ?: 'Administrator Bidang') ?></span>
                         </div>
-                        <div class="detail-row" style="border: none;">
+                        <div class="detail-row detail-row-no-border">
                             <span class="detail-label">UNIT KERJA</span>
                             <span class="detail-val"><?= htmlspecialchars($admin['nama_bidang']) ?></span>
                         </div>
@@ -228,9 +228,9 @@ $admin = $stmt->fetch();
                         </button>
                     </form>
 
-                    <form action="" method="POST" style="margin-top: 4rem;">
-                        <div class="section-title" style="border-bottom-color: #fee2e2;">
-                            <svg class="icon" viewBox="0 0 24 24" style="color: var(--danger);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 
+                    <form action="" method="POST" class="security-form-container">
+                        <div class="section-title section-title-danger">
+                            <svg class="icon section-title-danger-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 
                             Keamanan Akun
                         </div>
                         <input type="hidden" name="update_password" value="1">

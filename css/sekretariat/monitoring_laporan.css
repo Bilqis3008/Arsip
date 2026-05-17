@@ -283,3 +283,320 @@ input:focus, select:focus {
 @media (max-width: 1024px) {
     .rekap-grid { grid-template-columns: 1fr; }
 }
+
+/* --- EXTRA PREMIUM POLISH FOR MONITORING LAPORAN --- */
+.report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.summary-premium-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: var(--transition);
+}
+
+.summary-premium-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-premium);
+}
+
+.s-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.s-info h4 {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+}
+
+.s-info .s-value {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+/* Modal Style for Laporan */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-card {
+    background: #fff;
+    border-radius: 2rem;
+    width: 100%;
+    max-width: 650px;
+    padding: 2.5rem;
+    position: relative;
+    animation: modalIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+@keyframes modalIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.btn-close {
+    background: #f1f5f9;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.btn-close:hover {
+    background: #e2e8f0;
+    color: var(--danger);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+/* --- MOVED FROM INLINE --- */
+.header-desc-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.alert-message-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--success);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.alert-message-success-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.alert-message-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--danger);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.alert-message-danger-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.filter-card-container {
+    margin-bottom: 2rem;
+}
+
+.filter-form-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.filter-btn-submit {
+    height: 46px;
+}
+
+.filter-btn-add {
+    height: 46px;
+    background: var(--info);
+    color: #fff;
+}
+
+.filter-btn-print {
+    height: 46px;
+    margin-left: auto;
+}
+
+.s-icon-masuk {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--primary);
+}
+
+.s-icon-masuk-svg {
+    width: 30px;
+    height: 30px;
+}
+
+.s-icon-keluar {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+}
+
+.s-icon-keluar-svg {
+    width: 30px;
+    height: 30px;
+}
+
+.s-card-total-arsip {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #fff;
+    border: none;
+}
+
+.s-icon-total {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+}
+
+.s-icon-total-svg {
+    width: 30px;
+    height: 30px;
+}
+
+.s-info-total-title {
+    color: rgba(255,255,255,0.7) !important;
+}
+
+.s-info-total-value {
+    color: #fff !important;
+}
+
+.report-content-masuk {
+    margin-bottom: 3rem;
+}
+
+.action-th-center {
+    text-align: center;
+}
+
+.empty-table-row {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.user-no-text {
+    font-weight: 800;
+}
+
+.agenda-subtext {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.date-bold-text {
+    font-weight: 700;
+}
+
+.perihal-main-text {
+    font-weight: 700;
+}
+
+.reply-info-text {
+    font-size: 0.75rem;
+    color: var(--success);
+    margin-top: 4px;
+    font-weight: 700;
+}
+
+.reply-info-icon {
+    width: 10px;
+    height: 10px;
+}
+
+.action-btns-flex {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.btn-edit-custom {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+}
+
+.btn-delete-custom {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+}
+
+.add-modal-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 1rem;
+}
+
+.tab-btn-flex {
+    flex: 1;
+    justify-content: center;
+}
+
+.modal-footer-align {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+

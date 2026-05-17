@@ -141,7 +141,7 @@ usort($mails, function($a, $b) {
             </div>
         </header>
 
-        <div class="content-body" style="padding-top: 1rem;">
+        <div class="content-body content-body-padding">
             <!-- Monitoring Card -->
             <div class="card">
                 <div class="table-controls">
@@ -162,14 +162,14 @@ usort($mails, function($a, $b) {
                         </thead>
                         <tbody>
                             <?php if (empty($mails)): ?>
-                                <tr><td colspan="3" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada berkas yang sedang diproses.</td></tr>
+                                <tr><td colspan="3" class="empty-state-cell">Tidak ada berkas yang sedang diproses.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($mails as $m): ?>
                                 <tr>
                                     <td>
                                         <div class="info-cell">
                                             <span class="type-badge <?= $m['tipe'] == 'masuk' ? 'type-masuk' : 'type-keluar' ?>">Surat <?= $m['tipe'] ?></span><br>
-                                            <b style="font-size: 1rem; color: #0f172a;"><?= htmlspecialchars($m['perihal']) ?></b>
+                                            <b class="info-cell-title"><?= htmlspecialchars($m['perihal']) ?></b>
                                             <span>No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? $m['nomor_surat'] : $m['nomor_surat_keluar']) ?></span>
                                             <span><?= $m['tipe'] === 'masuk' ? 'Pengirim' : 'Tujuan' ?>: <?= htmlspecialchars($m['tipe'] === 'masuk' ? $m['pengirim'] : $m['tujuan']) ?></span>
                                         </div>
@@ -177,34 +177,34 @@ usort($mails, function($a, $b) {
                                     <td>
                                         <?php if ($m['tipe'] === 'masuk'): ?>
                                             <?php if ($m['status'] === 'tercatat'): ?>
-                                                <div style="font-weight: 700; color: #b45309;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Menunggu Disposisi (Meja Kadin)</div>
+                                                <div class="stage-waiting"><svg class="icon stage-waiting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Menunggu Disposisi (Meja Kadin)</div>
                                             <?php elseif ($m['status'] === 'didispokan'): ?>
-                                                <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Surat Masuk / Belum Ditindaklanjuti</div>
-                                                <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Target: <?= htmlspecialchars($m['nama_bidang'] ?: 'Bidang Anda') ?></div>
+                                                <div class="stage-warning"><svg class="icon stage-warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Surat Masuk / Belum Ditindaklanjuti</div>
+                                                <div class="stage-meta">Target: <?= htmlspecialchars($m['nama_bidang'] ?: 'Bidang Anda') ?></div>
                                             <?php elseif ($m['status'] === 'selesai' || $m['status'] === 'diteruskan'): ?>
                                                 <?php if (!$m['reply_status']): ?>
-                                                    <div style="font-weight: 700; color: #2563eb;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Proses Internal Seksi</div>
-                                                    <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Disahkan ke: <?= htmlspecialchars($m['nama_seksi'] ?: 'Staf Seksi') ?></div>
+                                                    <div class="stage-info"><svg class="icon stage-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Proses Internal Seksi</div>
+                                                    <div class="stage-meta">Disahkan ke: <?= htmlspecialchars($m['nama_seksi'] ?: 'Staf Seksi') ?></div>
                                                 <?php elseif ($m['reply_status'] === 'pending_approval'): ?>
-                                                    <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Menunggu Verifikasi Balasan (Meja Anda)</div>
-                                                    <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Draft No: <?= htmlspecialchars($m['reply_no']) ?></div>
+                                                    <div class="stage-warning"><svg class="icon stage-warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Menunggu Verifikasi Balasan (Meja Anda)</div>
+                                                    <div class="stage-meta">Draft No: <?= htmlspecialchars($m['reply_no']) ?></div>
                                                 <?php elseif ($m['reply_status'] === 'disetujui'): ?>
-                                                    <div style="font-weight: 700; color: #059669;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Balasan Disetujui (Tunggu Arsip/Distribusi)</div>
+                                                    <div class="stage-success"><svg class="icon stage-success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Balasan Disetujui (Tunggu Arsip/Distribusi)</div>
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                         <?php else: ?>
                                             <?php if ($m['status'] === 'draft'): ?>
-                                                <div style="font-weight: 700; color: #b45309;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Draft Awal (Staf Seksi)</div>
+                                                <div class="stage-waiting"><svg class="icon stage-waiting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Draft Awal (Staf Seksi)</div>
                                             <?php elseif ($m['status'] === 'pending_approval'): ?>
-                                                <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi (Meja Anda)</div>
+                                                <div class="stage-warning"><svg class="icon stage-warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi (Meja Anda)</div>
                                             <?php elseif ($m['status'] === 'disetujui'): ?>
-                                                <div style="font-weight: 700; color: #059669;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Disetujui (Distribusi / Tunggu Arsip)</div>
+                                                <div class="stage-success"><svg class="icon stage-success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Disetujui (Distribusi / Tunggu Arsip)</div>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; background: #e0e7ff; color: #4338ca; border: none; cursor: pointer;" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
-                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> Tracker
+                                        <button class="btn-tracker" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
+                                            <svg class="icon btn-tracker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> Tracker
                                         </button>
                                     </td>
                                 </tr>
@@ -221,12 +221,12 @@ usort($mails, function($a, $b) {
     <div class="modal-overlay" id="tracker-modal" onclick="closeTracker()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeTracker()">
-                <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg viewBox="0 0 24 24" class="modal-close-svg"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <h3 style="margin-bottom: 0.5rem; color: #0f172a; font-size: 1.25rem;">Live Tracking Alur Surat</h3>
-            <p id="tracker-subtitle" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
+            <h3 class="modal-title">Live Tracking Alur Surat</h3>
+            <p id="tracker-subtitle" class="modal-desc"></p>
             
-            <div id="tracker-mail-info" style="background: #f8fafc; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; display: none;"></div>
+            <div id="tracker-mail-info" class="modal-mail-info"></div>
 
             <div id="tracker-details">
                 <div class="timeline" id="timeline-box"></div>
@@ -253,18 +253,18 @@ usort($mails, function($a, $b) {
 
                 const tgl = new Date(mail.tanggal_terima).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
                 infoBox.innerHTML = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-                        <div style="grid-column: span 2;">
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
-                            <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                    <div class="tracker-info-grid">
+                        <div class="tracker-info-perihal">
+                            <span class="tracker-info-label">Perihal</span>
+                            <strong class="tracker-info-val-strong">${mail.perihal}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Pengirim</span>
-                            <strong style="color: #0f172a;">${mail.pengirim}</strong>
+                            <span class="tracker-info-label">Pengirim</span>
+                            <strong class="tracker-info-val">${mail.pengirim}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Terima</span>
-                            <strong style="color: #0f172a;">${tgl}</strong>
+                            <span class="tracker-info-label">Tanggal Terima</span>
+                            <strong class="tracker-info-val">${tgl}</strong>
                         </div>
                     </div>
                 `;
@@ -313,18 +313,18 @@ usort($mails, function($a, $b) {
 
                 const tgl = new Date(mail.tanggal_surat).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
                 infoBox.innerHTML = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-                        <div style="grid-column: span 2;">
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
-                            <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                    <div class="tracker-info-grid">
+                        <div class="tracker-info-perihal">
+                            <span class="tracker-info-label">Perihal</span>
+                            <strong class="tracker-info-val-strong">${mail.perihal}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tujuan</span>
-                            <strong style="color: #0f172a;">${mail.tujuan}</strong>
+                            <span class="tracker-info-label">Tujuan</span>
+                            <strong class="tracker-info-val">${mail.tujuan}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Surat</span>
-                            <strong style="color: #0f172a;">${tgl}</strong>
+                            <span class="tracker-info-label">Tanggal Surat</span>
+                            <strong class="tracker-info-val">${tgl}</strong>
                         </div>
                     </div>
                 `;

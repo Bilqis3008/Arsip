@@ -222,3 +222,41 @@ input:focus {
     .card-profile-form { padding: 2rem; }
     .form-grid { grid-template-columns: 1fr; }
 }
+
+/* --- MOVED FROM INLINE --- */
+#imageUpload {
+    display: none;
+}
+
+.profile-dept-info {
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.form-security-section {
+    margin-top: 2.5rem;
+}
+
+.danger-section-header {
+    border-bottom-color: #fee2e2 !important;
+}
+
+.danger-icon {
+    color: var(--danger) !important;
+}
+
+.btn-save-danger {
+    background: var(--danger) !important;
+}
+
+.btn-save-danger:hover {
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.3) !important;
+}
+
+.no-border-bottom {
+    border: none !important;
+}
+
+

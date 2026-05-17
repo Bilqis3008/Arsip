@@ -93,17 +93,17 @@ $recent_dispo = $stmt->fetchAll();
                 <h1>Dashboard Operasional</h1>
                 <p>Halo, <?= htmlspecialchars((string)($user['nama'] ?? '')) ?>. Berikut ringkasan hari ini.</p>
             </div>
-            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
-                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
-                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+            <div class="header-actions">
+                <div class="date-box-header">
+                    <div class="date-box-label">Tanggal</div>
+                    <div class="date-box-value"><?= date('d F Y') ?></div>
                 </div>
-                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
-                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($user['nama'] ?? '')) ?></span>
-                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($user['nama_seksi'] ?? 'Seksi')) ?></span>
+                <div class="user-profile-header">
+                    <div class="user-info-header">
+                        <span class="user-name-header"><?= htmlspecialchars((string)($user['nama'] ?? '')) ?></span>
+                        <span class="user-role-header">Staf <?= htmlspecialchars((string)($user['nama_seksi'] ?? 'Seksi')) ?></span>
                     </div>
-                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($user['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                    <div class="user-avatar-header"><?= strtoupper(substr((string)($user['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
                 </div>
             </div>
         </header>
@@ -151,29 +151,29 @@ $recent_dispo = $stmt->fetchAll();
         <div class="data-card">
             <div class="card-header">
                 <h3>Instruksi Tindak Lanjut Terbaru</h3>
-                <a href="surat_masuk.php" style="color: var(--primary); font-size: 0.8rem; font-weight: 800; text-decoration: none;">Lihat Semua &rarr;</a>
+                <a href="surat_masuk.php" class="link-primary-sm">Lihat Semua &rarr;</a>
             </div>
-            <div style="padding: 1rem;">
+            <div class="p-4-container">
                 <?php if (empty($recent_dispo)): ?>
-                    <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Belum ada instruksi tugas baru.</p>
+                    <p class="empty-state-text">Belum ada instruksi tugas baru.</p>
                 <?php else: ?>
-                    <table style="width: 100%; border-collapse: collapse;">
+                    <table class="data-table-full">
                         <thead>
-                            <tr style="border-bottom: 1px solid var(--border); text-align: left;">
-                                <th style="padding: 1rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Perihal Surat</th>
-                                <th style="padding: 1rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Instruksi Pimpinan</th>
-                                <th style="padding: 1rem; font-size: 0.75rem; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Tanggal</th>
+                            <tr class="table-header-row">
+                                <th class="table-header-col">Perihal Surat</th>
+                                <th class="table-header-col">Instruksi Pimpinan</th>
+                                <th class="table-header-col">Tanggal</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($recent_dispo as $d): ?>
-                                <tr style="border-bottom: 1px solid #f8fafc;">
-                                    <td style="padding: 1.25rem 1rem;">
-                                        <div style="font-weight: 700; font-size: 0.9375rem; color: var(--primary-dark);"><?= htmlspecialchars($d['perihal'] ?? '') ?></div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Dari: <?= htmlspecialchars($d['pemberi_nama'] ?? '') ?></div>
+                                <tr class="table-body-row">
+                                    <td class="table-body-col">
+                                        <div class="perihal-title-text"><?= htmlspecialchars($d['perihal'] ?? '') ?></div>
+                                        <div class="pemberi-subtext">Dari: <?= htmlspecialchars($d['pemberi_nama'] ?? '') ?></div>
                                     </td>
-                                    <td style="padding: 1.25rem 1rem; font-size: 0.875rem; max-width: 300px; line-height: 1.4;"><?= nl2br(htmlspecialchars($d['isi_disposisi'] ?? '')) ?></td>
-                                    <td style="padding: 1.25rem 1rem; font-size: 0.8125rem; font-weight: 800; color: var(--text-muted);"><?= date('d M Y', strtotime($d['tanggal_disposisi'] ?? 'now')) ?></td>
+                                    <td class="instruksi-col-text"><?= nl2br(htmlspecialchars($d['isi_disposisi'] ?? '')) ?></td>
+                                    <td class="date-col-text"><?= date('d M Y', strtotime($d['tanggal_disposisi'] ?? 'now')) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

@@ -74,3 +74,196 @@
 .badge-status { padding: 0.25rem 0.65rem; border-radius: 0.4rem; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
 .b-pending { background: #fef3c7; color: #d97706; }
 .b-finished { background: #f0fdf4; color: #16a34a; }
+
+/* --- PREMIUM STYLES FOR SURAT MASUK --- */
+.explorer-bar-compact {
+    display: flex;
+    align-items: center;
+}
+
+.search-field-premium {
+    position: relative;
+    width: 300px;
+}
+
+.search-field-premium input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.8rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: #fff;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-field-premium .icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.tabs-container {
+    margin: 0 2rem 1.5rem;
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1px;
+}
+
+.tab-link {
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.9rem;
+    position: relative;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.tab-link .icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+}
+
+.tab-link-indicator {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+.tab-link.active {
+    color: var(--navy) !important;
+}
+
+.tab-link:hover {
+    color: var(--primary) !important;
+    background: #f8fafc;
+    border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.empty-task-container {
+    text-align: center;
+    padding: 5rem;
+    background: white;
+    border-radius: 2rem;
+    border: 1px solid var(--border);
+}
+
+.empty-task-icon {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.empty-task-text {
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.task-item.task-mine {
+    border-left: 5px solid var(--primary);
+}
+
+.task-status-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.badge-selesai {
+    background: #ecfdf5;
+    color: #059669;
+    padding: 0.1rem 0.6rem;
+    border-radius: 1rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border: 1px solid #10b981;
+}
+
+.badge-verifikasi {
+    background: #fffbeb;
+    color: #d97706;
+    padding: 0.1rem 0.6rem;
+    border-radius: 1rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border: 1px solid #f59e0b;
+}
+
+.task-badge {
+    background: var(--primary-faint);
+    color: var(--primary);
+    padding: 0.1rem 0.6rem;
+    border-radius: 1rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+}
+
+.task-perihal {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.task-nomor {
+    margin: 0.25rem 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.assigned-staff-info {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.assigned-staff-icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+.task-item .sender-box {
+    flex: 0 0 200px;
+    display: flex;
+    align-items: center;
+}
+
+.sender-icon {
+    color: var(--primary);
+    margin-right: 0.5rem;
+}
+
+.sender-name-text {
+    font-size: 0.9rem;
+}
+
+.task-item .task-actions {
+    margin-left: auto;
+}
+
+.btn-work.btn-work-history {
+    background: var(--navy);
+    color: var(--primary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+}
+
+.btn-work.btn-work-history:hover {
+    background: var(--primary);
+    color: white;
+}
+

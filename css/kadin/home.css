@@ -323,3 +323,10 @@ body {
 @media (max-width: 1024px) {
     .dashboard-grid { grid-template-columns: 1fr; }
 }
+
+.empty-message {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+}
+

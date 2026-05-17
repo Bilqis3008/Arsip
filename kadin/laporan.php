@@ -94,42 +94,8 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan - Kepala Dinas</title>
-    <!-- Use Kadis Layout + Sekretariat Reporting CSS -->
     <link rel="stylesheet" href="../css/kadin/home.css">
-    <link rel="stylesheet" href="../css/sekretariat/monitoring_laporan.css">
-    <style>
-        .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-        .summary-card { background: #fff; padding: 2rem; border-radius: 1rem; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .summary-icon { width: 64px; height: 64px; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-        .icon-masuk { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .icon-keluar { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-        .icon-total { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
-        .summary-details h4 { color: #64748b; font-size: 0.9rem; margin: 0 0 0.5rem 0; font-weight: 700; text-transform: uppercase; }
-        .summary-details .value { font-size: 2.25rem; font-weight: 900; color: #0f172a; line-height: 1; }
-        .section-title { font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.75rem; }
-
-        /* Modal styles from monitoring_surat */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
-        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 1rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; color: #64748b; cursor: pointer; }
-        .timeline { position: relative; margin-top: 1rem; padding-left: 20px; border-left: 2px solid #e2e8f0; }
-        .timeline-item { position: relative; padding-bottom: 1.5rem; }
-        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; }
-        .timeline-item.done::before { background: #10b981; border-color: #10b981; }
-        .timeline-item.active::before { background: #3b82f6; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-        .timeline-content h4 { margin: 0 0 0.25rem; color: #0f172a; font-size: 0.95rem; }
-        .timeline-content p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; }
-        .timeline-time { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
-        
-        .action-cell { display: flex; gap: 0.5rem; justify-content: center; }
-        .action-btn { width: 34px; height: 34px; border-radius: 0.5rem; display: inline-flex; align-items: center; justify-content: center; border: none; cursor: pointer; transition: all 0.2s; color: white; text-decoration: none; }
-        .action-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .action-btn-info { background: #3b82f6; }
-        .action-btn-info:hover { background: #2563eb; }
-        .action-btn-download { background: #10b981; }
-        .action-btn-download:hover { background: #059669; }
-        .action-btn-disabled { background: #e2e8f0; color: #94a3b8; cursor: not-allowed; }
-    </style>
+    <link rel="stylesheet" href="../css/kadin/laporan.css">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 
@@ -175,10 +141,10 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             
             <form method="GET" id="reportForm">
                 <!-- Wrapper 1: Filter Laporan -->
-                <div class="filter-card" style="margin-bottom: 1.25rem; background: #fff; padding: 1.5rem; border-radius: 1rem; border: 1px solid #e2e8f0;">
-                    <div class="form-group" style="margin: 0;">
-                        <label style="display: block; font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 0.75rem;">Pilih Jenis Laporan Status Selesai / Arsip</label>
-                        <select name="jenis_laporan" onchange="document.getElementById('reportForm').submit()" style="padding: 0.75rem 1rem; border: 2px solid #cbd5e1; border-radius: 0.5rem; width: 100%; max-width: 400px; font-weight: 700; color: #0f172a; font-size: 1rem; outline: none;">
+                <div class="filter-card filter-card-1">
+                    <div class="form-group form-group-no-margin">
+                        <label class="filter-label-1">Pilih Jenis Laporan Status Selesai / Arsip</label>
+                        <select name="jenis_laporan" onchange="document.getElementById('reportForm').submit()" class="filter-select-1">
                             <option value="surat_masuk" <?= $jenis_laporan === 'surat_masuk' ? 'selected' : '' ?>>Surat Masuk Terselesaikan</option>
                             <option value="surat_keluar" <?= $jenis_laporan === 'surat_keluar' ? 'selected' : '' ?>>Surat Keluar Diarsipkan</option>
                             <option value="total_surat" <?= $jenis_laporan === 'total_surat' ? 'selected' : '' ?>>Laporan Keseluruhan Arsip Total</option>
@@ -187,20 +153,20 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                 </div>
 
                 <!-- Wrapper 2: Filter Tanggal & Cetak -->
-                <div class="filter-card" style="margin-bottom: 2rem; background: #fff; padding: 1.5rem; border-radius: 1rem; border: 1px solid #e2e8f0; display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
-                    <div class="form-group" style="margin: 0;">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem;">Dari Tanggal</label>
-                        <input type="date" name="date_start" value="<?= $date_start ?>" style="padding: 0.75rem; border: 1.5px solid #cbd5e1; border-radius: 0.5rem; min-width: 150px;">
+                <div class="filter-card filter-card-2">
+                    <div class="form-group form-group-no-margin">
+                        <label class="filter-label-2">Dari Tanggal</label>
+                        <input type="date" name="date_start" value="<?= $date_start ?>" class="filter-input-date">
                     </div>
-                    <div class="form-group" style="margin: 0;">
-                        <label style="display: block; font-size: 0.85rem; font-weight: 700; color: #64748b; margin-bottom: 0.5rem;">Sampai Tanggal</label>
-                        <input type="date" name="date_end" value="<?= $date_end ?>" style="padding: 0.75rem; border: 1.5px solid #cbd5e1; border-radius: 0.5rem; min-width: 150px;">
+                    <div class="form-group form-group-no-margin">
+                        <label class="filter-label-2">Sampai Tanggal</label>
+                        <input type="date" name="date_end" value="<?= $date_end ?>" class="filter-input-date">
                     </div>
-                     <button type="submit" class="btn btn-primary" style="padding: 0.75rem 1.5rem; font-weight: 700; border-radius: 0.5rem;">
-                        <svg class="icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-right: 0.5rem; vertical-align: bottom;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Terapkan Filter
+                     <button type="submit" class="btn btn-primary btn-filter-submit">
+                        <svg class="icon btn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Terapkan Filter
                     </button>
-                    <button type="button" onclick="window.print()" class="btn btn-success" style="padding: 0.75rem 1.5rem; font-weight: 700; border-radius: 0.5rem; margin-left: auto;">
-                        <svg class="icon" viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-right: 0.5rem; vertical-align: bottom;"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V4h12v5"/><rect width="12" height="8" x="6" y="14" rx="1"/></svg> Cetak Laporan
+                    <button type="button" onclick="window.print()" class="btn btn-success btn-print-laporan">
+                        <svg class="icon btn-icon" viewBox="0 0 24 24"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V4h12v5"/><rect width="12" height="8" x="6" y="14" rx="1"/></svg> Cetak Laporan
                     </button>
                 </div>
             </form>
@@ -215,23 +181,23 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                             <th>Pengirim</th>
                             <th>Tanggal Terima</th>
                             <th>Perihal</th>
-                            <th style="width: 120px; text-align: center;">Aksi</th>
+                            <th class="th-action">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($report_masuk)): ?>
-                            <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">Data tidak ditemukan pada periode ini.</td></tr>
+                            <tr><td colspan="5" class="empty-table-tr-td">Data tidak ditemukan pada periode ini.</td></tr>
                         <?php else: ?>
                             <?php foreach ($report_masuk as $p): ?>
                                 <tr>
                                     <td><strong><?= htmlspecialchars($p['nomor_surat']) ?></strong><br><small><?= htmlspecialchars($p['nomor_agenda']) ?></small></td>
                                     <td><?= htmlspecialchars($p['pengirim']) ?></td>
                                     <td><?= date('d M Y', strtotime($p['tanggal_terima'])) ?></td>
-                                    <td style="color: #0f172a; font-weight: 500;">
+                                    <td class="perihal-td">
                                         <?= htmlspecialchars($p['perihal']) ?>
                                         <?php if (!empty($p['reply_no'])): ?>
-                                            <div style="margin-top: 4px; font-size: 0.8rem; color: #10b981; font-weight: 600;">
-                                                <svg viewBox="0 0 24 24" style="width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 3; vertical-align: middle; margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <div class="reply-badge">
+                                                <svg class="reply-badge-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                                 Balasan: <?= htmlspecialchars($p['reply_no']) ?>
                                             </div>
                                         <?php endif; ?>
@@ -250,8 +216,8 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                                             </button>
                                         <?php endif; ?>
                                         <?php if (!empty($p['reply_file'])): ?>
-                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn" style="background:var(--accent);" title="Lihat Balasan (Out)">
-                                                <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn btn-reply-view" title="Lihat Balasan (Out)">
+                                                <svg class="btn-reply-view-icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                                             </a>
                                         <?php endif; ?>
                                     </td>
@@ -272,12 +238,12 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                             <th>Tujuan</th>
                             <th>Tanggal Surat</th>
                             <th>Perihal</th>
-                            <th style="width: 120px; text-align: center;">Aksi</th>
+                            <th class="th-action">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($report_keluar)): ?>
-                            <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 2rem;">Data tidak ditemukan pada periode ini.</td></tr>
+                            <tr><td colspan="5" class="empty-table-tr-td">Data tidak ditemukan pada periode ini.</td></tr>
                         <?php else: ?>
                             <?php foreach ($report_keluar as $k): ?>
                                 <tr>
@@ -307,8 +273,8 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             <?php } ?>
 
             <?php if ($jenis_laporan === 'surat_masuk'): ?>
-            <section class="module-section active">
-                <div class="card" style="border-radius: 1rem;">
+             <section class="module-section active">
+                <div class="card card-radius-1">
                     <div class="table-container">
                         <?php renderSuratMasukTable($report_masuk); ?>
                     </div>
@@ -317,16 +283,16 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
 
             <?php elseif ($jenis_laporan === 'surat_keluar'): ?>
             <section class="module-section active">
-                <div class="card" style="border-radius: 1rem;">
+                <div class="card card-radius-1">
                     <div class="table-container">
                         <?php renderSuratKeluarTable($report_keluar); ?>
                     </div>
                 </div>
             </section>
 
-            <?php elseif ($jenis_laporan === 'total_surat'): ?>
+             <?php elseif ($jenis_laporan === 'total_surat'): ?>
             <section class="module-section active">
-                <h3 class="section-title" style="margin-top: 0.5rem;">Laporan Periode Aktif Arsip <span style="color: #64748b; font-size: 0.95rem; font-weight: 500;">(<?= date('d M Y', strtotime($date_start)) ?> - <?= date('d M Y', strtotime($date_end)) ?>)</span></h3>
+                <h3 class="section-title section-title-mt">Laporan Periode Aktif Arsip <span class="section-title-sub">(<?= date('d M Y', strtotime($date_start)) ?> - <?= date('d M Y', strtotime($date_end)) ?>)</span></h3>
                 <div class="summary-cards">
                     <div class="summary-card">
                         <div class="summary-icon icon-masuk">
@@ -357,17 +323,17 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                     </div>
                 </div>
 
-                <div style="margin-top: 3rem;"></div>
-                <h3 class="section-title">Daftar Surat Masuk <span style="color: #64748b; font-size: 0.95rem; font-weight: 500;">(Terselesaikan / Diarsipkan)</span></h3>
-                <div class="card" style="border-radius: 1rem; margin-bottom: 2rem;">
+                <div class="section-divider"></div>
+                <h3 class="section-title">Daftar Surat Masuk <span class="section-title-sub">(Terselesaikan / Diarsipkan)</span></h3>
+                <div class="card card-radius-2">
                     <div class="table-container">
                         <?php renderSuratMasukTable($report_masuk); ?>
                     </div>
                 </div>
 
-                <div style="margin-top: 3rem;"></div>
-                <h3 class="section-title">Daftar Surat Keluar <span style="color: #64748b; font-size: 0.95rem; font-weight: 500;">(Telah Diarsipkan)</span></h3>
-                <div class="card" style="border-radius: 1rem; margin-bottom: 2rem;">
+                <div class="section-divider"></div>
+                <h3 class="section-title">Daftar Surat Keluar <span class="section-title-sub">(Telah Diarsipkan)</span></h3>
+                <div class="card card-radius-2">
                     <div class="table-container">
                         <?php renderSuratKeluarTable($report_keluar); ?>
                     </div>
@@ -383,12 +349,12 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
     <div class="modal-overlay" id="tracker-modal" onclick="closeTracker()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeTracker()">
-                <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg class="modal-close-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <h3 style="margin-bottom: 0.5rem; color: #0f172a; font-size: 1.25rem;">Live Tracking Alur Surat</h3>
-            <p id="tracker-subtitle" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
+            <h3 class="modal-title">Live Tracking Alur Surat</h3>
+            <p id="tracker-subtitle" class="tracker-subtitle"></p>
             
-            <div id="tracker-mail-info" style="background: #f8fafc; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; display: none;"></div>
+            <div id="tracker-mail-info" class="tracker-mail-info" style="display: none;"></div>
 
             <div id="tracker-details">
                 <div class="timeline" id="timeline-box"></div>
@@ -410,19 +376,19 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             const infoBox = document.getElementById('tracker-mail-info');
             infoBox.style.display = 'block';
             const tgl = new Date(mail.tanggal_terima).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
-            infoBox.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-                    <div style="grid-column: span 2;">
-                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
-                        <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+             infoBox.innerHTML = `
+                <div class="tracker-grid">
+                    <div class="tracker-span-2">
+                        <span class="tracker-meta-label">Perihal</span>
+                        <strong class="tracker-meta-val-large">${mail.perihal}</strong>
                     </div>
                     <div>
-                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Pengirim</span>
-                        <strong style="color: #0f172a;">${mail.pengirim}</strong>
+                        <span class="tracker-meta-label">Pengirim</span>
+                        <strong class="tracker-meta-val">${mail.pengirim}</strong>
                     </div>
                     <div>
-                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Terima</span>
-                        <strong style="color: #0f172a;">${tgl}</strong>
+                        <span class="tracker-meta-label">Tanggal Terima</span>
+                        <strong class="tracker-meta-val">${tgl}</strong>
                     </div>
                 </div>
             `;
@@ -462,19 +428,19 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
             const infoBox = document.getElementById('tracker-mail-info');
             infoBox.style.display = 'block';
             const tgl = new Date(mail.tanggal_surat).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
-            infoBox.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-                    <div style="grid-column: span 2;">
-                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
-                        <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+             infoBox.innerHTML = `
+                <div class="tracker-grid">
+                    <div class="tracker-span-2">
+                        <span class="tracker-meta-label">Perihal</span>
+                        <strong class="tracker-meta-val-large">${mail.perihal}</strong>
                     </div>
                     <div>
-                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tujuan</span>
-                        <strong style="color: #0f172a;">${mail.tujuan}</strong>
+                        <span class="tracker-meta-label">Tujuan</span>
+                        <strong class="tracker-meta-val">${mail.tujuan}</strong>
                     </div>
                     <div>
-                        <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Surat</span>
-                        <strong style="color: #0f172a;">${tgl}</strong>
+                        <span class="tracker-meta-label">Tanggal Surat</span>
+                        <strong class="tracker-meta-val">${tgl}</strong>
                     </div>
                 </div>
             `;

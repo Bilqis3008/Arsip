@@ -117,7 +117,7 @@ usort($mails, function($a, $b) {
 
     <main class="main-content">
         <header class="content-header">
-            <div class="header-title"><h1>Monitoring Berkas</h1><p style="font-size:0.9rem; color:var(--text-muted);">Pantau posisi berkas surat yang sedang dalam proses alur kerja.</p></div>
+            <div class="header-title"><h1>Monitoring Berkas</h1><p class="header-desc-text">Pantau posisi berkas surat yang sedang dalam proses alur kerja.</p></div>
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-name"><?= htmlspecialchars($admin['nama'] ?? 'Admin') ?></span>
@@ -128,48 +128,48 @@ usort($mails, function($a, $b) {
         </header>
 
         <div class="content-body">
-            <div class="table-controls" style="margin-bottom:2rem;">
-                <form method="GET" class="search-box" style="max-width:400px; position:relative;">
-                    <svg class="icon" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <input type="text" name="search" placeholder="Cari perihal atau nomor surat..." value="<?= htmlspecialchars((string)$search) ?>" style="padding-left:3rem; width:100%; padding-top:0.8rem; padding-bottom:0.8rem; border-radius:1rem; border:1px solid var(--border);">
+            <div class="table-controls table-controls-monitoring">
+                <form method="GET" class="search-box search-box-monitoring">
+                    <svg class="icon search-icon-monitoring" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" name="search" placeholder="Cari perihal atau nomor surat..." value="<?= htmlspecialchars((string)$search) ?>" class="search-input-monitoring">
                 </form>
             </div>
 
             <div class="card">
                 <div class="data-table-container">
                     <table class="data-table">
-                        <thead><tr><th>Info & Tipe Berkas</th><th>Posisi Saat Ini</th><th style="text-align:center;">Tracker</th></tr></thead>
+                        <thead><tr><th>Info & Tipe Berkas</th><th>Posisi Saat Ini</th><th class="action-th-center">Tracker</th></tr></thead>
                         <tbody>
                             <?php if (empty($mails)): ?>
-                                <tr><td colspan="3" style="text-align: center; padding: 5rem; color: var(--text-muted);">Tidak ada berkas yang sedang aktif diproses.</td></tr>
+                                <tr><td colspan="3" class="empty-table-row">Tidak ada berkas yang sedang aktif diproses.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($mails as $m): ?>
                                     <tr>
                                         <td>
                                             <div class="info-cell">
                                                 <span class="type-badge <?= $m['tipe'] == 'masuk' ? 'type-masuk' : 'type-keluar' ?>">Surat <?= ucfirst($m['tipe']) ?></span>
-                                                <div style="font-weight: 800; color: var(--text-main); margin-top:0.5rem;"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
-                                                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top:2px;">No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['nomor_surat'] ?? '') : ($m['nomor_surat_keluar'] ?? '')) ?></div>
+                                                <div class="info-bold-text"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
+                                                <div class="info-muted-text-sm">No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['nomor_surat'] ?? '') : ($m['nomor_surat_keluar'] ?? '')) ?></div>
                                             </div>
                                         </td>
                                         <td>
                                             <?php if ($m['tipe'] === 'masuk'): ?>
                                                 <?php if (($m['status'] ?? '') === 'tercatat'): ?>
-                                                    <div style="font-weight:700; color:var(--warning); display:flex; align-items:center; gap:0.5rem;"><div class="step-indicator current"></div> Menunggu Disposisi (Kadin)</div>
+                                                    <div class="step-flex-wrap step-warning"><div class="step-indicator current"></div> Menunggu Disposisi (Kadin)</div>
                                                 <?php else: ?>
-                                                    <div style="font-weight:700; color:var(--primary); display:flex; align-items:center; gap:0.5rem;"><div class="step-indicator active"></div> Proses Tindak Lanjut Bidang</div>
-                                                    <div style="font-size:0.75rem; color:var(--text-muted); margin-left:1.5rem;"><?= htmlspecialchars($m['nama_bidang'] ?? 'Unit Kerja') ?></div>
+                                                    <div class="step-flex-wrap step-primary"><div class="step-indicator active"></div> Proses Tindak Lanjut Bidang</div>
+                                                    <div class="step-subtext"><?= htmlspecialchars($m['nama_bidang'] ?? 'Unit Kerja') ?></div>
                                                 <?php endif; ?>
                                             <?php else: ?>
-                                                <div style="font-weight:700; color:var(--primary); display:flex; align-items:center; gap:0.5rem;">
+                                                <div class="step-flex-wrap step-primary">
                                                     <div class="step-indicator current"></div> 
                                                     <?= ($m['status'] ?? '') === 'draft' ? 'Draft Awal (Staff)' : (($m['status'] ?? '') === 'pending_approval' ? 'Verifikasi Bidang' : 'Menunggu Arsip') ?>
                                                 </div>
                                             <?php endif; ?>
                                         </td>
-                                        <td style="text-align:center;">
-                                            <button onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? ($m['id_surat_masuk'] ?? 0) : ($m['id_surat_keluar'] ?? 0) ?>)" class="btn" style="background:rgba(99, 102, 241, 0.1); color:var(--primary); border:none; padding:0.6rem 1.2rem; border-radius:0.8rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem;">
-                                                <svg class="icon" style="width:16px; height:16px;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> View Tracker
+                                        <td class="action-th-center">
+                                            <button onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? ($m['id_surat_masuk'] ?? 0) : ($m['id_surat_keluar'] ?? 0) ?>)" class="btn btn-view-tracker">
+                                                <svg class="icon btn-view-tracker-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> View Tracker
                                             </button>
                                         </td>
                                     </tr>
@@ -185,8 +185,8 @@ usort($mails, function($a, $b) {
     <div id="tracker-modal" class="modal-overlay">
         <div class="modal-content">
             <button onclick="closeTracker()" class="modal-close">✕</button>
-            <h3 style="font-weight:800; font-size:1.5rem; margin-bottom:0.5rem;">Tracking Progress</h3>
-            <p id="tracker-subtitle" style="color:var(--text-muted); font-size:0.9rem; margin-bottom:2rem;"></p>
+            <h3 class="tracker-title">Tracking Progress</h3>
+            <p id="tracker-subtitle" class="tracker-subtitle"></p>
             <div class="timeline" id="timeline-box"></div>
         </div>
     </div>

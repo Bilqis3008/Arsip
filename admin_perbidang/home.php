@@ -112,44 +112,44 @@ $recent_mail = $stmt->fetchAll();
                 <div class="stat-card">
                     <span class="stat-num"><?= $total_masuk ?></span>
                     <span class="stat-label">Surat Masuk</span>
-                    <span class="badge badge-navy" style="width: fit-content;">Bulan Ini</span>
+                    <span class="badge badge-navy badge-fit">Bulan Ini</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-num" style="color: var(--primary);"><?= $pending ?></span>
+                    <span class="stat-num"><?= $pending ?></span>
                     <span class="stat-label">Belum Disposisi</span>
-                    <span class="badge badge-emerald" style="width: fit-content;">Urgent</span>
+                    <span class="badge badge-emerald badge-fit">Urgent</span>
                 </div>
-                <div class="stat-card" style="border-color: var(--accent);">
-                    <span class="stat-num" style="color: var(--accent);"><?= $waiting_approval ?></span>
+                <div class="stat-card stat-card-warning">
+                    <span class="stat-num stat-num-warning"><?= $waiting_approval ?></span>
                     <span class="stat-label">Butuh Verifikasi</span>
-                    <span class="badge" style="background: var(--accent-light); color: var(--accent); width: fit-content;">Action Required</span>
+                    <span class="badge badge-warning-custom">Action Required</span>
                 </div>
                 <div class="stat-card">
-                    <span class="stat-num" style="color: #64748b;"><?= $completed ?></span>
+                    <span class="stat-num stat-num-muted"><?= $completed ?></span>
                     <span class="stat-label">Total Selesai</span>
                 </div>
             </div>
 
             <!-- Recent Table -->
             <div class="data-card">
-                <div class="card-header"><h3>Agenda Surat Terbaru</h3><a href="surat_masuk.php" style="color: var(--primary); font-weight: 700; font-size: 0.8rem; text-decoration: none;">Lihat Semua &rarr;</a></div>
-                <table style="width: 100%; border-collapse: collapse;">
+                <div class="card-header"><h3>Agenda Surat Terbaru</h3><a href="surat_masuk.php" class="btn-view-all">Lihat Semua &rarr;</a></div>
+                <table class="home-table">
                     <thead>
-                        <tr style="border-bottom: 2px solid var(--border); text-align: left;">
-                            <th style="padding: 1rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Perihal</th>
-                            <th style="padding: 1rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Pengirim</th>
-                            <th style="padding: 1rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Status</th>
+                        <tr class="home-table-header-row">
+                            <th class="home-table-th">Perihal</th>
+                            <th class="home-table-th">Pengirim</th>
+                            <th class="home-table-th">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($recent_mail as $m): ?>
-                        <tr style="border-bottom: 1px solid var(--border);">
-                            <td style="padding: 1rem;">
-                                <div style="font-weight: 700; color: var(--navy);"><?= htmlspecialchars($m['perihal']) ?></div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted);">No: <?= htmlspecialchars($m['nomor_surat']) ?></div>
+                        <tr class="home-table-row">
+                            <td class="home-table-td">
+                                <div class="mail-title-cell"><?= htmlspecialchars($m['perihal']) ?></div>
+                                <div class="mail-subtitle-cell">No: <?= htmlspecialchars($m['nomor_surat']) ?></div>
                             </td>
-                            <td style="padding: 1rem; font-size: 0.9rem;"><?= htmlspecialchars($m['pengirim']) ?></td>
-                            <td style="padding: 1rem;"><span class="badge badge-<?= $m['status'] === 'didispokan' ? 'emerald' : 'navy' ?>"><?= ucfirst($m['status']) ?></span></td>
+                            <td class="mail-pengirim-cell"><?= htmlspecialchars($m['pengirim']) ?></td>
+                            <td class="home-table-td"><span class="badge badge-<?= $m['status'] === 'didispokan' ? 'emerald' : 'navy' ?>"><?= ucfirst($m['status']) ?></span></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

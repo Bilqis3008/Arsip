@@ -166,13 +166,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="imgInp" class="avatar-edit">
                                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </label>
-                            <input type="file" id="imgInp" name="foto" style="display:none;" onchange="this.form.submit()">
+                            <input type="file" id="imgInp" name="foto" onchange="this.form.submit()">
                             <input type="hidden" name="upload_photo" value="1">
                         </div>
                     </form>
                     <h2><?= htmlspecialchars($user['nama']) ?></h2>
                     <span class="role-badge">Kepala Dinas</span>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; font-weight: 500;">Dinas Kearsipan dan Perpustakaan</p>
+                    <p class="profile-dept">Dinas Kearsipan dan Perpustakaan</p>
                 </div>
 
                 <!-- Profile Info Form -->
@@ -221,9 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="divider"></div>
 
                     <form action="" method="POST">
-                        <div class="section-header" style="border-bottom-color: #fee2e2;">
+                        <div class="section-header section-header-danger">
                             <div class="section-title">
-                                <svg class="icon" viewBox="0 0 24 24" style="color: var(--danger);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                <svg class="icon danger-icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                                 PENGATURAN KEAMANAN
                             </div>
                         </div>

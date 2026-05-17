@@ -124,3 +124,58 @@ textarea { height: 120px; resize: none; }
     .dispo-container { grid-template-columns: 1fr; }
     .card-form { position: static; }
 }
+
+/* --- MOVED FROM INLINE --- */
+.alert-success {
+    padding: 1rem;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.alert-danger {
+    padding: 1rem;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.meta-no-border {
+    border-bottom: none;
+}
+
+.processed-alert {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1rem;
+    background: #f8fafc;
+    border: 1px solid var(--border);
+}
+
+.processed-alert-icon {
+    width: 48px !important;
+    height: 48px !important;
+    color: var(--success);
+    margin-bottom: 1rem;
+}
+
+.processed-alert-title {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.processed-alert-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.processed-alert-btn {
+    margin-top: 1.5rem;
+    text-decoration: none;
+}
+

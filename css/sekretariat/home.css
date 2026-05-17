@@ -523,3 +523,65 @@ body {
         padding: 2rem;
     }
 }
+
+/* --- EXTRA POLISH FOR DASHBOARD SPECIFIC ELEMENTS --- */
+.welcome-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.welcome-img {
+    width: 240px;
+    opacity: 0.8;
+    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.4));
+}
+
+@media (max-width: 992px) {
+    .welcome-img {
+        display: none;
+    }
+}
+
+/* --- MOVED FROM INLINE --- */
+.empty-activity-placeholder {
+    text-align: center;
+    padding: 3rem;
+    opacity: 0.5;
+}
+
+.empty-activity-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1rem;
+}
+
+.activity-point-warning {
+    background: var(--warning) !important;
+}
+
+.activity-point-success {
+    background: var(--success) !important;
+}
+
+.activity-time-highlight {
+    color: var(--primary);
+}
+
+.chart-visual-icon {
+    width: 64px;
+    height: 64px;
+    opacity: 0.1;
+    margin-bottom: 1.5rem;
+}
+
+.chart-visual-title {
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.chart-visual-subtitle {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+

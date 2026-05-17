@@ -104,29 +104,29 @@ $mails = $stmt->fetchAll();
                     </thead>
                     <tbody>
                         <?php if (empty($mails)): ?>
-                            <tr><td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada data untuk ditampilkan.</td></tr>
+                            <tr><td colspan="5" class="empty-table-cell">Tidak ada data untuk ditampilkan.</td></tr>
                         <?php else: ?>
                             <?php foreach ($mails as $m): ?>
                                 <tr>
                                     <td><b><?= date('d/m/Y', strtotime($m['tanggal_terima'])) ?></b></td>
                                     <td>
-                                        <div style="font-weight: 700; color: var(--primary);"><?= htmlspecialchars($m['perihal']) ?></div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted);">No: <?= htmlspecialchars($m['nomor_surat']) ?></div>
+                                        <div class="mail-title"><?= htmlspecialchars($m['perihal']) ?></div>
+                                        <div class="mail-subtitle">No: <?= htmlspecialchars($m['nomor_surat']) ?></div>
                                     </td>
                                     <td><?= htmlspecialchars($m['pengirim']) ?></td>
                                     <td><span class="badge-<?= $m['sifat_surat'] === 'biasa' ? 'normal' : 'urgent' ?>"><?= ucfirst($m['sifat_surat']) ?></span></td>
                                     <td>
-                                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <div class="action-container">
                                             <?php if ($m['file_path']): ?>
-                                                <a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="btn-dispo" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;" title="Preview Dokumen">
-                                                    <svg class="icon" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                <a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="btn-dispo btn-preview-doc" title="Preview Dokumen">
+                                                    <svg class="icon btn-icon-small" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                                 </a>
                                             <?php endif; ?>
 
                                             <?php if ($tab === 'unread'): ?>
                                                 <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-dispo"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Disposisi</a>
                                             <?php else: ?>
-                                                <a href="monitoring_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-dispo" style="background: var(--bg-body); color: var(--text-main); border: 1px solid var(--border);"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Track</a>
+                                                <a href="monitoring_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-dispo btn-track-doc"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Track</a>
                                             <?php endif; ?>
                                         </div>
                                     </td>

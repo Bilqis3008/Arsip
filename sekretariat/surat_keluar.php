@@ -108,7 +108,7 @@ $mails = $stmt->fetchAll();
 
     <main class="main-content">
         <header class="content-header">
-            <div class="header-title"><h1>Verifikasi Surat Keluar</h1><p style="font-size:0.9rem; color:var(--text-muted);">Verifikasi draf surat dari unit Sekretariat Umum untuk pengarsipan.</p></div>
+            <div class="header-title"><h1>Verifikasi Surat Keluar</h1><p class="header-desc-text">Verifikasi draf surat dari unit Sekretariat Umum untuk pengarsipan.</p></div>
             <div class="user-profile">
                 <div class="user-info">
                     <span class="user-name"><?= htmlspecialchars($admin['nama'] ?? 'Admin') ?></span>
@@ -144,29 +144,29 @@ $mails = $stmt->fetchAll();
                                 <th>Identitas & Tujuan</th>
                                 <th>Penulis Staf</th>
                                 <th>Status</th>
-                                <th style="text-align: center;">Aksi</th>
+                                <th class="action-th-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($mails)): ?>
-                                <tr><td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada draf surat keluar ditemukan.</td></tr>
+                                <tr><td colspan="5" class="empty-table-row">Tidak ada draf surat keluar ditemukan.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($mails as $m): ?>
                                     <tr>
                                         <td><b><?= date('d/m/Y', strtotime($m['tanggal_surat'] ?? 'now')) ?></b></td>
                                         <td>
-                                            <div style="font-weight: 700; color: var(--primary);"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
-                                            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">No: <?= htmlspecialchars($m['nomor_surat_keluar'] ?? '') ?> • Tujuan: <?= htmlspecialchars($m['tujuan'] ?? '-') ?></div>
+                                            <div class="title-primary-bold"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
+                                            <div class="subtitle-muted-sm">No: <?= htmlspecialchars($m['nomor_surat_keluar'] ?? '') ?> • Tujuan: <?= htmlspecialchars($m['tujuan'] ?? '-') ?></div>
                                         </td>
                                         <td><?= htmlspecialchars($m['pengirim_staf'] ?? '-') ?></td>
                                         <td><span class="badge-status status-<?= $m['status'] ?>"><?= $m['status'] === 'pending_approval' ? 'Draf Selesai' : 'Diarsipkan' ?></span></td>
                                         <td>
-                                            <div style="display: flex; gap: 0.75rem; justify-content: center;">
+                                            <div class="action-btns action-btns-flex action-btns-center">
                                                 <?php if ($m['file_path']): ?>
                                                     <a href="../uploads/surat_keluar/<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Preview Dokumen"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></a>
                                                 <?php endif; ?>
                                                 <?php if ($tab === 'pending'): ?>
-                                                    <button onclick="openConfirmModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'] ?? '')) ?>')" class="btn btn-primary" style="padding: 0.6rem 1.2rem; font-size: 0.85rem;">Arsipkan</button>
+                                                    <button onclick="openConfirmModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'] ?? '')) ?>')" class="btn btn-primary btn-primary-xs">Arsipkan</button>
                                                 <?php endif; ?>
                                             </div>
                                         </td>
@@ -174,37 +174,37 @@ $mails = $stmt->fetchAll();
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal Konfirmasi -->
+        <div id="confirmModal" class="modal-overlay">
+            <div class="modal-card modal-confirm-card">
+                <div class="modal-icon-circle">
+                    <svg viewBox="0 0 24 24" class="modal-icon-svg"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                </div>
+                <h3 class="modal-title-bold">Konfirmasi Arsip</h3>
+                <p class="modal-desc-muted">Apakah Anda yakin draf surat <strong id="modal-perihal" class="modal-desc-highlight"></strong> ini sudah sesuai untuk diarsipkan?</p>
+                <div class="modal-button-grid">
+                    <button onclick="closeConfirmModal()" class="btn btn-cancel-light">Batal</button>
+                    <form method="POST" id="approveForm" class="hidden-form"><input type="hidden" name="approve_id" id="approve_target_id"></form>
+                    <button onclick="document.getElementById('approveForm').submit()" class="btn btn-primary">Ya, Arsipkan</button>
                 </div>
             </div>
         </div>
-    </main>
 
-    <!-- Modal Konfirmasi -->
-    <div id="confirmModal" class="modal-overlay">
-        <div class="modal-card" style="max-width: 450px; text-align: center; padding: 3rem;">
-            <div style="width: 70px; height: 70px; background: rgba(99, 102, 241, 0.1); color: var(--primary); border-radius: 2rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
-                <svg viewBox="0 0 24 24" style="width:32px; height:32px; fill:none; stroke:currentColor; stroke-width:2.5;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            </div>
-            <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.75rem;">Konfirmasi Arsip</h3>
-            <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 2rem;">Apakah Anda yakin draf surat <strong id="modal-perihal" style="color:var(--text-main);"></strong> ini sudah sesuai untuk diarsipkan?</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <button onclick="closeConfirmModal()" class="btn" style="background:#f1f5f9; color:#64748b;">Batal</button>
-                <form method="POST" id="approveForm" style="display:none;"><input type="hidden" name="approve_id" id="approve_target_id"></form>
-                <button onclick="document.getElementById('approveForm').submit()" class="btn btn-primary">Ya, Arsipkan</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function openConfirmModal(id, p) {
-            document.getElementById('approve_target_id').value = id;
-            document.getElementById('modal-perihal').innerText = '"' + p + '"';
-            document.getElementById('confirmModal').classList.add('active');
-        }
-        function closeConfirmModal() { document.getElementById('confirmModal').classList.remove('active'); }
-        window.onclick = e => { if (e.target.classList.contains('modal-overlay')) closeConfirmModal(); };
-    </script>
-    <script src="../js/notifications.js"></script>
-</body>
-</html>
+        <script>
+            function openConfirmModal(id, p) {
+                document.getElementById('approve_target_id').value = id;
+                document.getElementById('modal-perihal').innerText = '"' + p + '"';
+                document.getElementById('confirmModal').classList.add('active');
+            }
+            function closeConfirmModal() { document.getElementById('confirmModal').classList.remove('active'); }
+            window.onclick = e => { if (e.target.classList.contains('modal-overlay')) closeConfirmModal(); };
+        </script>
+        <script src="../js/notifications.js"></script>
+    </body>
+    </html>

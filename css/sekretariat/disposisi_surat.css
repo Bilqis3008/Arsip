@@ -22,7 +22,15 @@
     margin-bottom: 2rem;
 }
 
-.doc-header .badge { background: #eef2ff; color: #4338ca; padding: 0.35rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+.doc-header .badge {
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
 
 .kadin-instruction {
     background: #fffbeb;
@@ -53,8 +61,21 @@
     gap: 1.5rem;
 }
 
-.meta-item label { display: block; font-size: 0.7rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.35rem; }
-.meta-item span { display: block; font-size: 1rem; font-weight: 600; color: var(--text-main); }
+.meta-item label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+}
+
+.meta-item span {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
 
 .card-form {
     position: sticky;
@@ -85,8 +106,12 @@
 }
 
 @media (max-width: 1100px) {
-    .dispo-container { grid-template-columns: 1fr; }
-    .card-form { position: static; }
+    .dispo-container {
+        grid-template-columns: 1fr;
+    }
+    .card-form {
+        position: static;
+    }
 }
 
 /* --- MOVED FROM INLINE --- */
@@ -156,4 +181,3 @@
     margin-top: 1.5rem;
     text-decoration: none;
 }
-

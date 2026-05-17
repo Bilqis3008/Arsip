@@ -222,3 +222,23 @@
     .profile-card { padding: 2rem; }
     .form-row { grid-template-columns: 1fr; gap: 1rem; }
 }
+
+/* --- MOVED FROM INLINE --- */
+#imgInp {
+    display: none;
+}
+
+.profile-dept {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.section-header-danger {
+    border-bottom-color: #fee2e2;
+}
+
+.danger-icon {
+    color: var(--danger);
+}
+

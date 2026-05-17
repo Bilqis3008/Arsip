@@ -32,12 +32,6 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
     <title>Dashboard Sekretariat - Arsip Digital Premium</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css">
     <link rel="stylesheet" href="../css/notifications.css">
-    <style>
-        /* Extra polish for dashboard specific elements */
-        .welcome-content { display: flex; justify-content: space-between; align-items: center; }
-        .welcome-img { width: 240px; opacity: 0.8; filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.4)); }
-        @media (max-width: 992px) { .welcome-img { display: none; } }
-    </style>
 </head>
 <body>
     <!-- Sidebar -->
@@ -96,7 +90,7 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
                         <p>Kelola seluruh alur administrasi persuratan dan manajemen arsip digital secara efisien melalui pusat kontrol Sekretariat.</p>
                     </div>
                     <div class="welcome-img">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5" style="color: rgba(255,255,255,0.2); width: 100%; height: 100%;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                     </div>
                 </div>
             </div>
@@ -150,17 +144,17 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
                     </div>
                     <div class="recent-activity">
                         <?php if (empty($recent_mails)): ?>
-                            <div style="text-align: center; padding: 3rem; opacity: 0.5;">
-                                <svg class="icon" style="width: 48px; height: 48px; margin-bottom: 1rem;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                            <div class="empty-activity-placeholder">
+                                <svg class="icon empty-activity-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                                 <p>Belum ada aktivitas persuratan tercatat.</p>
                             </div>
                         <?php else: ?>
                             <?php foreach ($recent_mails as $mail): ?>
                                 <li class="activity-item">
-                                    <div class="activity-point" style="background: <?= $mail['status'] === 'tercatat' ? 'var(--warning)' : 'var(--success)' ?>"></div>
+                                    <div class="activity-point <?= $mail['status'] === 'tercatat' ? 'activity-point-warning' : 'activity-point-success' ?>"></div>
                                     <div class="activity-content">
                                         <p><?= htmlspecialchars($mail['perihal'] ?? '') ?></p>
-                                        <span>Dari: <?= htmlspecialchars($mail['pengirim'] ?? '') ?> • <b style="color: var(--primary);"><?= date('d M Y', strtotime($mail['created_at'] ?? 'now')) ?></b></span>
+                                        <span>Dari: <?= htmlspecialchars($mail['pengirim'] ?? '') ?> • <b class="activity-time-highlight"><?= date('d M Y', strtotime($mail['created_at'] ?? 'now')) ?></b></span>
                                     </div>
                                 </li>
                             <?php endforeach; ?>
@@ -174,9 +168,9 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
                         <h2>Analisis Grafik</h2>
                     </div>
                     <div class="chart-placeholder">
-                        <div style="text-align: center;">
-                            <svg class="icon" style="width: 64px; height: 64px; opacity: 0.1; margin-bottom: 1.5rem;"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
-                            <p style="font-weight: 700; color: var(--text-muted);">Visualisasi Data<br><span style="font-size: 0.8rem; font-weight: 500;">Modul Analitik Segera Aktif</span></p>
+                        <div class="empty-activity-placeholder">
+                            <svg class="icon chart-visual-icon"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+                            <p class="chart-visual-title">Visualisasi Data<br><span class="chart-visual-subtitle">Modul Analitik Segera Aktif</span></p>
                         </div>
                     </div>
                 </div>

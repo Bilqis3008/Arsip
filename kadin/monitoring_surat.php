@@ -87,13 +87,7 @@ usort($mails, function($a, $b) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Surat - Kepala Dinas</title>
     <link rel="stylesheet" href="../css/kadin/home.css">
-    <!-- Menggunakan CSS monitoring surat dari sekretariat untuk keseragaman UI -->
-    <link rel="stylesheet" href="../css/sekretariat/monitoring_surat.css">
-    <style>
-        .type-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
-        .type-masuk { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .type-keluar { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-    </style>
+    <link rel="stylesheet" href="../css/kadin/monitoring_surat.css">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
@@ -132,7 +126,7 @@ usort($mails, function($a, $b) {
             </div>
         </header>
 
-        <div class="content-body" style="padding-top: 1rem;">
+        <div class="content-body content-body-padding">
             <!-- Monitoring Card -->
             <div class="card">
                 <div class="table-controls">
@@ -153,14 +147,14 @@ usort($mails, function($a, $b) {
                         </thead>
                         <tbody>
                             <?php if (empty($mails)): ?>
-                                <tr><td colspan="3" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada berkas yang sedang diproses.</td></tr>
+                                <tr><td colspan="3" class="empty-table-cell">Tidak ada berkas yang sedang diproses.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($mails as $m): ?>
                                 <tr>
                                     <td>
                                         <div class="info-cell">
                                             <span class="type-badge <?= $m['tipe'] == 'masuk' ? 'type-masuk' : 'type-keluar' ?>">Surat <?= $m['tipe'] ?></span><br>
-                                            <b style="font-size: 1rem; color: #0f172a;"><?= htmlspecialchars($m['perihal']) ?></b>
+                                            <b class="mail-perihal"><?= htmlspecialchars($m['perihal']) ?></b>
                                             <span>No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? $m['nomor_surat'] : $m['nomor_surat_keluar']) ?></span>
                                             <span><?= $m['tipe'] === 'masuk' ? 'Pengirim' : 'Tujuan' ?>: <?= htmlspecialchars($m['tipe'] === 'masuk' ? $m['pengirim'] : $m['tujuan']) ?></span>
                                         </div>
@@ -168,24 +162,24 @@ usort($mails, function($a, $b) {
                                     <td>
                                         <?php if ($m['tipe'] === 'masuk'): ?>
                                             <?php if ($m['status'] === 'tercatat'): ?>
-                                                <div style="font-weight: 700; color: #b45309;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Menunggu Disposisi (Meja Anda)</div>
+                                                <div class="status-warning"><svg class="icon status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Menunggu Disposisi (Meja Anda)</div>
                                             <?php elseif ($m['status'] === 'didispokan' || $m['status'] === 'diteruskan'): ?>
-                                                <div style="font-weight: 700; color: #2563eb;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Proses Tindak Lanjut Bidang</div>
-                                                <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Target: <?= htmlspecialchars($m['nama_bidang'] ?: 'Bidang / Bagian') ?></div>
+                                                <div class="status-info"><svg class="icon status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Proses Tindak Lanjut Bidang</div>
+                                                <div class="status-sub">Target: <?= htmlspecialchars($m['nama_bidang'] ?: 'Bidang / Bagian') ?></div>
                                             <?php endif; ?>
                                         <?php else: ?>
                                             <?php if ($m['status'] === 'draft'): ?>
-                                                <div style="font-weight: 700; color: #b45309;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Draft Awal (Staf Seksi)</div>
+                                                <div class="status-warning"><svg class="icon status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg> Draft Awal (Staf Seksi)</div>
                                             <?php elseif ($m['status'] === 'pending_approval'): ?>
-                                                <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi Perbidang</div>
+                                                <div class="status-orange"><svg class="icon status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi Perbidang</div>
                                             <?php elseif ($m['status'] === 'disetujui'): ?>
-                                                <div style="font-weight: 700; color: #059669;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Disetujui (Distribusi / Tunggu Arsip)</div>
+                                                <div class="status-success"><svg class="icon status-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg> Disetujui (Distribusi / Tunggu Arsip)</div>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; background: #e0e7ff; color: #4338ca; border: none; cursor: pointer;" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
-                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Tracker
+                                        <button class="btn-tracker" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
+                                            <svg class="icon btn-tracker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Tracker
                                         </button>
                                     </td>
                                 </tr>
@@ -202,10 +196,10 @@ usort($mails, function($a, $b) {
     <div class="modal-overlay" id="tracker-modal" onclick="closeTracker()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeTracker()">
-                <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg class="modal-close-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <h3 style="margin-bottom: 0.5rem; color: #0f172a; font-size: 1.25rem;">Live Tracking Alur Surat</h3>
-            <p id="tracker-subtitle" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
+            <h3 class="modal-title">Live Tracking Alur Surat</h3>
+            <p id="tracker-subtitle" class="modal-subtitle"></p>
             
             <div id="tracker-details">
                 <div class="timeline" id="timeline-box"></div>

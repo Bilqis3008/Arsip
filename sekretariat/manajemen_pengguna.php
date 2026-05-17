@@ -165,13 +165,13 @@ $admin = $stmt->fetch();
             </div>
 
             <section id="section-daftar" class="module-section active">
-                <div class="table-controls" style="margin-bottom:2rem;">
-                    <form method="GET" class="search-box" style="max-width:400px; position:relative;">
-                        <svg class="icon" style="position:absolute; left:1rem; top:50%; transform:translateY(-50%); color:var(--text-muted);" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        <input type="text" name="search" placeholder="Cari NIP, nama, atau email..." value="<?= htmlspecialchars((string)$search) ?>" style="padding-left:3rem;">
+                <div class="table-controls table-controls-container">
+                    <form method="GET" class="search-box search-box-form">
+                        <svg class="icon search-icon-inside" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input type="text" name="search" placeholder="Cari NIP, nama, atau email..." value="<?= htmlspecialchars((string)$search) ?>" class="search-input-padding">
                     </form>
                     <form method="GET" class="filter-group">
-                        <select name="role" onchange="this.form.submit()" style="padding:0.8rem 1.2rem; border-radius:1rem; border:1px solid var(--border); font-weight:700;">
+                        <select name="role" onchange="this.form.submit()" class="filter-select-custom">
                             <option value="">Semua Role</option>
                             <option value="sekretariat" <?= $role_filter === 'sekretariat' ? 'selected' : '' ?>>Sekretariat</option>
                             <option value="admin_bidang" <?= $role_filter === 'admin_bidang' ? 'selected' : '' ?>>Admin Bidang</option>
@@ -192,12 +192,12 @@ $admin = $stmt->fetch();
                         </div>
                         <div class="data-table-container">
                             <table class="data-table">
-                                <thead><tr><th>NIP</th><th>Nama</th><th>Jabatan</th><th>Unit Kerja</th><th style="text-align:right;">Aksi</th></tr></thead>
+                                <thead><tr><th>NIP</th><th>Nama</th><th>Jabatan</th><th>Unit Kerja</th><th class="action-th-header">Aksi</th></tr></thead>
                                 <tbody>
                                     <?php foreach ($roleUsers as $u): ?>
                                         <tr>
                                             <td><span class="nip-cell"><?= htmlspecialchars($u['nip'] ?? '') ?></span></td>
-                                            <td><div class="user-info-cell"><div class="user-avatar"><?= strtoupper(substr((string)$u['nama'], 0, 1)) ?></div><div style="font-weight:700;"><?= htmlspecialchars($u['nama'] ?? '') ?></div></div></td>
+                                            <td><div class="user-info-cell"><div class="user-avatar"><?= strtoupper(substr((string)$u['nama'], 0, 1)) ?></div><div class="user-name-cell-text"><?= htmlspecialchars($u['nama'] ?? '') ?></div></div></td>
                                             <td><div class="jabatan-text"><?= htmlspecialchars($u['jabatan'] ?? '-') ?></div></td>
                                             <td><div class="bidang-text"><?= htmlspecialchars($u['nama_bidang'] ?? ($u['asal_instansi'] ?? 'Sekretariat')) ?></div></td>
                                             <td class="action-btns">

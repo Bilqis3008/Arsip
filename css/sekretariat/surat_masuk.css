@@ -330,3 +330,350 @@ textarea { resize: vertical; min-height: 120px; }
     .form-grid { grid-template-columns: 1fr; }
     .detail-grid { grid-template-columns: 1fr; }
 }
+
+/* --- MOVED FROM INLINE --- */
+.alert-message-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--success);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.alert-message-success-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.alert-message-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger);
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid var(--danger);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.alert-message-danger-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.header-table-controls-wrap {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex: 1;
+}
+
+.btn-add-svg-icon {
+    pointer-events: none;
+}
+
+.empty-table-row {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.agenda-num-bold {
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.perihal-main-text {
+    font-weight: 700;
+}
+
+.mail-sub-details {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.tugas-card-header {
+    margin-bottom: 2.5rem;
+}
+
+.tugas-card-header h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.02em;
+}
+
+.tugas-card-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+}
+
+.date-text-bold {
+    font-weight: 700;
+}
+
+.perihal-tugas-title {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.instruksi-box-styled {
+    font-size: 0.8rem;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.inline-form-wrap {
+    display: inline;
+}
+
+.next-agenda-readonly {
+    background: #f1f5f9;
+    cursor: not-allowed;
+}
+
+.upload-icon-centered {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 1rem;
+}
+
+.modal-footer-align-right {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2.5rem;
+}
+
+.v-sub-no {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.keterangan-bordered-text {
+    font-weight: 500;
+    font-style: italic;
+    border-left: 4px solid var(--border);
+    padding-left: 1rem;
+    color: #475569;
+}
+
+.v-preview-box {
+    background: #f8fafc;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.v-preview-img {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 0.5rem;
+}
+
+.v-preview-iframe {
+    width: 100%;
+    height: 450px;
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.v-preview-empty {
+    color: #94a3b8;
+}
+
+.edit-readonly-bg {
+    background: #f1f5f9;
+}
+
+/* --- MORE SURAT KELUAR HELPER STYLES --- */
+.header-desc-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.action-th-center {
+    text-align: center;
+}
+
+.title-primary-bold {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.subtitle-muted-sm {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.btn-primary-xs {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+}
+
+.modal-confirm-card {
+    max-width: 450px;
+    text-align: center;
+    padding: 3rem;
+}
+
+.modal-icon-circle {
+    width: 70px;
+    height: 70px;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    border-radius: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+}
+
+.modal-icon-svg {
+    width: 32px;
+    height: 32px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.5;
+}
+
+.modal-title-bold {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+}
+
+.modal-desc-muted {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.modal-desc-highlight {
+    color: var(--text-main);
+}
+
+.modal-button-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.btn-cancel-light {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.hidden-form {
+    display: none;
+}
+
+/* --- MONITORING SURAT STYLES --- */
+.table-controls-monitoring {
+    margin-bottom: 2rem;
+}
+
+.search-box-monitoring {
+    max-width: 400px;
+    position: relative;
+}
+
+.search-icon-monitoring {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.search-input-monitoring {
+    padding-left: 3rem;
+    width: 100%;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+}
+
+.info-bold-text {
+    font-weight: 800;
+    color: var(--text-main);
+    margin-top: 0.5rem;
+}
+
+.info-muted-text-sm {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.step-flex-wrap {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.step-warning {
+    color: var(--warning);
+}
+
+.step-primary {
+    color: var(--primary);
+}
+
+.step-subtext {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: 1.5rem;
+}
+
+.btn-view-tracker {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary);
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.8rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-view-tracker-svg {
+    width: 16px;
+    height: 16px;
+}
+
+.tracker-title {
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tracker-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+}
+
+
+

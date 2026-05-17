@@ -272,18 +272,28 @@ $admin = $stmt->fetch();
                 </div>
                 <div class="user-avatar"><?= strtoupper(substr((string)($admin['nama'] ?? 'A'), 0, 1)) ?></div>
             </div>
+    <main class="main-content">
+        <header class="content-header">
+            <div class="header-title"><h1>Manajemen Surat Masuk</h1></div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <span class="user-name"><?= htmlspecialchars($admin['nama'] ?? 'Admin') ?></span>
+                    <span class="user-role">Sekretariat</span>
+                </div>
+                <div class="user-avatar"><?= strtoupper(substr((string)($admin['nama'] ?? 'A'), 0, 1)) ?></div>
+            </div>
         </header>
 
         <div class="content-body">
             <!-- Alert Notifications -->
             <?php if ($success_msg): ?>
-                <div style="background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 1rem; border-radius: 1rem; border: 1px solid var(--success); margin-bottom: 1.5rem; font-weight: 600;">
-                    <svg class="icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 0.5rem;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $success_msg ?>
+                <div class="alert-message-success">
+                    <svg class="icon alert-message-success-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $success_msg ?>
                 </div>
             <?php endif; ?>
             <?php if ($error_msg): ?>
-                <div style="background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 1rem; border-radius: 1rem; border: 1px solid var(--danger); margin-bottom: 1.5rem; font-weight: 600;">
-                    <svg class="icon" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 0.5rem;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <?= $error_msg ?>
+                <div class="alert-message-danger">
+                    <svg class="icon alert-message-danger-icon"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> <?= $error_msg ?>
                 </div>
             <?php endif; ?>
 
@@ -298,7 +308,7 @@ $admin = $stmt->fetch();
             <section id="section-daftar" class="module-section active">
                 <div class="card">
                     <div class="table-controls">
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap; flex: 1;">
+                        <div class="header-table-controls-wrap">
                             <form action="" method="GET" class="search-box">
                                 <svg class="icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                                 <input type="text" name="search" placeholder="Cari perihal, nomor surat atau pengirim..." value="<?= htmlspecialchars((string)$search) ?>">
@@ -316,7 +326,7 @@ $admin = $stmt->fetch();
                                 </select>
                             </form>
                         </div>
-                        <button type="button" id="btnTambahSurat" class="btn btn-primary"><svg class="icon" style="pointer-events: none;"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Tambah Surat</button>
+                        <button type="button" id="btnTambahSurat" class="btn btn-primary"><svg class="icon btn-add-svg-icon"><path d="M5 12h14"/><path d="M12 5v14"/></svg> Tambah Surat</button>
                     </div>
 
                     <div class="data-table-container">
@@ -333,14 +343,14 @@ $admin = $stmt->fetch();
                             </thead>
                             <tbody>
                                 <?php if (empty($mails)): ?>
-                                    <tr><td colspan="6" style="text-align: center; padding: 3rem; color: var(--text-muted);">Tidak ada agenda surat aktif.</td></tr>
+                                    <tr><td colspan="6" class="empty-table-row">Tidak ada agenda surat aktif.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($mails as $mail): ?>
                                         <tr>
-                                            <td style="font-weight: 800; color: var(--primary);"><?= htmlspecialchars($mail['nomor_agenda'] ?? '') ?></td>
+                                            <td class="agenda-num-bold"><?= htmlspecialchars($mail['nomor_agenda'] ?? '') ?></td>
                                             <td>
-                                                <div style="font-weight: 700;"><?= htmlspecialchars($mail['perihal'] ?? '') ?></div>
-                                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">No: <?= htmlspecialchars($mail['nomor_surat'] ?? '') ?> • <?= date('d M Y', strtotime($mail['tanggal_terima'] ?? 'now')) ?></div>
+                                                <div class="perihal-main-text"><?= htmlspecialchars($mail['perihal'] ?? '') ?></div>
+                                                <div class="mail-sub-details">No: <?= htmlspecialchars($mail['nomor_surat'] ?? '') ?> • <?= date('d M Y', strtotime($mail['tanggal_terima'] ?? 'now')) ?></div>
                                             </td>
                                             <td><?= htmlspecialchars($mail['pengirim'] ?? '') ?></td>
                                             <td><span class="badge-status status-<?= $mail['sifat_surat'] ?>"><?= ucfirst($mail['sifat_surat'] ?? '') ?></span></td>
@@ -370,7 +380,7 @@ $admin = $stmt->fetch();
             <!-- Section: Surat Tugas -->
             <section id="section-tugas" class="module-section">
                 <div class="card">
-                    <div class="card-header"><h2>Agenda Surat Tugas (Sekretariat Umum)</h2><p>Daftar disposisi pimpinan untuk unit kerja Sekretariat.</p></div>
+                    <div class="tugas-card-header"><h2>Agenda Surat Tugas (Sekretariat Umum)</h2><p>Daftar disposisi pimpinan untuk unit kerja Sekretariat.</p></div>
                     <div class="data-table-container">
                         <table class="data-table">
                             <thead>
@@ -383,21 +393,21 @@ $admin = $stmt->fetch();
                             </thead>
                             <tbody>
                                 <?php if (empty($tugas_mails)): ?>
-                                    <tr><td colspan="4" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada agenda surat tugas saat ini.</td></tr>
+                                    <tr><td colspan="4" class="empty-table-row">Tidak ada agenda surat tugas saat ini.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($tugas_mails as $m): ?>
                                         <tr>
-                                            <td><b><?= date('d/m/Y', strtotime($m['tanggal_terima'] ?? 'now')) ?></b></td>
+                                            <td><b class="date-text-bold"><?= date('d/m/Y', strtotime($m['tanggal_terima'] ?? 'now')) ?></b></td>
                                             <td>
-                                                <div style="font-weight: 700; color: var(--primary);"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
-                                                <div style="font-size: 0.8rem; color: #475569; background: #f1f5f9; padding: 0.5rem; border-radius: 0.5rem; margin-top: 0.5rem;">"<?= htmlspecialchars($m['instruksi_kadin'] ?? 'Segera tindak lanjuti') ?>"</div>
+                                                <div class="perihal-tugas-title"><?= htmlspecialchars($m['perihal'] ?? '') ?></div>
+                                                <div class="instruksi-box-styled">"<?= htmlspecialchars($m['instruksi_kadin'] ?? 'Segera tindak lanjuti') ?>"</div>
                                             </td>
                                             <td><?= htmlspecialchars($m['pengirim'] ?? '') ?></td>
                                             <td class="action-btns">
                                                 <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="action-btn btn-edit" title="Forward ke Staff">
                                                     <svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                                                 </a>
-                                                <form action="" method="POST" style="display:inline;" onsubmit="return confirm('Arsipkan surat ini ke Sekretariat?')">
+                                                <form action="" method="POST" class="inline-form-wrap" onsubmit="return confirm('Arsipkan surat ini ke Sekretariat?')">
                                                     <input type="hidden" name="action" value="archive_tugas">
                                                     <input type="hidden" name="id_surat" value="<?= $m['id_surat_masuk'] ?>">
                                                     <button type="submit" class="action-btn btn-view" title="Selesaikan & Arsip">
@@ -431,12 +441,12 @@ $admin = $stmt->fetch();
                             </thead>
                             <tbody>
                                 <?php if (empty($riwayat_mails)): ?>
-                                    <tr><td colspan="5" style="text-align: center; padding: 3rem; color: var(--text-muted);">Belum ada riwayat surat selesai.</td></tr>
+                                    <tr><td colspan="5" class="empty-table-row">Belum ada riwayat surat selesai.</td></tr>
                                 <?php else: ?>
                                     <?php foreach ($riwayat_mails as $mail): ?>
                                         <tr>
-                                            <td style="font-weight: 700;"><?= htmlspecialchars($mail['nomor_agenda'] ?? '') ?></td>
-                                            <td><div style="font-weight: 600;"><?= htmlspecialchars($mail['perihal'] ?? '') ?></div><div style="font-size: 0.75rem; color: var(--text-muted);">No: <?= htmlspecialchars($mail['nomor_surat'] ?? '') ?></div></td>
+                                            <td class="date-text-bold"><?= htmlspecialchars($mail['nomor_agenda'] ?? '') ?></td>
+                                            <td><div class="perihal-main-text"><?= htmlspecialchars($mail['perihal'] ?? '') ?></div><div class="mail-sub-details">No: <?= htmlspecialchars($mail['nomor_surat'] ?? '') ?></div></td>
                                             <td><?= htmlspecialchars($mail['pengirim'] ?? '') ?></td>
                                             <td><span class="badge-status status-selesai">Selesai</span></td>
                                             <td class="action-btns">
@@ -462,7 +472,7 @@ $admin = $stmt->fetch();
             <form action="" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="action" value="save_mail">
                 <div class="form-grid">
-                    <div class="form-group"><label>Nomor Agenda (Auto)</label><input type="text" name="nomor_agenda" value="<?= $next_agenda_number ?>" readonly style="background:#f1f5f9; cursor:not-allowed;"></div>
+                    <div class="form-group"><label>Nomor Agenda (Auto)</label><input type="text" name="nomor_agenda" value="<?= $next_agenda_number ?>" readonly class="next-agenda-readonly"></div>
                     <div class="form-group"><label>Nomor Surat *</label><input type="text" name="nomor_surat" required placeholder="Contoh: 001/DISDIK/IV/2026"></div>
                     <div class="form-group"><label>Tanggal Surat *</label><input type="date" name="tanggal_surat" required></div>
                     <div class="form-group"><label>Tanggal Terima *</label><input type="date" name="tanggal_terima" value="<?= date('Y-m-d') ?>" required></div>
@@ -470,10 +480,10 @@ $admin = $stmt->fetch();
                     <div class="form-group full-width"><label>Perihal *</label><input type="text" name="perihal" required placeholder="Pokok isi surat"></div>
                     <div class="form-group"><label>Sifat Surat</label><select name="sifat_surat"><option value="biasa">Biasa</option><option value="penting">Penting</option></select></div>
                     <div class="form-group"><label>Lampiran (Lembar)</label><input type="number" name="lampiran" min="0" value="0"></div>
-                    <div class="form-group full-width"><label>Dokumen Digital (PDF/IMG)</label><div class="file-upload-area" onclick="document.getElementById('file-input').click()"><svg class="icon" style="width:40px;height:40px;margin-bottom:1rem;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg><p id="file-name">Klik untuk memilih file dokumen</p><input type="file" id="file-input" name="file_surat" hidden onchange="validateFile(this)"></div></div>
+                    <div class="form-group full-width"><label>Dokumen Digital (PDF/IMG)</label><div class="file-upload-area" onclick="document.getElementById('file-input').click()"><svg class="icon upload-icon-centered"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg><p id="file-name">Klik untuk memilih file dokumen</p><input type="file" id="file-input" name="file_surat" hidden onchange="validateFile(this)"></div></div>
                     <div class="form-group full-width"><label>Keterangan</label><textarea name="keterangan" placeholder="Catatan tambahan jika ada..."></textarea></div>
                 </div>
-                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:2.5rem;"><button type="reset" class="btn">Reset</button><button type="submit" class="btn btn-primary">Simpan Agenda</button></div>
+                <div class="modal-footer-align-right"><button type="reset" class="btn">Reset</button><button type="submit" class="btn btn-primary">Simpan Agenda</button></div>
             </form>
         </div>
     </div>
@@ -481,15 +491,15 @@ $admin = $stmt->fetch();
     <!-- ====== MODAL: VIEW ====== -->
     <div id="viewModal" class="modal-overlay">
         <div class="modal-card">
-            <div class="modal-header"><div id="vTitleBox"><h2 id="vPerihal"></h2><p id="vNo" style="font-size:0.9rem; color:var(--text-muted);"></p></div><button class="btn-close" onclick="closeViewModal()">✕</button></div>
+            <div class="modal-header"><div id="vTitleBox"><h2 id="vPerihal"></h2><p id="vNo" class="v-sub-no"></p></div><button class="btn-close" onclick="closeViewModal()">✕</button></div>
             <div class="detail-grid">
                 <div>
                     <div class="detail-item"><span class="detail-label">Pengirim</span><p id="vPengirim" class="detail-value"></p></div>
                     <div class="detail-item"><span class="detail-label">Tanggal Surat / Terima</span><p id="vTgl" class="detail-value"></p></div>
                     <div class="detail-item"><span class="detail-label">Sifat & Status</span><p id="vInfo" class="detail-value"></p></div>
-                    <div class="detail-item"><span class="detail-label">Keterangan</span><p id="vKet" style="font-weight:500; font-style:italic; border-left:4px solid var(--border); padding-left:1rem; color:#475569;"></p></div>
+                    <div class="detail-item"><span class="detail-label">Keterangan</span><p id="vKet" class="keterangan-bordered-text"></p></div>
                 </div>
-                <div id="vPreview" style="background:#f8fafc; border-radius:1rem; border:1px solid var(--border); min-height:300px; display:flex; align-items:center; justify-content:center;"></div>
+                <div id="vPreview" class="v-preview-box"></div>
             </div>
         </div>
     </div>
@@ -503,7 +513,7 @@ $admin = $stmt->fetch();
                 <input type="hidden" name="edit_id" id="eId">
                 <input type="hidden" name="existing_file_path" id="eFilePath">
                 <div class="form-grid">
-                    <div class="form-group"><label>Agenda</label><input type="text" name="nomor_agenda" id="eNomorAgenda" readonly style="background:#f1f5f9;"></div>
+                    <div class="form-group"><label>Agenda</label><input type="text" name="nomor_agenda" id="eNomorAgenda" readonly class="edit-readonly-bg"></div>
                     <div class="form-group"><label>No Surat</label><input type="text" name="nomor_surat" id="eNomorSurat"></div>
                     <div class="form-group"><label>Tgl Surat</label><input type="date" name="tanggal_surat" id="eTglSurat"></div>
                     <div class="form-group"><label>Tgl Terima</label><input type="date" name="tanggal_terima" id="eTglTerima"></div>
@@ -514,7 +524,7 @@ $admin = $stmt->fetch();
                     <div class="form-group full-width"><label>Update File (PDF/IMG)</label><input type="file" name="file_surat" class="p-input"></div>
                     <div class="form-group full-width"><label>Keterangan</label><textarea name="keterangan" id="eKet"></textarea></div>
                 </div>
-                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:2.5rem;"><button type="button" class="btn" onclick="closeEditModal()">Batal</button><button type="submit" class="btn btn-primary">Simpan Perubahan</button></div>
+                <div class="modal-footer-align-right"><button type="button" class="btn" onclick="closeEditModal()">Batal</button><button type="submit" class="btn btn-primary">Simpan Perubahan</button></div>
             </form>
         </div>
     </div>
@@ -557,7 +567,7 @@ $admin = $stmt->fetch();
             document.getElementById('vInfo').innerText = `${m.sifat_surat.toUpperCase()} - ${m.status.toUpperCase()}`;
             document.getElementById('vKet').innerText = m.keterangan || 'Tidak ada keterangan tambahan.';
             const prev = document.getElementById('vPreview');
-            prev.innerHTML = m.file_path ? (/\.(png|jpg|jpeg)$/i.test(m.file_path) ? `<img src="../${m.file_path}" style="max-width:100%; max-height:400px; border-radius:0.5rem;">` : `<iframe src="../${m.file_path}" style="width:100%; height:450px; border:none; border-radius:0.5rem;"></iframe>`) : '<p style="color:#94a3b8;">Tidak ada lampiran dokumen digital.</p>';
+            prev.innerHTML = m.file_path ? (/\.(png|jpg|jpeg)$/i.test(m.file_path) ? `<img src="../${m.file_path}" class="v-preview-img">` : `<iframe src="../${m.file_path}" class="v-preview-iframe"></iframe>`) : '<p class="v-preview-empty">Tidak ada lampiran dokumen digital.</p>';
             document.getElementById('viewModal').classList.add('active');
         }
         function closeViewModal() { document.getElementById('viewModal').classList.remove('active'); }

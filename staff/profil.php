@@ -180,7 +180,7 @@ $user_data = $stmt->fetch();
                     </form>
                     <h3><?= htmlspecialchars($user_data['nama'] ?? '') ?></h3>
                     <p>STAF <?= htmlspecialchars(strtoupper($user_data['nama_seksi'] ?? '')) ?></p>
-                    <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.85rem; font-weight: 500;">
+                    <div class="profile-footer-text">
                         Dinas Kearsipan dan Perpustakaan
                     </div>
                 </div>
@@ -199,7 +199,7 @@ $user_data = $stmt->fetch();
                             <input type="text" name="nama" class="p-input" value="<?= htmlspecialchars($user_data['nama'] ?? '') ?>" required>
                         </div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                        <div class="grid-columns-2">
                             <div class="p-form-group">
                                 <label>Email Dinas</label>
                                 <input type="email" name="email" class="p-input" value="<?= htmlspecialchars($user_data['email'] ?? '') ?>" required>
@@ -218,17 +218,17 @@ $user_data = $stmt->fetch();
                             <span class="detail-p-label">JABATAN / SEKSI</span>
                             <span class="detail-p-val"><?= htmlspecialchars($user_data['nama_seksi'] ?? '') ?></span>
                         </div>
-                        <div class="detail-p-row" style="border: none;">
+                        <div class="detail-p-row no-border">
                             <span class="detail-p-label">UNIT KERJA (BIDANG)</span>
                             <span class="detail-p-val"><?= htmlspecialchars($user_data['nama_bidang'] ?? '') ?></span>
                         </div>
                         
-                        <button type="submit" class="btn-update-profil" style="background: var(--primary);">Perbarui Data Personal</button>
+                        <button type="submit" class="btn-update-profil btn-primary">Perbarui Data Personal</button>
                     </form>
 
-                    <form action="" method="POST" style="margin-top: 3.5rem;">
-                        <div class="p-section-title" style="border-bottom-color: #fee2e2;">
-                            <svg class="icon" viewBox="0 0 24 24" style="color: var(--danger);"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <form action="" method="POST" class="margin-top-xl">
+                        <div class="p-section-title keamanan">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                             PENGATURAN KEAMANAN
                         </div>
                         <input type="hidden" name="update_password" value="1">
@@ -240,7 +240,7 @@ $user_data = $stmt->fetch();
                             <label>Konfirmasi Password Baru</label>
                             <input type="password" name="confirm_password" class="p-input" placeholder="Ulangi password baru Anda..." required>
                         </div>
-                        <button type="submit" class="btn-update-profil" style="background: var(--danger);">Perbarui Kata Sandi</button>
+                        <button type="submit" class="btn-update-profil btn-danger">Perbarui Kata Sandi</button>
                     </form>
                 </div>
             </section>

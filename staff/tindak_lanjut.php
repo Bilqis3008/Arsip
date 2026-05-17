@@ -139,30 +139,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                 <h1>Tindak Lanjut & Balasan</h1>
                 <p>Proses penyelesaian berkas tugas seksi Anda.</p>
             </div>
-            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
-                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
-                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+            <div class="header-actions">
+                <div class="date-box-header">
+                    <div class="date-box-label">Tanggal</div>
+                    <div class="date-box-value"><?= date('d F Y') ?></div>
                 </div>
-                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
-                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
-                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
+                <div class="user-profile-header">
+                    <div class="user-info-header">
+                        <span class="user-name-header"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
+                        <span class="user-role-header">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
                     </div>
-                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                    <div class="user-avatar-header"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
                 </div>
             </div>
         </header>
 
-        <?php if ($success): ?><div style="padding: 1rem; background: #f0fdf4; color: #16a34a; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $success ?></div><?php endif; ?>
-        <?php if ($error): ?><div style="padding: 1rem; background: #fff1f2; color: #e11d48; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $error ?></div><?php endif; ?>
+        <?php if ($success): ?><div class="alert-box alert-success"><?= $success ?></div><?php endif; ?>
+        <?php if ($error): ?><div class="alert-box alert-danger"><?= $error ?></div><?php endif; ?>
 
         <div class="fulfillment-grid">
             <!-- Left: Command Trace -->
             <div class="card-trace">
                 <div class="trace-header">
                     <h2><?= htmlspecialchars($mail['perihal'] ?? '') ?></h2>
-                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">STATUS: <b style="color: var(--primary);"><?= strtoupper($mail['status'] ?? '') ?></b></p>
+                    <p class="status-label-sub">STATUS: <b class="status-value-text"><?= strtoupper($mail['status'] ?? '') ?></b></p>
                 </div>
 
                 <div class="trace-timeline">
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                         <div class="timeline-content">
                             <span class="timeline-label">SURAT ASLI (PENGIRIM: <?= htmlspecialchars($mail['pengirim'] ?? '') ?>)</span>
                             <div class="timeline-body"><?= htmlspecialchars($mail['nomor_surat'] ?? '') ?></div>
-                            <div style="margin-top: 0.5rem;"><a href="../<?= htmlspecialchars($mail['file_path'] ?? '') ?>" target="_blank" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; text-decoration: none;">Download Surat Masuk &rarr;</a></div>
+                            <div class="download-link-box"><a href="../<?= htmlspecialchars($mail['file_path'] ?? '') ?>" target="_blank" class="download-link">Download Surat Masuk &rarr;</a></div>
                         </div>
                     </div>
 
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                             <div class="timeline-content">
                                 <span class="timeline-label">INSTRUKSI DARI: <?= strtoupper($ins['role'] ?? '') ?> (<?= htmlspecialchars($ins['nama'] ?? '') ?>)</span>
                                 <div class="timeline-body"><?= nl2br(htmlspecialchars($ins['isi_disposisi'] ?? '')) ?></div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.5rem; font-weight: 800;"><?= date('d M Y H:i', strtotime($ins['tanggal_disposisi'] ?? 'now')) ?></div>
+                                <div class="timeline-date-label"><?= date('d M Y H:i', strtotime($ins['tanggal_disposisi'] ?? 'now')) ?></div>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -194,7 +194,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
             <div class="card-fulfillment">
                 <?php if ($mail['perlu_balasan'] == 1 && !$has_reply): ?>
                     <div class="form-title">
-                        <svg class="icon" viewBox="0 0 24 24" style="stroke: var(--primary);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+                        <svg class="icon form-title-icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
                         <h3>Unggah Surat Balasan</h3>
                     </div>
                     <form action="" method="POST" enctype="multipart/form-data">
@@ -217,18 +217,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_fulfillment'])
                         <button type="submit" name="submit_fulfillment" class="btn-finish">Kirim Untuk Verifikasi</button>
                     </form>
                 <?php elseif ($has_reply && !$is_fully_done): ?>
-                    <div style="text-align: center; padding: 2rem;">
-                        <svg class="icon" viewBox="0 0 24 24" style="width: 60px; height: 60px; color: #f59e0b; margin-bottom: 1.5rem;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
-                        <h3 style="font-weight: 800; color: #0f172a;">Menunggu Verifikasi</h3>
-                        <p style="font-size: 0.9rem; color: #64748b; margin-top: 0.75rem;">Balasan telah diunggah. Tugas akan ditandai selesai setelah disetujui oleh Admin Bidang.</p>
-                        <a href="surat_masuk.php" class="btn-finish" style="margin-top: 2rem; display: block; text-decoration: none; background: #0f172a;">Kembali ke Daftar Tugas</a>
+                    <div class="centered-info-box">
+                        <svg class="icon centered-info-icon icon-yellow" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
+                        <h3 class="centered-info-title">Menunggu Verifikasi</h3>
+                        <p class="centered-info-desc">Balasan telah diunggah. Tugas akan ditandai selesai setelah disetujui oleh Admin Bidang.</p>
+                        <a href="surat_masuk.php" class="btn-finish btn-finish-navy">Kembali ke Daftar Tugas</a>
                     </div>
                 <?php else: ?>
-                    <div style="text-align: center; padding: 2rem;">
-                        <svg class="icon" viewBox="0 0 24 24" style="width: 60px; height: 60px; color: #10b981; margin-bottom: 1.5rem;"><circle cx="12" cy="12" r="10"/><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        <h3 style="font-weight: 900; color: #059669;">Tugas Tuntas Terverifikasi</h3>
-                        <p style="font-size: 0.95rem; color: #64748b; margin-top: 0.75rem;">Surat balasan Anda telah disetujui oleh Admin dan secara resmi masuk ke dalam arsip sistem.</p>
-                        <a href="surat_masuk.php" class="btn-finish" style="margin-top: 2rem; display: block; text-decoration: none; background: #059669;">Kembali ke Riwayat</a>
+                    <div class="centered-info-box">
+                        <svg class="icon centered-info-icon icon-green" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <h3 class="centered-info-title success-color">Tugas Tuntas Terverifikasi</h3>
+                        <p class="centered-info-desc success-desc">Surat balasan Anda telah disetujui oleh Admin dan secara resmi masuk ke dalam arsip sistem.</p>
+                        <a href="surat_masuk.php" class="btn-finish btn-finish-green">Kembali ke Riwayat</a>
                     </div>
                 <?php endif; ?>
             </div>

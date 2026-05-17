@@ -88,11 +88,7 @@ $admin = $stmt->fetch();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Disposisi Tugas - Sekretariat</title>
     <link rel="stylesheet" href="../css/sekretariat/home.css">
-    <link rel="stylesheet" href="../css/admin_perbidang/disposisi_surat.css">
-    <style>
-        .sidebar { background: var(--navy); }
-        .menu-item.active { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
-    </style>
+    <link rel="stylesheet" href="../css/sekretariat/disposisi_surat.css">
     <link rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
@@ -133,28 +129,28 @@ $admin = $stmt->fetch();
         </header>
 
         <div class="content-body">
-            <?php if ($message): ?><div style="padding: 1rem; background: #dcfce7; color: #15803d; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $message ?></div><?php endif; ?>
-            <?php if ($error): ?><div style="padding: 1rem; background: #fee2e2; color: #b91c1c; border-radius: 1rem; margin-bottom: 2rem; font-weight: 700;"><?= $error ?></div><?php endif; ?>
+            <?php if ($message): ?><div class="alert-success"><?= $message ?></div><?php endif; ?>
+            <?php if ($error): ?><div class="alert-danger"><?= $error ?></div><?php endif; ?>
 
             <div class="dispo-container">
                 <!-- Left: Doc & Kadin Inst -->
                 <div class="card-doc">
                     <div class="doc-header">
                         <h2><?= htmlspecialchars($mail['perihal']) ?></h2>
-                        <span class="badge" style="background: #e0e7ff; color: #4338ca;"><?= htmlspecialchars($mail['status']) ?></span>
+                        <span class="badge"><?= htmlspecialchars($mail['status']) ?></span>
                     </div>
 
                     <?php if ($mail['instruksi_kadin']): ?>
                         <div class="kadin-instruction">
-                            <p style="font-weight: 600; color: #92400e; line-height: 1.6;">"<?= nl2br(htmlspecialchars($mail['instruksi_kadin'])) ?>"</p>
-                            <div style="margin-top: 1rem; font-size: 0.7rem; color: #b45309; font-weight: 800;">INSTRUKSI KADIN • <?= date('d M Y H:i', strtotime($mail['tgl_kadin'])) ?></div>
+                            <p class="kadin-instruction-text">"<?= nl2br(htmlspecialchars($mail['instruksi_kadin'])) ?>"</p>
+                            <div class="kadin-instruction-meta">INSTRUKSI KADIN • <?= date('d M Y H:i', strtotime($mail['tgl_kadin'])) ?></div>
                         </div>
                     <?php endif; ?>
 
                     <div class="doc-meta-grid">
                         <div class="meta-item"><label>Nomor Surat</label><span><?= htmlspecialchars($mail['nomor_surat']) ?></span></div>
                         <div class="meta-item"><label>Pengirim</label><span><?= htmlspecialchars($mail['pengirim']) ?></span></div>
-                        <div class="meta-item"><label>Sifat Surat</label><span style="color: var(--primary); text-transform: uppercase;"><?= ucfirst($mail['sifat_surat']) ?></span></div>
+                        <div class="meta-item"><label>Sifat Surat</label><span class="meta-sifat-text"><?= ucfirst($mail['sifat_surat']) ?></span></div>
                     </div>
                 </div>
 
@@ -180,15 +176,15 @@ $admin = $stmt->fetch();
                             <textarea name="isi_disposisi" placeholder="Tulis instruksi tindak lanjut untuk staf..."></textarea>
                         </div>
                         <button type="submit" name="submit_dispro_internal" class="btn-submit">
-                            <svg class="icon" style="stroke: white;"><polyline points="20 6 9 17 4 12"></polyline></svg> Kirim Tugas
+                            <svg class="icon"><polyline points="20 6 9 17 4 12"></polyline></svg> Kirim Tugas
                         </button>
                     </form>
                     <?php else: ?>
-                        <div style="text-align: center; padding: 2rem; border-radius: 1rem; background: #f8fafc; border: 1px solid var(--border);">
-                            <svg class="icon" style="width: 48px; height: 48px; color: var(--primary); margin-bottom: 1rem;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 12 12 16 14"></polyline></svg>
-                            <p style="font-weight: 700; color: #0f172a;">Sudah Diteruskan</p>
-                            <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem;">Tugas ini sedang dalam proses tindak lanjut oleh staf.</p>
-                            <a href="surat_masuk.php" class="btn-submit" style="margin-top: 1.5rem; text-decoration: none; display: inline-block;">Kembali ke Daftar</a>
+                        <div class="processed-alert">
+                            <svg class="icon processed-alert-icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 8 12 12 16 14"></polyline></svg>
+                            <p class="processed-alert-title">Sudah Diteruskan</p>
+                            <p class="processed-alert-subtitle">Tugas ini sedang dalam proses tindak lanjut oleh staf.</p>
+                            <a href="surat_masuk.php" class="btn-submit processed-alert-btn">Kembali ke Daftar</a>
                         </div>
                     <?php endif; ?>
                 </div>

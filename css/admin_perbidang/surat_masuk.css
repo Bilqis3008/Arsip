@@ -64,3 +64,205 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
+
+/* --- MOVED FROM INLINE --- */
+.th-date {
+    width: 150px;
+}
+
+.th-status {
+    width: 150px;
+}
+
+.th-action {
+    width: 150px;
+    text-align: center;
+}
+
+.empty-state-cell {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+}
+
+.mail-title-txt {
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.mail-subtitle-txt {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.kadin-inst-box {
+    background: var(--bg-body);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border-left: 3px solid var(--primary);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+.td-center {
+    text-align: center;
+}
+
+.action-row {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.btn-preview-mail {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+.btn-preview-mail:hover {
+    background: #bae6fd;
+}
+
+.btn-preview-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-direct-archive {
+    background: var(--navy);
+    color: var(--primary);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-direct-archive:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+.btn-track-mail {
+    background: #f1f5f9;
+    color: var(--navy);
+    border: 1px solid var(--border);
+}
+
+.btn-track-mail:hover {
+    background: var(--border);
+}
+
+/* Modal Styling */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content-card {
+    background: #fff;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 1rem;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.modal-close-svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.modal-title-header {
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+    font-size: 1.25rem;
+}
+
+.modal-desc-txt {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-strong-perihal {
+    color: #0f172a;
+}
+
+.modal-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.modal-select-field {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 0.5rem;
+    outline: none;
+    font-size: 0.95rem;
+}
+
+.modal-btn-row {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.modal-btn-cancel {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: #e2e8f0;
+    color: #475569;
+    transition: var(--transition);
+}
+
+.modal-btn-cancel:hover {
+    background: #cbd5e1;
+}
+
+.modal-btn-submit {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: #10b981;
+    color: white;
+    transition: var(--transition);
+}
+
+.modal-btn-submit:hover {
+    background: #059669;
+}
+

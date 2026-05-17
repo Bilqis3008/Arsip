@@ -91,3 +91,119 @@ textarea { height: 120px; resize: none; }
     .fulfillment-grid { grid-template-columns: 1fr; }
     .card-fulfillment { position: static; }
 }
+
+/* --- PREMIUM STYLES FOR TINDAK LANJUT --- */
+.alert-box {
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.alert-danger {
+    background: #fff1f2;
+    color: #e11d48;
+}
+
+.status-label-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+}
+
+.status-value-text {
+    color: var(--primary);
+}
+
+.download-link-box {
+    margin-top: 0.5rem;
+}
+
+.download-link {
+    font-size: 0.75rem;
+    color: var(--primary);
+    font-weight: 800;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.download-link:hover {
+    color: var(--primary-dark);
+}
+
+.timeline-date-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    font-weight: 800;
+}
+
+.form-title-icon {
+    stroke: var(--primary);
+}
+
+.centered-info-box {
+    text-align: center;
+    padding: 2rem;
+}
+
+.centered-info-icon {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.5rem;
+}
+
+.icon-yellow {
+    color: #f59e0b;
+}
+
+.icon-green {
+    color: #10b981;
+}
+
+.centered-info-title {
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.centered-info-title.success-color {
+    font-weight: 900;
+    color: #059669;
+}
+
+.centered-info-desc {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-top: 0.75rem;
+}
+
+.centered-info-desc.success-desc {
+    font-size: 0.95rem;
+}
+
+.btn-finish-navy {
+    margin-top: 2rem;
+    display: block;
+    text-decoration: none;
+    background: #0f172a;
+    text-align: center;
+}
+
+.btn-finish-green {
+    margin-top: 2rem;
+    display: block;
+    text-decoration: none;
+    background: #059669;
+    text-align: center;
+}
+
+.btn-finish-navy:hover, .btn-finish-green:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+

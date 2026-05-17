@@ -187,3 +187,28 @@
     .card-main { padding: 2rem; }
     .form-grid { grid-template-columns: 1fr; gap: 1rem; }
 }
+
+/* --- MOVED FROM INLINE --- */
+.panel-subtitle {
+    margin-top: 1rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.detail-row-no-border {
+    border: none !important;
+}
+
+.security-form-container {
+    margin-top: 4rem;
+}
+
+.section-title-danger {
+    border-bottom-color: #fee2e2 !important;
+}
+
+.section-title-danger-icon {
+    color: var(--danger) !important;
+}
+

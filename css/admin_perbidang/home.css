@@ -129,3 +129,74 @@
 .logout-btn:hover {
     background: rgba(244, 63, 94, 0.15);
 }
+
+/* --- MOVED FROM INLINE --- */
+.badge-fit {
+    width: fit-content;
+}
+
+.stat-card-warning {
+    border-color: var(--accent) !important;
+}
+
+.stat-num-warning {
+    color: var(--accent) !important;
+}
+
+.badge-warning-custom {
+    background: var(--accent-light) !important;
+    color: var(--accent) !important;
+    width: fit-content;
+}
+
+.stat-num-muted {
+    color: #64748b !important;
+}
+
+.btn-view-all {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-decoration: none;
+}
+
+.home-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.home-table-header-row {
+    border-bottom: 2px solid var(--border);
+    text-align: left;
+}
+
+.home-table-th {
+    padding: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.home-table-row {
+    border-bottom: 1px solid var(--border);
+}
+
+.home-table-td {
+    padding: 1rem;
+}
+
+.mail-title-cell {
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.mail-subtitle-cell {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.mail-pengirim-cell {
+    padding: 1rem;
+    font-size: 0.9rem;
+}
+

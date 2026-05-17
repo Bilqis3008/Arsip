@@ -75,3 +75,153 @@
 .timeline-content h4 { margin: 0 0 0.25rem; color: #0f172a; font-size: 0.95rem; }
 .timeline-content p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; }
 .timeline-time { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
+
+/* --- MOVED FROM INLINE --- */
+.content-body-padding {
+    padding-top: 1rem;
+}
+
+.empty-state-cell {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+}
+
+.info-cell-title {
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+.stage-waiting {
+    font-weight: 700;
+    color: #b45309;
+}
+
+.stage-waiting-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+}
+
+.stage-warning {
+    font-weight: 700;
+    color: #d97706;
+}
+
+.stage-warning-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+}
+
+.stage-meta {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.stage-info {
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.stage-info-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+}
+
+.stage-success {
+    font-weight: 700;
+    color: #059669;
+}
+
+.stage-success-icon {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+}
+
+.btn-tracker {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #e0e7ff;
+    color: #4338ca;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-tracker:hover {
+    background: #c7d2fe;
+}
+
+.btn-tracker-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.modal-close-svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.modal-title {
+    margin-bottom: 0.5rem;
+    color: #0f172a;
+    font-size: 1.25rem;
+}
+
+.modal-desc {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.modal-mail-info {
+    background: #f8fafc;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+    display: none;
+}
+
+/* Tracking Details Grid for JS Template */
+.tracker-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    font-size: 0.85rem;
+}
+
+.tracker-info-perihal {
+    grid-column: span 2;
+}
+
+.tracker-info-label {
+    color: #64748b;
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+}
+
+.tracker-info-val-strong {
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+.tracker-info-val {
+    color: #0f172a;
+}
+

@@ -91,27 +91,9 @@ usort($mails, function($a, $b) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Alur Surat - Staff Panel</title>
-    <link rel="stylesheet" href="../css/staff/home.css">
-    <link rel="stylesheet" href="../css/sekretariat/monitoring_surat.css">
-    <style>
-        .type-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; display: inline-block; }
-        .type-masuk { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
-        .type-keluar { background: rgba(16, 185, 129, 0.1); color: #10b981; }
-
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(4px); }
-        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 1rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-        .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; font-size: 1.5rem; color: #64748b; cursor: pointer; }
-        .timeline { position: relative; margin-top: 1rem; padding-left: 20px; border-left: 2px solid #e2e8f0; }
-        .timeline-item { position: relative; padding-bottom: 1.5rem; }
-        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; }
-        .timeline-item.done::before { background: #10b981; border-color: #10b981; }
-        .timeline-item.active::before { background: #3b82f6; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
-        
-        .timeline-content h4 { margin: 0 0 0.25rem; color: #0f172a; font-size: 0.95rem; }
-        .timeline-content p { margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4; }
-        .timeline-time { font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem; }
-    </style>
-    <link rel="stylesheet" href="../css/notifications.css">
+    <link class="page-css" rel="stylesheet" href="../css/staff/home.css">
+    <link class="page-css" rel="stylesheet" href="../css/staff/monitoring.css">
+    <link class="page-css" rel="stylesheet" href="../css/notifications.css">
 </head>
 <body>
     <aside class="sidebar">
@@ -142,22 +124,22 @@ usort($mails, function($a, $b) {
                 <h1>Monitoring Alur Surat</h1>
                 <p>Pantau berkas yang sedang diproses oleh seksi Anda.</p>
             </div>
-            <div class="header-actions" style="display: flex; align-items: center; gap: 1.5rem;">
-                <div class="date-box-header" style="background: white; padding: 0.75rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md); display: flex; flex-direction: column; align-items: flex-end;">
-                    <div style="font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">Tanggal</div>
-                    <div style="font-size: 0.9375rem; font-weight: 700; color: var(--primary);"><?= date('d F Y') ?></div>
+            <div class="header-actions">
+                <div class="date-box-header">
+                    <div class="date-box-label">Tanggal</div>
+                    <div class="date-box-value"><?= date('d F Y') ?></div>
                 </div>
-                <div class="user-profile" style="display: flex; align-items: center; gap: 1rem; background: white; padding: 0.5rem 1.25rem; border-radius: 1.25rem; border: 1px solid var(--border); box-shadow: var(--shadow-md);">
-                    <div class="user-info" style="display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                        <span class="user-name" style="font-weight: 800; color: var(--primary-dark); font-size: 0.9rem;"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
-                        <span class="user-role" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
+                <div class="user-profile-header">
+                    <div class="user-info-header">
+                        <span class="user-name-header"><?= htmlspecialchars((string)($admin['nama'] ?? '')) ?></span>
+                        <span class="user-role-header">Staf <?= htmlspecialchars((string)($admin['nama_seksi'] ?? 'Seksi')) ?></span>
                     </div>
-                    <div class="user-avatar" style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem;"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
+                    <div class="user-avatar-header"><?= strtoupper(substr((string)($admin['nama_seksi'] ?? ''), 0, 1) ?: 'S') ?></div>
                 </div>
             </div>
         </header>
 
-        <div class="content-body" style="padding-top: 1rem;">
+        <div class="content-body content-body-monitoring">
             <!-- Monitoring Card -->
             <div class="card">
                 <div class="table-controls">
@@ -178,35 +160,35 @@ usort($mails, function($a, $b) {
                         </thead>
                         <tbody>
                             <?php if (empty($mails)): ?>
-                                <tr><td colspan="3" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada berkas yang sedang diproses oleh seksi ini.</td></tr>
-<?php else: ?>
+                                <tr><td colspan="3" class="empty-state-monitoring">Tidak ada berkas yang sedang diproses oleh seksi ini.</td></tr>
+                            <?php else: ?>
                                 <?php foreach ($mails as $m): ?>
                                 <tr>
                                     <td>
                                         <div class="info-cell">
                                             <span class="type-badge <?= $m['tipe'] == 'masuk' ? 'type-masuk' : 'type-keluar' ?>">Surat <?= $m['tipe'] ?></span><br>
-                                            <b style="font-size: 1rem; color: #0f172a;"><?= htmlspecialchars($m['perihal'] ?? '') ?></b>
+                                            <b class="bold-info-text"><?= htmlspecialchars($m['perihal'] ?? '') ?></b>
                                             <span>No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['nomor_surat'] ?? '') : ($m['nomor_surat_keluar'] ?? '')) ?></span>
                                             <span><?= $m['tipe'] === 'masuk' ? 'Pengirim' : 'Tujuan' ?>: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['pengirim'] ?? '') : ($m['tujuan'] ?? '')) ?></span>
                                         </div>
                                     </td>
                                     <td>
                                         <?php if ($m['tipe'] === 'masuk'): ?>
-                                            <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Tanggungan Tindak Lanjut Seksi</div>
-                                            <div style="font-size: 0.8rem; color: #64748b; margin-top:2px;">Disahkan ke: <?= htmlspecialchars((string)($m['nama_seksi'] ?? 'Seksi Anda')) ?></div>
+                                            <div class="step-indicator-custom warning"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Tanggungan Tindak Lanjut Seksi</div>
+                                            <div class="step-subtext-custom">Disahkan ke: <?= htmlspecialchars((string)($m['nama_seksi'] ?? 'Seksi Anda')) ?></div>
                                         <?php else: ?>
                                             <?php if ($m['status'] === 'draft'): ?>
-                                                <div style="font-weight: 700; color: #b45309;"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Draft Awal (Seksi Anda)</div>
+                                                <div class="step-indicator-custom danger-orange"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Draft Awal (Seksi Anda)</div>
                                             <?php elseif ($m['status'] === 'pending_approval'): ?>
-                                                <div style="font-weight: 700; color: #d97706;"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi Verifikator/Admin</div>
+                                                <div class="step-indicator-custom warning"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi Verifikator/Admin</div>
                                             <?php elseif ($m['status'] === 'disetujui'): ?>
-                                                <div style="font-weight: 700; color: #059669;"><svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px;margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Disetujui (Tunggu Distribusi)</div>
+                                                <div class="step-indicator-custom success"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Disetujui (Tunggu Distribusi)</div>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary" style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; background: #e0e7ff; color: #4338ca; border: none; cursor: pointer;" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
-                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Tracker
+                                        <button class="btn btn-primary btn-tracker-compact" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
+                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Tracker
                                         </button>
                                     </td>
                                 </tr>
@@ -223,13 +205,13 @@ usort($mails, function($a, $b) {
     <div class="modal-overlay" id="tracker-modal" onclick="closeTracker()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeTracker()">
-                <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:2;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <h3 style="margin-bottom: 0.5rem; color: #0f172a; font-size: 1.25rem;">Live Tracking Alur Surat</h3>
-            <p id="tracker-subtitle" style="color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;"></p>
+            <h3 class="modal-title-custom">Live Tracking Alur Surat</h3>
+            <p id="tracker-subtitle" class="modal-desc-custom"></p>
             
-            <div id="tracker-mail-info" style="background: #f8fafc; padding: 1.25rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; display: none;"></div>
-
+            <div id="tracker-mail-info" class="tracker-info-box"></div>
+ 
             <div id="tracker-details">
                 <div class="timeline" id="timeline-box"></div>
             </div>
@@ -255,18 +237,18 @@ usort($mails, function($a, $b) {
 
                 const tgl = new Date(mail.tanggal_terima).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
                 infoBox.innerHTML = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-                        <div style="grid-column: span 2;">
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
-                            <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                    <div class="info-grid-2">
+                        <div class="grid-col-span-2">
+                            <span class="meta-label-bold">Perihal</span>
+                            <strong class="meta-value-bold">${mail.perihal}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Pengirim</span>
-                            <strong style="color: #0f172a;">${mail.pengirim}</strong>
+                            <span class="meta-label-bold">Pengirim</span>
+                            <strong class="meta-value-text">${mail.pengirim}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Terima</span>
-                            <strong style="color: #0f172a;">${tgl}</strong>
+                            <span class="meta-label-bold">Tanggal Terima</span>
+                            <strong class="meta-value-text">${tgl}</strong>
                         </div>
                     </div>
                 `;
@@ -290,18 +272,18 @@ usort($mails, function($a, $b) {
 
                 const tgl = new Date(mail.tanggal_surat).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'});
                 infoBox.innerHTML = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.85rem;">
-                        <div style="grid-column: span 2;">
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Perihal</span>
-                            <strong style="color: #0f172a; font-size: 0.95rem;">${mail.perihal}</strong>
+                    <div class="info-grid-2">
+                        <div class="grid-col-span-2">
+                            <span class="meta-label-bold">Perihal</span>
+                            <strong class="meta-value-bold">${mail.perihal}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tujuan</span>
-                            <strong style="color: #0f172a;">${mail.tujuan}</strong>
+                            <span class="meta-label-bold">Tujuan</span>
+                            <strong class="meta-value-text">${mail.tujuan}</strong>
                         </div>
                         <div>
-                            <span style="color: #64748b; display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Tanggal Surat</span>
-                            <strong style="color: #0f172a;">${tgl}</strong>
+                            <span class="meta-label-bold">Tanggal Surat</span>
+                            <strong class="meta-value-text">${tgl}</strong>
                         </div>
                     </div>
                 `;
@@ -335,9 +317,9 @@ usort($mails, function($a, $b) {
             item.className = 'timeline-item ' + type;
             item.innerHTML = `
                 <div class="timeline-content">
-                    <h4 style="margin: 0 0 0.25rem; color: #0f172a; font-size: 0.95rem;">${title}</h4>
-                    <p style="margin: 0; color: #64748b; font-size: 0.85rem; line-height: 1.4;">${desc}</p>
-                    ${time ? `<div class="timeline-time" style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">${new Date(time).toLocaleString('id-ID')}</div>` : ''}
+                    <h4>${title}</h4>
+                    <p>${desc}</p>
+                    ${time ? `<div class="timeline-time">${new Date(time).toLocaleString('id-ID')}</div>` : ''}
                 </div>
             `;
             box.appendChild(item);
