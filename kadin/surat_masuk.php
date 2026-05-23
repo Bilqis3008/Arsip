@@ -17,6 +17,30 @@ $stmt = $pdo->prepare("SELECT * FROM users WHERE nip = ?");
 $stmt->execute([$nip]);
 $head = $stmt->fetch();
 
+// --- HANDLE CANCEL DISPOSITION ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_disposisi'])) {
+    $id_target = $_POST['id_surat'];
+    try {
+        $pdo->beginTransaction();
+
+        // 1. Delete disposisi entries created by Kepala Dinas for this letter
+        $stmt1 = $pdo->prepare("DELETE FROM disposisi WHERE id_surat_masuk = ? AND nip_pemberi = ?");
+        $stmt1->execute([$id_target, $nip]);
+
+        // 2. Set status of surat_masuk back to 'tercatat' (belum didisposisi) and set id_bidang, id_seksi to NULL
+        $stmt2 = $pdo->prepare("UPDATE surat_masuk SET status = 'tercatat', id_bidang = NULL, id_seksi = NULL WHERE id_surat_masuk = ?");
+        $stmt2->execute([$id_target]);
+
+        $pdo->commit();
+
+        header("Location: surat_masuk.php?tab=unread");
+        exit;
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        echo "<script>alert('Gagal membatalkan disposisi: " . addslashes($e->getMessage()) . "');</script>";
+    }
+}
+
 // --- FETCH LIST ---
 if ($tab === 'unread') {
     $query = "SELECT * FROM surat_masuk WHERE status = 'tercatat' AND (perihal LIKE ? OR nomor_surat LIKE ? OR pengirim LIKE ?) ORDER BY created_at DESC";
@@ -127,6 +151,14 @@ $mails = $stmt->fetchAll();
                                                 <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-dispo"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Disposisi</a>
                                             <?php else: ?>
                                                 <a href="monitoring_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-dispo btn-track-doc"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Track</a>
+                                                <?php if ($m['status'] === 'didispokan'): ?>
+                                                    <form method="POST" style="margin: 0; display: inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan disposisi untuk surat &quot;<?= htmlspecialchars($m['perihal']) ?>&quot;?');">
+                                                        <input type="hidden" name="id_surat" value="<?= $m['id_surat_masuk'] ?>">
+                                                        <button type="submit" name="cancel_disposisi" class="btn-dispo btn-cancel-dispo">
+                                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> Batal Disposisi
+                                                        </button>
+                                                    </form>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         </div>
                                     </td>

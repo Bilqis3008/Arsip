@@ -161,19 +161,6 @@ $recent_mails = $pdo->query("SELECT * FROM surat_masuk ORDER BY created_at DESC 
                         <?php endif; ?>
                     </div>
                 </div>
-
-                <!-- Stats Summary -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Analisis Grafik</h2>
-                    </div>
-                    <div class="chart-placeholder">
-                        <div class="empty-activity-placeholder">
-                            <svg class="icon chart-visual-icon"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
-                            <p class="chart-visual-title">Visualisasi Data<br><span class="chart-visual-subtitle">Modul Analitik Segera Aktif</span></p>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </main>

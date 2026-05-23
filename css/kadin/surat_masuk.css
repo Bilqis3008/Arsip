@@ -2,7 +2,7 @@
 
 :root {
     --primary: #6366f1;
-    --accent: #f59e0b;
+    --accent: #ffffff;
     --bg-body: #f8fafc;
     --bg-card: #ffffff;
     --text-main: #0f172a;
@@ -43,7 +43,7 @@
 }
 
 .tab-btn.active {
-    background: #b91c1c;
+    background: var(--primary);
     color: var(--accent);
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
 }
@@ -130,9 +130,10 @@
 }
 
 .btn-dispo:hover {
-    background: #d97706;
+    background: var(--primary);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+    color: var(--accent);
 }
 
 /* Badges */
@@ -185,5 +186,18 @@
 
 .btn-track-doc:hover {
     background: var(--border);
+}
+
+.btn-cancel-dispo {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1.5px solid #fee2e2;
+    cursor: pointer;
+}
+
+.btn-cancel-dispo:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3) !important;
 }
 

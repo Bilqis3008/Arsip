@@ -30,7 +30,7 @@ if ($tab === 'unread') {
                   AND nip_pemberi IN (SELECT nip FROM users WHERE role = 'kepala_dinas')
               )
               WHERE sm.id_bidang = ? AND sm.status = 'didispokan' 
-              AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ?) 
+              AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ? OR sm.pengirim LIKE ?) 
               ORDER BY sm.created_at DESC";
 } else {
     $query = "SELECT sm.*, d.isi_disposisi as instruksi_kadin
@@ -42,29 +42,23 @@ if ($tab === 'unread') {
                   AND nip_pemberi IN (SELECT nip FROM users WHERE role = 'kepala_dinas')
               )
               WHERE sm.id_bidang = ? AND sm.status IN ('diteruskan', 'selesai', 'diarsipkan')
-              AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ?) 
+              AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ? OR sm.pengirim LIKE ?) 
               ORDER BY sm.created_at DESC";
 }
 
 // --- HANDLE DIRECT ARCHIVE ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['archive_direct'])) {
     $id_target = $_POST['id_surat'];
-    $id_seksi_arsip = $_POST['id_seksi'];
-    $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'selesai', id_seksi = ?, perlu_balasan = 0 WHERE id_surat_masuk = ? AND id_bidang = ?");
-    if ($stmt->execute([$id_seksi_arsip, $id_target, $id_bidang])) {
+    $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'selesai', id_seksi = NULL, perlu_balasan = 0 WHERE id_surat_masuk = ? AND id_bidang = ?");
+    if ($stmt->execute([$id_target, $id_bidang])) {
         header("Location: surat_masuk.php?tab=unread");
         exit;
     }
 }
 
-// Fetch sections for modal
-$stmt = $pdo->prepare("SELECT * FROM seksi WHERE id_bidang = ? ORDER BY nama_seksi ASC");
-$stmt->execute([$id_bidang]);
-$seksi_list = $stmt->fetchAll();
-
 
 $stmt = $pdo->prepare($query);
-$stmt->execute([$id_bidang, "%$search%", "%$search%"]);
+$stmt->execute([$id_bidang, "%$search%", "%$search%", "%$search%"]);
 $mails = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -170,7 +164,12 @@ $mails = $stmt->fetchAll();
 
                                             <?php if ($tab === 'unread'): ?>
                                                 <a href="disposisi_surat.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-action" title="Teruskan ke Seksi"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> </a>
-                                                <button onclick="openArchiveModal(<?= $m['id_surat_masuk'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" class="btn-action btn-direct-archive" title="Arsip Langsung"><svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg> </button>
+                                                <form method="POST" style="margin: 0; display: inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin mengarsipkan langsung surat &quot;<?= htmlspecialchars($m['perihal']) ?>&quot; di Admin Bidang?');">
+                                                    <input type="hidden" name="id_surat" value="<?= $m['id_surat_masuk'] ?>">
+                                                    <button type="submit" name="archive_direct" class="btn-action btn-direct-archive" title="Arsip Langsung" style="border: none; cursor: pointer;">
+                                                        <svg class="icon" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                                                    </button>
+                                                </form>
                                             <?php else: ?>
                                                 <a href="monitoring_tindakLanjut.php?id=<?= $m['id_surat_masuk'] ?>" class="btn-action btn-track-mail"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Track</a>
                                             <?php endif; ?>
@@ -185,44 +184,6 @@ $mails = $stmt->fetchAll();
         </div>
     </main>
 
-    <!-- Modal for Arsip Langsung -->
-    <div id="archiveModal" class="modal-overlay">
-        <div class="modal-content-card">
-            <button onclick="closeArchiveModal()" class="modal-close-btn">
-                <svg viewBox="0 0 24 24" class="modal-close-svg"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-            <h3 class="modal-title-header">Pengarsipan Langsung</h3>
-            <p class="modal-desc-txt">Pilih seksi mana surat <strong id="modal-perihal" class="modal-strong-perihal"></strong> ini akan diarsipkan.</p>
-            
-            <form method="POST">
-                <input type="hidden" name="id_surat" id="modal-id-surat">
-                <div class="modal-form-group">
-                    <label class="modal-form-label">Pilih Seksi Penyimpanan</label>
-                    <select name="id_seksi" required class="modal-select-field">
-                        <option value="">-- Pilih Seksi Tujuan --</option>
-                        <?php foreach ($seksi_list as $s): ?>
-                            <option value="<?= $s['id_seksi'] ?>"><?= htmlspecialchars($s['nama_seksi']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="modal-btn-row">
-                    <button type="button" onclick="closeArchiveModal()" class="modal-btn-cancel">Batal</button>
-                    <button type="submit" name="archive_direct" class="modal-btn-submit">Simpan Arsip</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openArchiveModal(id, perihal) {
-            document.getElementById('modal-id-surat').value = id;
-            document.getElementById('modal-perihal').textContent = '"' + perihal + '"';
-            document.getElementById('archiveModal').style.display = 'flex';
-        }
-        function closeArchiveModal() {
-            document.getElementById('archiveModal').style.display = 'none';
-        }
-    </script>
     <script src="../js/notifications.js"></script>
 </body>
 </html>

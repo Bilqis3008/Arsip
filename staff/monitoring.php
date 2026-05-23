@@ -140,7 +140,6 @@ usort($mails, function($a, $b) {
         </header>
 
         <div class="content-body content-body-monitoring">
-            <!-- Monitoring Card -->
             <div class="card">
                 <div class="table-controls">
                     <form method="GET" class="search-box">
@@ -166,29 +165,41 @@ usort($mails, function($a, $b) {
                                 <tr>
                                     <td>
                                         <div class="info-cell">
-                                            <span class="type-badge <?= $m['tipe'] == 'masuk' ? 'type-masuk' : 'type-keluar' ?>">Surat <?= $m['tipe'] ?></span><br>
-                                            <b class="bold-info-text"><?= htmlspecialchars($m['perihal'] ?? '') ?></b>
-                                            <span>No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['nomor_surat'] ?? '') : ($m['nomor_surat_keluar'] ?? '')) ?></span>
-                                            <span><?= $m['tipe'] === 'masuk' ? 'Pengirim' : 'Tujuan' ?>: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['pengirim'] ?? '') : ($m['tujuan'] ?? '')) ?></span>
+                                            <span class="type-badge <?= $m['tipe'] == 'masuk' ? 'type-masuk' : 'type-keluar' ?>">Surat <?= ucfirst($m['tipe']) ?></span>
+                                            <b class="mail-perihal"><?= htmlspecialchars($m['perihal'] ?? '') ?></b>
+                                            <span class="mail-subtext">No: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['nomor_surat'] ?? '') : ($m['nomor_surat_keluar'] ?? '')) ?></span>
+                                            <span class="mail-subtext"><?= $m['tipe'] === 'masuk' ? 'Pengirim' : 'Tujuan' ?>: <?= htmlspecialchars($m['tipe'] === 'masuk' ? ($m['pengirim'] ?? '') : ($m['tujuan'] ?? '')) ?></span>
                                         </div>
                                     </td>
                                     <td>
                                         <?php if ($m['tipe'] === 'masuk'): ?>
-                                            <div class="step-indicator-custom warning"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Tanggungan Tindak Lanjut Seksi</div>
-                                            <div class="step-subtext-custom">Disahkan ke: <?= htmlspecialchars((string)($m['nama_seksi'] ?? 'Seksi Anda')) ?></div>
+                                            <div class="status-indicator status-warning">
+                                                <svg class="icon status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
+                                                <span>Tanggungan Tindak Lanjut</span>
+                                            </div>
+                                            <div class="status-sub">Disahkan ke: <?= htmlspecialchars((string)($m['nama_seksi'] ?? 'Seksi')) ?></div>
                                         <?php else: ?>
                                             <?php if ($m['status'] === 'draft'): ?>
-                                                <div class="step-indicator-custom danger-orange"><svg class="icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Draft Awal (Seksi Anda)</div>
+                                                <div class="status-indicator status-orange">
+                                                    <svg class="icon status-icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                                    <span>Draft Awal</span>
+                                                </div>
                                             <?php elseif ($m['status'] === 'pending_approval'): ?>
-                                                <div class="step-indicator-custom warning"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Menunggu Validasi Verifikator/Admin</div>
+                                                <div class="status-indicator status-warning">
+                                                    <svg class="icon status-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
+                                                    <span>Menunggu Validasi</span>
+                                                </div>
                                             <?php elseif ($m['status'] === 'disetujui'): ?>
-                                                <div class="step-indicator-custom success"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Disetujui (Tunggu Distribusi)</div>
+                                                <div class="status-indicator status-success">
+                                                    <svg class="icon status-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                                    <span>Disetujui</span>
+                                                </div>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary btn-tracker-compact" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
-                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Tracker
+                                        <button class="btn-tracker" onclick="showTracker('<?= $m['tipe'] ?>', <?= $m['tipe'] === 'masuk' ? $m['id_surat_masuk'] : $m['id_surat_keluar'] ?>)">
+                                            <svg class="icon btn-tracker-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Tracker
                                         </button>
                                     </td>
                                 </tr>
@@ -205,16 +216,13 @@ usort($mails, function($a, $b) {
     <div class="modal-overlay" id="tracker-modal" onclick="closeTracker()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <button class="modal-close" onclick="closeTracker()">
-                <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg class="modal-close-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <h3 class="modal-title-custom">Live Tracking Alur Surat</h3>
-            <p id="tracker-subtitle" class="modal-desc-custom"></p>
+            <h3 class="modal-title">Live Tracking Alur Surat</h3>
+            <p id="tracker-subtitle" class="modal-subtitle"></p>
             
             <div id="tracker-mail-info" class="tracker-info-box"></div>
- 
-            <div id="tracker-details">
-                <div class="timeline" id="timeline-box"></div>
-            </div>
+            <div class="timeline" id="timeline-box"></div>
         </div>
     </div>
 
@@ -312,17 +320,15 @@ usort($mails, function($a, $b) {
         }
 
         function addTimelineItem(title, desc, time, type) {
-            const box = document.getElementById('timeline-box');
             const item = document.createElement('div');
             item.className = 'timeline-item ' + type;
             item.innerHTML = `
                 <div class="timeline-content">
-                    <h4>${title}</h4>
-                    <p>${desc}</p>
+                    <h4>${title}</h4><p>${desc}</p>
                     ${time ? `<div class="timeline-time">${new Date(time).toLocaleString('id-ID')}</div>` : ''}
                 </div>
             `;
-            box.appendChild(item);
+            document.getElementById('timeline-box').appendChild(item);
         }
 
         function closeTracker() {

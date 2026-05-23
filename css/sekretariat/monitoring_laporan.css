@@ -455,26 +455,47 @@ input:focus, select:focus {
     margin-bottom: 2rem;
 }
 
-.filter-form-wrap {
+.filter-form-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.filter-group-main {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
     align-items: flex-end;
 }
 
+.filter-group-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed var(--border);
+    justify-content: flex-start;
+}
+
 .filter-btn-submit {
-    height: 46px;
+    height: 48px;
+    padding: 0 2rem;
 }
 
 .filter-btn-add {
-    height: 46px;
-    background: var(--info);
+    height: 48px;
+    background: var(--primary-light);
     color: #fff;
 }
 
 .filter-btn-print {
-    height: 46px;
+    height: 48px;
     margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .filter-group-main { flex-direction: column; align-items: stretch; }
+    .filter-group-actions { flex-direction: column; }
+    .filter-btn-print { margin-left: 0; }
 }
 
 .s-icon-masuk {

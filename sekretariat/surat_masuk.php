@@ -272,16 +272,6 @@ $admin = $stmt->fetch();
                 </div>
                 <div class="user-avatar"><?= strtoupper(substr((string)($admin['nama'] ?? 'A'), 0, 1)) ?></div>
             </div>
-    <main class="main-content">
-        <header class="content-header">
-            <div class="header-title"><h1>Manajemen Surat Masuk</h1></div>
-            <div class="user-profile">
-                <div class="user-info">
-                    <span class="user-name"><?= htmlspecialchars($admin['nama'] ?? 'Admin') ?></span>
-                    <span class="user-role">Sekretariat</span>
-                </div>
-                <div class="user-avatar"><?= strtoupper(substr((string)($admin['nama'] ?? 'A'), 0, 1)) ?></div>
-            </div>
         </header>
 
         <div class="content-body">

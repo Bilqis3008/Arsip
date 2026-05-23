@@ -25,6 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $id_bidang = !empty($_POST['id_bidang']) ? $_POST['id_bidang'] : null;
     $id_seksi = !empty($_POST['id_seksi']) ? $_POST['id_seksi'] : null;
 
+    // Force id_bidang 8 for role 'sekretariat'
+    if ($role === 'sekretariat') {
+        $id_bidang = 8;
+        $id_seksi = null;
+    }
+
     if ($action === 'save_user') {
         $password = password_hash((string)($_POST['password'] ?? '12345678'), PASSWORD_DEFAULT);
         try {
@@ -158,6 +164,9 @@ $admin = $stmt->fetch();
             <?php if ($success_msg): ?>
                 <div class="alert-message alert-success"><svg class="icon alert-icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> <?= $success_msg ?></div>
             <?php endif; ?>
+            <?php if ($error_msg): ?>
+                <div class="alert-message alert-danger"><svg class="icon alert-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> <?= $error_msg ?></div>
+            <?php endif; ?>
 
             <div class="module-tabs">
                 <button class="tab-btn active" onclick="switchTab('daftar')"><svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3" cy="6" r="1"/><circle cx="3" cy="12" r="1"/><circle cx="3" cy="18" r="1"/></svg> Daftar Pengguna</button>
@@ -225,10 +234,10 @@ $admin = $stmt->fetch();
                             <div class="form-group"><label>Email *</label><input type="email" name="email" required></div>
                             <div class="form-group"><label>No HP</label><input type="text" name="no_hp"></div>
                             <div class="form-group"><label>Role *</label><select name="role" id="add-role" required onchange="toggleFieldsVisibility(this.value, 'add')"><option value="admin_bidang">Admin Bidang</option><option value="staff">Staff</option><option value="user">User Umum</option><option value="sekretariat">Sekretariat</option></select></div>
-                            <div class="form-group"><label>Jabatan</label><input type="text" name="jabatan"></div>
+                            <div class="form-group" id="add-container-jabatan"><label>Jabatan</label><input type="text" name="jabatan"></div>
                             <div class="form-group d-none" id="add-container-bidang"><label>Bidang</label><select name="id_bidang" id="add-select-bidang" onchange="updateSeksiOptions(this.value, 'add')"><option value="">-- Pilih Bidang --</option><?php foreach ($bidang_list as $b): ?><option value="<?= $b['id_bidang'] ?>"><?= htmlspecialchars($b['nama_bidang']) ?></option><?php endforeach; ?></select></div>
                             <div class="form-group d-none" id="add-container-seksi"><label>Seksi</label><select name="id_seksi" id="add-select-seksi"><option value="">-- Pilih Seksi --</option></select></div>
-                            <div class="form-group d-none" id="add-container-instansi"><label>Asal Instansi</label><input type="text" name="asal_instansi"></div>
+                            <div class="form-group d-none" id="add-container-instansi"><label>Asal Instansi (Opsional)</label><input type="text" name="asal_instansi"></div>
                             <div class="form-group full-width"><label>Password Akun *</label><input type="password" name="password" required></div>
                         </div>
                         <div class="form-actions"><button type="submit" class="btn btn-primary">Simpan Pengguna</button></div>
@@ -254,11 +263,11 @@ $admin = $stmt->fetch();
                     <div class="form-group"><label>Nama</label><input type="text" name="nama" id="edit_nama" required></div>
                     <div class="form-group"><label>Email</label><input type="email" name="email" id="edit_email" required></div>
                     <div class="form-group"><label>No HP</label><input type="text" name="no_hp" id="edit_no_hp"></div>
-                    <div class="form-group"><label>Jabatan</label><input type="text" name="jabatan" id="edit_jabatan"></div>
+                    <div class="form-group" id="edit-container-jabatan"><label>Jabatan</label><input type="text" name="jabatan" id="edit_jabatan"></div>
                     <div class="form-group"><label>Role</label><select name="role" id="edit_role" required onchange="toggleFieldsVisibility(this.value, 'edit')"><option value="admin_bidang">Admin Bidang</option><option value="staff">Staff</option><option value="user">User Umum</option><option value="sekretariat">Sekretariat</option></select></div>
                     <div class="form-group" id="edit_container_bidang"><label>Bidang</label><select name="id_bidang" id="edit_id_bidang" onchange="updateSeksiOptions(this.value, 'edit')"><option value="">-- Pilih --</option><?php foreach ($bidang_list as $b): ?><option value="<?= $b['id_bidang'] ?>"><?= htmlspecialchars($b['nama_bidang']) ?></option><?php endforeach; ?></select></div>
                     <div class="form-group" id="edit_container_seksi"><label>Seksi</label><select name="id_seksi" id="edit_id_seksi"></select></div>
-                    <div class="form-group" id="edit_container_instansi"><label>Instansi</label><input type="text" name="asal_instansi" id="edit_asal_instansi"></div>
+                    <div class="form-group" id="edit_container_instansi"><label>Instansi (Opsional)</label><input type="text" name="asal_instansi" id="edit_asal_instansi"></div>
                     <div class="form-group full-width"><label>Ganti Password (Opsional)</label><input type="password" name="password"></div>
                 </div>
                 <div class="modal-footer"><button type="submit" class="btn btn-primary">Update Akun</button></div>
@@ -284,18 +293,57 @@ $admin = $stmt->fetch();
             const b = document.getElementById(m + (m==='edit'?'_container_bidang':'-container-bidang'));
             const s = document.getElementById(m + (m==='edit'?'_container_seksi':'-container-seksi'));
             const i = document.getElementById(m + (m==='edit'?'_container_instansi':'-container-instansi'));
-            if(r==='user') { b.classList.add('d-none'); s.classList.add('d-none'); i.classList.remove('d-none'); }
-            else if(r==='sekretariat') { b.classList.add('d-none'); s.classList.add('d-none'); i.classList.add('d-none'); }
-            else if(r==='admin_bidang') { b.classList.remove('d-none'); s.classList.add('d-none'); i.classList.add('d-none'); }
-            else { b.classList.remove('d-none'); s.classList.remove('d-none'); i.classList.add('d-none'); }
+            const j = document.getElementById(m + (m==='edit'?'-container-jabatan':'-container-jabatan'));
+
+            if(r==='user') { 
+                b.classList.add('d-none'); 
+                s.classList.add('d-none'); 
+                i.classList.remove('d-none');
+                if(j) j.classList.add('d-none');
+            } else if(r==='sekretariat') { 
+                b.classList.add('d-none'); 
+                s.classList.add('d-none'); 
+                i.classList.add('d-none'); 
+                if(j) j.classList.remove('d-none');
+            } else if(r==='admin_bidang') { 
+                b.classList.remove('d-none'); 
+                s.classList.add('d-none'); 
+                i.classList.add('d-none'); 
+                if(j) j.classList.remove('d-none');
+            } else { 
+                b.classList.remove('d-none'); 
+                s.classList.remove('d-none'); 
+                i.classList.add('d-none'); 
+                if(j) j.classList.remove('d-none');
+            }
+            
+            // Re-run seksi filtering if bidang is selected
+            const bidVal = document.getElementById(m==='edit'?'edit_id_bidang':'add-select-bidang').value;
+            if(bidVal) updateSeksiOptions(bidVal, m);
         }
         function updateSeksiOptions(bid, mode, sel) {
+            const r = document.getElementById(mode === 'edit' ? 'edit_role' : 'add-role').value;
+            const sContainer = document.getElementById(mode === 'edit' ? 'edit_container_seksi' : 'add-container-seksi');
             const s = document.getElementById(mode === 'edit' ? 'edit_id_seksi' : 'add-select-seksi');
+            
+            // Hide seksi for: role not staff, or specific bid (6: Analis, 7: Perencanaan, 8: Sekretariat)
+            if (r !== 'staff' || bid == 6 || bid == 7 || bid == 8) {
+                sContainer.classList.add('d-none');
+                s.innerHTML = '<option value="">-- Tidak Ada Seksi --</option>';
+                return;
+            }
+
             s.innerHTML = '<option value="">-- Pilih Seksi --</option>';
-            seksiData.filter(x => x.id_bidang == bid).forEach(x => {
-                const o = document.createElement('option'); o.value = x.id_seksi; o.textContent = x.nama_seksi;
-                if(sel && x.id_seksi == sel) o.selected = true; s.appendChild(o);
-            });
+            const filtered = seksiData.filter(x => x.id_bidang == bid);
+            if (filtered.length > 0) {
+                filtered.forEach(x => {
+                    const o = document.createElement('option'); o.value = x.id_seksi; o.textContent = x.nama_seksi;
+                    if(sel && x.id_seksi == sel) o.selected = true; s.appendChild(o);
+                });
+                sContainer.classList.remove('d-none');
+            } else {
+                sContainer.classList.add('d-none');
+            }
         }
         function viewDetail(u) {
             const c = document.getElementById('modalContent');

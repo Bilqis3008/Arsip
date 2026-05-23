@@ -50,7 +50,7 @@ if ($tab === 'pending') {
               JOIN users u ON sk.uploaded_by = u.nip 
               LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
               WHERE u.id_bidang = ? AND sk.status = 'pending_approval'
-              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ?) 
+              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ? OR sk.tujuan LIKE ?) 
               ORDER BY sk.created_at DESC";
 } else {
     $query = "SELECT sk.*, u.nama as pengirim_staf, s.nama_seksi 
@@ -58,12 +58,12 @@ if ($tab === 'pending') {
               JOIN users u ON sk.uploaded_by = u.nip 
               LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
               WHERE u.id_bidang = ? AND sk.status IN ('disetujui', 'diarsipkan')
-              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ?) 
+              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ? OR sk.tujuan LIKE ?) 
               ORDER BY sk.created_at DESC";
 }
 
 $stmt = $pdo->prepare($query);
-$stmt->execute([$id_bidang_sekretariat, "%$search%", "%$search%"]);
+$stmt->execute([$id_bidang_sekretariat, "%$search%", "%$search%", "%$search%"]);
 $mails = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>

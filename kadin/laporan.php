@@ -215,10 +215,10 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                                                 <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                                             </button>
                                         <?php endif; ?>
-                                        <?php if (!empty($p['reply_file'])): ?>
-                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn btn-reply-view" title="Lihat Balasan (Out)">
-                                                <svg class="btn-reply-view-icon" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                                            </a>
+                                        <?php if (!empty($p['id_surat_keluar'])): ?>
+                                            <button class="action-btn" style="background:#10b981; color:white; border:none;" onclick="showTrackerKeluar(<?= $p['id_surat_keluar'] ?>)" title="Detail Balasan (Surat Keluar)">
+                                                <svg viewBox="0 0 24 24" style="width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2;"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

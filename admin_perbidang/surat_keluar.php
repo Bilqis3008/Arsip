@@ -43,6 +43,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_id'])) {
     }
 }
 
+// --- HANDLE REJECTION ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reject_id'])) {
+    $id_reject = $_POST['reject_id'];
+    $reason = $_POST['reject_reason'] ?? 'Tidak ada alasan spesifik.';
+    
+    $stmt = $pdo->prepare("UPDATE surat_keluar SET status = 'draft', keterangan = ? WHERE id_surat_keluar = ? AND uploaded_by IN (SELECT nip FROM users WHERE id_bidang = ?)");
+    if ($stmt->execute([$reason, $id_reject, $id_bidang])) {
+        // Fetch details for notification
+        $stmt_info = $pdo->prepare("SELECT sk.*, u.nip FROM surat_keluar sk JOIN users u ON sk.uploaded_by = u.nip WHERE sk.id_surat_keluar = ?");
+        $stmt_info->execute([$id_reject]);
+        $sk_info = $stmt_info->fetch();
+
+        require_once '../shared/notification_helper.php';
+        if ($sk_info) {
+            addNotification($pdo, $sk_info['nip'], "Draft Balasan REVISI (Ditolak Admin): " . $sk_info['perihal'] . ". Alasan: " . $reason, "../staff/tindak_lanjut.php");
+        }
+
+        header("Location: surat_keluar.php?tab=pending&notif=rejected");
+        exit;
+    }
+}
+
 // --- FETCH LIST ---
 if ($tab === 'pending') {
     $query = "SELECT sk.*, u.nama as pengirim_staf, s.nama_seksi 
@@ -50,7 +72,7 @@ if ($tab === 'pending') {
               JOIN users u ON sk.uploaded_by = u.nip 
               LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
               WHERE u.id_bidang = ? AND sk.status = 'pending_approval'
-              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ?) 
+              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ? OR sk.tujuan LIKE ?) 
               ORDER BY sk.created_at DESC";
 } else {
     $query = "SELECT sk.*, u.nama as pengirim_staf, s.nama_seksi 
@@ -58,12 +80,12 @@ if ($tab === 'pending') {
               JOIN users u ON sk.uploaded_by = u.nip 
               LEFT JOIN seksi s ON u.id_seksi = s.id_seksi 
               WHERE u.id_bidang = ? AND sk.status IN ('disetujui', 'diarsipkan')
-              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ?) 
+              AND (sk.perihal LIKE ? OR sk.nomor_surat_keluar LIKE ? OR sk.tujuan LIKE ?) 
               ORDER BY sk.created_at DESC";
 }
 
 $stmt = $pdo->prepare($query);
-$stmt->execute([$id_bidang, "%$search%", "%$search%"]);
+$stmt->execute([$id_bidang, "%$search%", "%$search%", "%$search%"]);
 $mails = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -104,80 +126,123 @@ $mails = $stmt->fetchAll();
         <header class="content-header">
             <div class="header-title">
                 <h1>Verifikasi Surat Keluar</h1>
-                <p>Verifikasi draft surat yang diunggah oleh seksi di bidang ini untuk diarsipkan.</p>
+                <p>Otorisasi draft surat balasan dari seksi sebelum diteruskan ke Sekretariat.</p>
             </div>
-            <div class="user-profile">
-                <div class="user-info"><span class="user-name"><?= htmlspecialchars($admin['nama']) ?></span><span class="user-role"><?= htmlspecialchars($admin['nama_bidang']) ?></span></div>
-                <div class="user-avatar"><?= strtoupper(substr($admin['nama_bidang'], 0, 1)) ?></div>
+            <div class="header-actions">
+                <div class="date-box-header">
+                    <div class="date-box-label">Tanggal</div>
+                    <div class="date-box-value"><?= date('d F Y') ?></div>
+                </div>
+                <div class="user-profile-header">
+                    <div class="user-info-header">
+                        <span class="user-name-header"><?= htmlspecialchars((string)$admin['nama']) ?></span>
+                        <span class="user-role-header"><?= htmlspecialchars((string)$admin['nama_bidang']) ?></span>
+                    </div>
+                    <div class="user-avatar-header"><?= strtoupper(substr((string)$admin['nama_bidang'], 0, 1)) ?></div>
+                </div>
             </div>
         </header>
 
         <div class="content-body">
             <!-- Tabs -->
             <div class="tabs-container">
-                <a href="surat_keluar.php?tab=pending" class="tab-btn <?= $tab === 'pending' ? 'active' : '' ?>"><svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Belum Diverifikasi</a>
-                <a href="surat_keluar.php?tab=verified" class="tab-btn <?= $tab === 'verified' ? 'active' : '' ?>"><svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Riwayat Disetujui</a>
+                <a href="surat_keluar.php?tab=pending" class="tab-btn <?= $tab === 'pending' ? 'active' : '' ?>">
+                    <svg class="icon icon-tab" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                    <span>Belum Diverifikasi</span>
+                </a>
+                <a href="surat_keluar.php?tab=verified" class="tab-btn <?= $tab === 'verified' ? 'active' : '' ?>">
+                    <svg class="icon icon-tab" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span>Riwayat Disetujui</span>
+                </a>
             </div>
 
-            <!-- Search -->
-            <div class="explorer-bar">
-                <form method="GET" class="search-box">
+            <!-- Search Area -->
+            <div class="table-controls-compact">
+                <form method="GET" class="search-box-premium">
                     <input type="hidden" name="tab" value="<?= $tab ?>">
-                    <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <input type="text" name="search" placeholder="Cari perihal, nomor surat..." value="<?= htmlspecialchars($search) ?>">
+                    <svg class="icon search-icon-inside" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" name="search" placeholder="Cari perihal, nomor rilis, atau tujuan..." value="<?= htmlspecialchars((string)$search) ?>">
                 </form>
             </div>
 
             <!-- List -->
-            <div class="table-card">
+            <div class="table-card-premium">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th style="width: 150px;">Tanggal Surat</th>
-                            <th>Identitas & Dokumen Dokumen</th>
-                            <th>Penulis Staf / Seksi</th>
-                            <th style="width: 150px;">Status</th>
-                            <th style="width: 150px; text-align: center;">Aksi</th>
+                            <th style="width: 130px;">Tanggal</th>
+                            <th>Identitas & Tujuan Berkas</th>
+                            <th>Penulis / Unit Asal</th>
+                            <th style="width: 140px;">Status Verifikasi</th>
+                            <th style="width: 120px; text-align: center;">Opsi</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($mails)): ?>
-                            <tr><td colspan="5" style="text-align: center; padding: 4rem; color: var(--text-muted);">Tidak ada draft surat keluar.</td></tr>
+                            <tr><td colspan="5" class="empty-state-table">Tidak ditemukan draft surat balasan pada kategori ini.</td></tr>
                         <?php else: ?>
                             <?php foreach ($mails as $m): ?>
                                 <tr>
-                                    <td><b><?= date('d/m/Y', strtotime($m['tanggal_surat'])) ?></b></td>
                                     <td>
-                                        <div style="font-weight: 700; color: var(--navy);"><?= htmlspecialchars($m['perihal']) ?></div>
-                                        <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">No. Surat Keluar: <?= htmlspecialchars($m['nomor_surat_keluar']) ?> • Tujuan: <?= htmlspecialchars($m['tujuan']) ?></div>
+                                        <div class="date-cell">
+                                            <span class="date-day"><?= date('d', strtotime($m['tanggal_surat'])) ?></span>
+                                            <span class="date-month"><?= date('M Y', strtotime($m['tanggal_surat'])) ?></span>
+                                        </div>
                                     </td>
-                                    <td><?= htmlspecialchars($m['pengirim_staf']) ?><br><span style="font-size:0.75rem;color:var(--text-muted);"><?= htmlspecialchars($m['nama_seksi'] ?: 'Seksi / Sub-Bagian') ?></span></td>
+                                    <td>
+                                        <div class="mail-info-premium">
+                                            <b class="mail-title-txt"><?= htmlspecialchars($m['perihal']) ?></b>
+                                            <span class="mail-meta-txt">
+                                                <svg class="icon icon-tiny" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> 
+                                                Tujuan: <?= htmlspecialchars($m['tujuan']) ?>
+                                            </span>
+                                            <span class="mail-meta-txt">
+                                                <svg class="icon icon-tiny" viewBox="0 0 24 24"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8l-6 6v12a2 2 0 0 0 2 2Z"/><path d="M14 2v4a2 2 0 0 1 2 2h4"/><path d="M3 7h5v5"/></svg>
+                                                No: <?= htmlspecialchars($m['nomor_surat_keluar']) ?>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="author-cell">
+                                            <span class="author-name"><?= htmlspecialchars($m['pengirim_staf']) ?></span>
+                                            <span class="author-unit"><?= htmlspecialchars($m['nama_seksi'] ?: 'Staf Bidang') ?></span>
+                                        </div>
+                                    </td>
                                     <td>
                                         <?php 
-                                            $badgeText = "Diarsipkan";
-                                            if($m['status'] == 'pending_approval') $badgeText = "Selesai Draft (Belum Verifikasi)";
+                                            $badgeClass = ($m['status'] == 'pending_approval') ? 'warning' : 'success';
+                                            $statusTxt = ($m['status'] == 'pending_approval') ? 'Perlu Review' : 'Telah Disetujui';
                                         ?>
-                                        <span class="badge-status status-<?= $m['status'] ?>"><?= $badgeText ?></span>
+                                        <div class="status-indicator-badge <?= $badgeClass ?>">
+                                            <span class="dot-blink"></span>
+                                            <?= $statusTxt ?>
+                                        </div>
                                     </td>
                                     <td style="text-align: center;">
-                                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                                        <div class="action-buttons-group">
                                             <?php if ($m['file_path']): ?>
-                                                <a href="../uploads/surat_keluar/<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="btn-action" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;" title="Preview PDF">
-                                                    <svg class="icon" viewBox="0 0 24 24" style="width:16px; height:16px;"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                                <a href="../uploads/surat_keluar/<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="btn-circle btn-view" title="Pratinjau Dokumen">
+                                                    <svg class="icon icon-btn" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                                 </a>
                                             <?php endif; ?>
 
                                             <?php if ($tab === 'pending'): ?>
-                                                <div style="flex: 1;">
-                                                    <button type="button" 
-                                                            onclick="openConfirmModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" 
-                                                            class="btn-action" 
-                                                            style="background: var(--primary); color: white; border: none; cursor: pointer; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 700; width: 100%; white-space: nowrap; height: 34px;">
-                                                        <svg class="icon" viewBox="0 0 24 24" style="margin-right:0.25rem;"><polyline points="20 6 9 17 4 12"/></svg> Arsipkan
-                                                    </button>
-                                                </div>
+                                                <button type="button" 
+                                                        onclick="openRejectModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" 
+                                                        class="btn-circle btn-reject" title="Tolak / Revisi">
+                                                    <svg class="icon icon-btn" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                                </button>
+
+                                                <button type="button" 
+                                                        onclick="openConfirmModal(<?= $m['id_surat_keluar'] ?>, '<?= htmlspecialchars(addslashes($m['perihal'])) ?>')" 
+                                                        class="btn-approve-pill">
+                                                    <svg class="icon icon-btn" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                                    Setujui
+                                                </button>
                                             <?php else: ?>
-                                                <a href="monitoring_tindakLanjut.php?search=<?= urlencode($m['nomor_surat_keluar']) ?>" class="btn-action" style="background: #f1f5f9; color: var(--navy); border: 1px solid var(--border); text-decoration: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-weight: 700; display: inline-flex; align-items: center; white-space: nowrap; height: 34px;"><svg class="icon" viewBox="0 0 24 24" style="margin-right:4px;"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg> Track</a>
+                                                <a href="monitoring_tindakLanjut.php?search=<?= urlencode($m['nomor_surat_keluar']) ?>" class="btn-circle btn-track" title="Lacak Alur">
+                                                    <svg class="icon icon-btn" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m12 8 0 4 2 2"/></svg>
+                                                </a>
                                             <?php endif; ?>
                                         </div>
                                     </td>
@@ -190,12 +255,16 @@ $mails = $stmt->fetchAll();
         </div>
     </main>
 
-    <!-- Hidden Form for submission -->
+    <!-- Hidden Forms for submission -->
     <form id="approveForm" method="POST" style="display: none;">
         <input type="hidden" name="approve_id" id="approve_target_id">
     </form>
+    <form id="rejectForm" method="POST" style="display: none;">
+        <input type="hidden" name="reject_id" id="reject_target_id">
+        <input type="hidden" name="reject_reason" id="reject_target_reason">
+    </form>
 
-    <!-- Custom Confirmation Modal -->
+    <!-- Custom Confirmation Modal (Approve) -->
     <div id="confirmModal" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-icon">
@@ -210,24 +279,72 @@ $mails = $stmt->fetchAll();
         </div>
     </div>
 
+    <!-- Custom Rejection Modal -->
+    <div id="rejectModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-icon" style="background:#fef2f2; color:#ef4444;">
+                <svg viewBox="0 0 24 24" style="width:32px; height:32px; fill:none; stroke:currentColor; stroke-width:2.5;"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </div>
+            <h3 class="modal-title">Tolak / Revisi Draft</h3>
+            <p class="modal-message">Berikan alasan penolakan agar staf dapat melakukan perbaikan pada draft <strong id="modal-reject-perihal" style="color:#0f172a;"></strong>.</p>
+            
+            <div class="form-group" style="text-align:left; margin-bottom:2rem;">
+                <label>Alasan Penolakan</label>
+                <textarea id="reject-reason-input" placeholder="Contoh: Nomor surat salah, Lampiran kurang lengkap..." style="margin-top:0.5rem;"></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" onclick="closeRejectModal()" class="btn-modal btn-cancel">Batal</button>
+                <button type="button" onclick="submitReject()" class="btn-modal btn-confirm" style="background:#ef4444;">Tolak Draft</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function openConfirmModal(id, perihal) {
             document.getElementById('approve_target_id').value = id;
             document.getElementById('modal-perihal').innerText = '"' + perihal + '"';
+            document.getElementById('confirmModal').classList.add('active');
             document.getElementById('confirmModal').style.display = 'flex';
         }
 
         function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('active');
             document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function openRejectModal(id, perihal) {
+            document.getElementById('reject_target_id').value = id;
+            document.getElementById('modal-reject-perihal').innerText = '"' + perihal + '"';
+            document.getElementById('rejectModal').classList.add('active');
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').classList.remove('active');
+            document.getElementById('rejectModal').style.display = 'none';
         }
 
         function submitApprove() {
             document.getElementById('approveForm').submit();
         }
 
+        function submitReject() {
+            const reason = document.getElementById('reject-reason-input').value.trim();
+            if(!reason) {
+                alert('Harap masukkan alasan penolakan!');
+                return;
+            }
+            document.getElementById('reject_target_reason').value = reason;
+            document.getElementById('rejectForm').submit();
+        }
+
         // Close on escape
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeConfirmModal();
+            if (e.key === 'Escape') {
+                closeConfirmModal();
+                closeRejectModal();
+            }
         });
     </script>
     <script src="../js/notifications.js"></script>

@@ -2,13 +2,13 @@
 require_once '../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_STRING) ?: 'staff';
-    $nip = filter_input(INPUT_POST, 'nip', FILTER_SANITIZE_STRING);
-    $nama = filter_input(INPUT_POST, 'nama', FILTER_SANITIZE_STRING);
+    $role = filter_input(INPUT_POST, 'role', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?: 'staff';
+    $nip = filter_input(INPUT_POST, 'nip', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $nama = filter_input(INPUT_POST, 'nama', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $no_hp = filter_input(INPUT_POST, 'no_hp', FILTER_SANITIZE_STRING);
-    $asal_instansi = filter_input(INPUT_POST, 'asal_instansi', FILTER_SANITIZE_STRING);
-    $jabatan = filter_input(INPUT_POST, 'jabatan', FILTER_SANITIZE_STRING);
+    $no_hp = filter_input(INPUT_POST, 'no_hp', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $asal_instansi = filter_input(INPUT_POST, 'asal_instansi', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $jabatan = filter_input(INPUT_POST, 'jabatan', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $password = $_POST['password'];
     $id_bidang = filter_input(INPUT_POST, 'id_bidang', FILTER_VALIDATE_INT);
     $id_seksi = filter_input(INPUT_POST, 'id_seksi', FILTER_VALIDATE_INT);

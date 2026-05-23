@@ -26,9 +26,8 @@ if (!$mail) {
     exit;
 }
 
-// --- FETCH BIDANG & SEKSI FOR DROPDOWNS ---
+// --- FETCH BIDANG FOR DROPDOWN ---
 $bidang_list = $pdo->query("SELECT * FROM bidang ORDER BY nama_bidang ASC")->fetchAll();
-$seksi_list = $pdo->query("SELECT * FROM seksi ORDER BY nama_seksi ASC")->fetchAll();
 
 // --- HANDLE DISPOSITION SUBMISSION ---
 $message = '';
@@ -36,7 +35,6 @@ $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_disposisi'])) {
     $id_bidang = $_POST['id_bidang'];
-    $id_seksi = !empty($_POST['id_seksi']) ? $_POST['id_seksi'] : null;
     $isi_disposisi = $_POST['isi_disposisi'];
     $sifat_disposisi = 'biasa'; // Defaulted to biasa
     $tanggal_disposisi = date('Y-m-d H:i:s');
@@ -44,20 +42,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_disposisi'])) 
     try {
         $pdo->beginTransaction();
 
-        // 1. Insert into Disposisi Table
+        // 1. Insert into Disposisi Table (id_seksi is null as Kadin only chooses Bidang)
         $stmt = $pdo->prepare("INSERT INTO disposisi (id_surat_masuk, nip_pemberi, id_bidang, id_seksi, isi_disposisi, sifat_disposisi, tanggal_disposisi) 
-                               VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$id_surat, $nip_kadis, $id_bidang, $id_seksi, $isi_disposisi, $sifat_disposisi, $tanggal_disposisi]);
+                               VALUES (?, ?, ?, NULL, ?, ?, ?)");
+        $stmt->execute([$id_surat, $nip_kadis, $id_bidang, $isi_disposisi, $sifat_disposisi, $tanggal_disposisi]);
 
         // 2. Update Surat Masuk Status & Current Unit Location
-        $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'didispokan', id_bidang = ?, id_seksi = ? WHERE id_surat_masuk = ?");
-        $stmt->execute([$id_bidang, $id_seksi, $id_surat]);
+        $stmt = $pdo->prepare("UPDATE surat_masuk SET status = 'didispokan', id_bidang = ?, id_seksi = NULL WHERE id_surat_masuk = ?");
+        $stmt->execute([$id_bidang, $id_surat]);
 
         $pdo->commit();
         
         // Notification Logic
         require_once '../shared/notification_helper.php';
-        notifyAdminBidang($pdo, $id_bidang, "Disposisi Baru dari Kadin: " . $mail['perihal'], "../admin_perbidang/surat_masuk.php");
+        $notif_link = ($id_bidang == 8) ? "../sekretariat/surat_masuk.php" : "../admin_perbidang/surat_masuk.php";
+        notifyAdminBidang($pdo, $id_bidang, "Disposisi Baru dari Kadin: " . $mail['perihal'], $notif_link);
 
         $message = "Disposisi berhasil disimpan dan diteruskan ke Bidang terkait.";
         // Refresh mail data to show updated status

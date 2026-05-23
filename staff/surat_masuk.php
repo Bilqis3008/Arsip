@@ -43,11 +43,11 @@ $query = "SELECT sm.*,
           WHERE (sm.id_seksi = ? OR (sm.id_bidang = ? AND sm.id_seksi IS NULL AND ? IS NULL))
           AND sm.perlu_balasan = 1 
           AND " . ($tab === 'pending' ? "(sk.id_surat_keluar IS NULL)" : "(sk.id_surat_keluar IS NOT NULL OR (sm.status IN ('selesai', 'diarsipkan') AND sm.perlu_balasan = 0))") . "
-          AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ?)
+          AND (sm.perihal LIKE ? OR sm.nomor_surat LIKE ? OR sm.pengirim LIKE ?)
           ORDER BY sm.tanggal_terima DESC LIMIT 50";
 
 $stmt = $pdo->prepare($query);
-$stmt->execute([$id_seksi, $id_bidang, $id_seksi, $id_seksi, $id_bidang, $id_seksi, "%$search%", "%$search%"]);
+$stmt->execute([$id_seksi, $id_bidang, $id_seksi, $id_seksi, $id_bidang, $id_seksi, "%$search%", "%$search%", "%$search%"]);
 $tasks = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>

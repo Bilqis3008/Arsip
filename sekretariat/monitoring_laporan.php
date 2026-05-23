@@ -266,20 +266,24 @@ while ($row = $stmt_admin->fetch()) {
             <?php endif; ?>
 
             <div class="filter-card filter-card-container">
-                <form method="GET" id="reportForm" class="filter-form-wrap">
-                    <div class="form-group">
-                        <label>Jenis Laporan</label>
-                        <select name="jenis_laporan" onchange="this.form.submit()">
-                            <option value="total_surat" <?= $jenis_laporan === 'total_surat' ? 'selected' : '' ?>>Total Keseluruhan</option>
-                            <option value="surat_masuk" <?= $jenis_laporan === 'surat_masuk' ? 'selected' : '' ?>>Hanya Surat Masuk</option>
-                            <option value="surat_keluar" <?= $jenis_laporan === 'surat_keluar' ? 'selected' : '' ?>>Hanya Surat Keluar</option>
-                        </select>
+                <form method="GET" id="reportForm" class="filter-form-premium">
+                    <div class="filter-group-main">
+                        <div class="form-group">
+                            <label>Jenis Laporan</label>
+                            <select name="jenis_laporan" onchange="this.form.submit()">
+                                <option value="total_surat" <?= $jenis_laporan === 'total_surat' ? 'selected' : '' ?>>Total Keseluruhan</option>
+                                <option value="surat_masuk" <?= $jenis_laporan === 'surat_masuk' ? 'selected' : '' ?>>Hanya Surat Masuk</option>
+                                <option value="surat_keluar" <?= $jenis_laporan === 'surat_keluar' ? 'selected' : '' ?>>Hanya Surat Keluar</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Mulai</label><input type="date" name="date_start" value="<?= $date_start ?>"></div>
+                        <div class="form-group"><label>Sampai</label><input type="date" name="date_end" value="<?= $date_end ?>"></div>
+                        <button type="submit" class="btn btn-primary filter-btn-submit"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter</button>
                     </div>
-                    <div class="form-group"><label>Mulai</label><input type="date" name="date_start" value="<?= $date_start ?>"></div>
-                    <div class="form-group"><label>Sampai</label><input type="date" name="date_end" value="<?= $date_end ?>"></div>
-                    <button type="submit" class="btn btn-primary filter-btn-submit"><svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Filter</button>
-                    <button type="button" onclick="openAddModal()" class="btn btn-info filter-btn-add"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg> Tambah Laporan</button>
-                    <button type="button" onclick="window.print()" class="btn btn-success filter-btn-print"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Cetak Laporan</button>
+                    <div class="filter-group-actions">
+                        <button type="button" onclick="openAddModal()" class="btn btn-info filter-btn-add"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14m-7-7h14"/></svg> Tambah Laporan</button>
+                        <button type="button" onclick="window.print()" class="btn btn-success filter-btn-print"><svg class="icon" viewBox="0 0 24 24"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg> Cetak Laporan</button>
+                    </div>
                 </form>
             </div>
 
@@ -322,6 +326,15 @@ while ($row = $stmt_admin->fetch()) {
                                             <td class="action-cell">
                                                 <div class="action-btns action-btns-flex">
                                                     <?php if ($m['file_path']): ?><a href="../<?= htmlspecialchars($m['file_path']) ?>" target="_blank" class="action-btn btn-view" title="Lihat Surat"><svg class="icon" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></a><?php endif; ?>
+                                                    <?php if (!empty($m['id_surat_keluar'])): ?>
+                                                        <a href="<?= !empty($m['reply_file']) ? '../uploads/surat_keluar/' . htmlspecialchars($m['reply_file']) : '#' ?>" 
+                                                           target="<?= !empty($m['reply_file']) ? '_blank' : '_self' ?>" 
+                                                           class="action-btn" 
+                                                           style="background:#10b981;" 
+                                                           title="Lihat Balasan (<?= htmlspecialchars($m['reply_no']) ?>)">
+                                                            <svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                                                        </a>
+                                                    <?php endif; ?>
                                                     <button class="action-btn btn-edit btn-edit-custom" title="Edit" onclick='openEditMasuk(<?= json_encode($m) ?>)'><svg class="icon" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
                                                     <a href="?delete_id=<?= $m['id_surat_masuk'] ?>&type=masuk" class="action-btn btn-delete btn-delete-custom" title="Hapus" onclick="return confirm('Yakin ingin menghapus arsip ini?')"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg></a>
                                                 </div>

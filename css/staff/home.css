@@ -194,7 +194,7 @@ body { background: var(--bg-body); color: var(--primary-dark); display: flex; mi
 }
 
 .user-avatar-header {
-    width: 38px;
+    width: 34px;
     height: 38px;
     background: var(--primary);
     color: white;

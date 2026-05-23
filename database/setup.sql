@@ -91,6 +91,17 @@ CREATE TABLE IF NOT EXISTS surat_keluar (
     FOREIGN KEY (uploaded_by) REFERENCES users(nip) ON DELETE SET NULL
 );
 
+-- Table for Notifications
+CREATE TABLE IF NOT EXISTS notifications (
+    id_notification INT AUTO_INCREMENT PRIMARY KEY,
+    nip VARCHAR(20) NOT NULL,
+    message TEXT NOT NULL,
+    link VARCHAR(255) DEFAULT '',
+    status ENUM('unread', 'read') DEFAULT 'unread',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (nip) REFERENCES users(nip) ON DELETE CASCADE
+);
+
 -- SEEDING CLEANUP & RESTRUCTURE
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE seksi;

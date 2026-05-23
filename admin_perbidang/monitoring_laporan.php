@@ -223,9 +223,14 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                                             </button>
                                         <?php endif; ?>
                                         <?php if (!empty($p['reply_file'])): ?>
-                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn action-btn-reply" title="Lihat Balasan (Out)">
+                                            <a href="../uploads/surat_keluar/<?= htmlspecialchars($p['reply_file']) ?>" target="_blank" class="action-btn action-btn-download" title="Preview Dokumen Balasan">
                                                 <svg viewBox="0 0 24 24" class="action-icon"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                                             </a>
+                                        <?php endif; ?>
+                                        <?php if (!empty($p['id_surat_keluar'])): ?>
+                                            <button class="action-btn action-btn-reply" onclick="showTrackerKeluar(<?= $p['id_surat_keluar'] ?>)" title="Detail Balasan (Surat Keluar)">
+                                                <svg viewBox="0 0 24 24" class="action-icon"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                            </button>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -273,10 +278,6 @@ $total_surat_all = $total_masuk_all + $total_keluar_all;
                                         <?php endif; ?>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </tbody>

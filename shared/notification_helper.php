@@ -24,8 +24,14 @@ if (!function_exists('notifyKadin')) {
 
 if (!function_exists('notifyAdminBidang')) {
     function notifyAdminBidang($pdo, $id_bidang, $message, $link = '') {
-        $stmt = $pdo->prepare("SELECT nip FROM users WHERE role = 'admin_bidang' AND id_bidang = ?");
-        $stmt->execute([$id_bidang]);
+        // For Sekretariat (ID 8), the admin is the user with 'sekretariat' role
+        if ($id_bidang == 8) {
+            $stmt = $pdo->prepare("SELECT nip FROM users WHERE role = 'sekretariat'");
+            $stmt->execute();
+        } else {
+            $stmt = $pdo->prepare("SELECT nip FROM users WHERE role = 'admin_bidang' AND id_bidang = ?");
+            $stmt->execute([$id_bidang]);
+        }
         $admins = $stmt->fetchAll();
         foreach ($admins as $admin) {
             addNotification($pdo, $admin['nip'], $message, $link);
